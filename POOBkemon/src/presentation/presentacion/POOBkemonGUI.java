@@ -5,10 +5,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.sound.sampled.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class POOBkemonGUI extends JFrame {
-
-    private JLabel labelCover;
+    private boolean gameStarted = false;
+    private JLabel labelCover, labelModalities, labelModes;
     private JButton startButton;
     private ImageIcon startIconNormal;
     private ImageIcon startIconHover;
@@ -16,6 +17,22 @@ public class POOBkemonGUI extends JFrame {
     private Clip backgroundMusic;
     private Timer startButtonTimer;
     private boolean buttonState = false;
+    private JComboBox<String> comboModalities,comboModes;
+
+
+    public static final ArrayList<String> modalidades = new ArrayList<>();
+    public static final ArrayList<String> modos = new ArrayList<>();
+
+    static{ 
+        modalidades.add("Jugador vs Jugador");
+        modalidades.add("Jugador vs Maquina");
+        modalidades.add("Maquina vs Maquina");
+        modos.add("Normal");
+        modos.add("Supervivencia");
+        
+
+
+    }
 
     private POOBkemonGUI(){
         setTitle("POOBkemon");
@@ -24,7 +41,27 @@ public class POOBkemonGUI extends JFrame {
         prepareAnimations();
     }
 
+    
+
+
+    //PREPARING
+
+    private void prepareActions(){
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exit();
+            }
+        });
+    }
+
+
+
+
+
     private void prepareElements(){
+        prepareMusic(); // Iniciamos la música de fondo
         setSize(new Dimension(1024, 720));
         setLocationRelativeTo(null);
         setLayout(null);
@@ -52,11 +89,47 @@ public class POOBkemonGUI extends JFrame {
 
         add(layeredPane);
 
+        labelModalities = new JLabel("Modalidades");
+        labelModalities.setBounds(256, 300, 190, 30);
+        labelModalities.setVisible(false);
+        labelModalities.setFont(new Font("Georgia", Font.BOLD, 24)); // Cambiar fuente
+        labelModalities.setForeground(new Color(254, 254, 254));
+        layeredPane.add(labelModalities, Integer.valueOf(2));
+
+
+        labelModes = new JLabel("Modos");
+        labelModes.setBounds(600, 300, 190, 30);
+        labelModes.setVisible(false);
+        labelModes.setFont(new Font("Georgia", Font.BOLD, 24)); // Cambiar fuente
+        labelModes.setForeground(new Color(254, 254, 254));
+        layeredPane.add(labelModes, Integer.valueOf(2));
+
+        comboModalities=new JComboBox<>();
+        comboModalities.setBounds(256, 350, 190, 30);
+        comboModalities.setVisible(false);
+        layeredPane.add(comboModalities, Integer.valueOf(2));
+        for(String modality : modalidades){
+            comboModalities.addItem(modality);
+        }
+
+        comboModes=new JComboBox<>();
+        comboModes.setBounds(600, 350, 190, 30);
+        comboModes.setVisible(false);
+        layeredPane.add(comboModes, Integer.valueOf(2));
+        for(String mode : modos){
+            comboModes.addItem(mode);
+        }
+
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                stopMusic(); // Detenemos la música al presionar Start
-                showUnderConstructionScreen(); // Mostramos pantalla de "En construcción"
+                if (gameStarted==false){
+                    initialize();
+                } else {
+                    stopMusic();
+                    showUnderConstructionScreen();
+                }
+                                 
             }
         });
 
@@ -72,18 +145,25 @@ public class POOBkemonGUI extends JFrame {
             }
         });
 
-        prepareMusic(); // Iniciamos la música de fondo
+       
     }
 
-    private void prepareActions(){
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                exit();
-            }
-        });
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void prepareAnimations(){
         startButtonTimer = new Timer(700, new ActionListener() {
@@ -101,6 +181,31 @@ public class POOBkemonGUI extends JFrame {
         });
         startButtonTimer.start();
     }
+
+
+
+
+
+
+
+
+
+    private void prepareMusic(){
+        try {
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("sounds-music/music-cover/Pokemon-Emerald-Opening.wav"));
+            backgroundMusic = AudioSystem.getClip();
+            backgroundMusic.open(audioStream);
+            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY); // Repite la música en bucle
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+    //Methods
 
     private void exit(){
         int confirm = JOptionPane.showConfirmDialog(this, "Sure you want to get out?", "Confirm", JOptionPane.YES_NO_OPTION);
@@ -120,19 +225,22 @@ public class POOBkemonGUI extends JFrame {
         }
     }
 
-    private void prepareMusic(){
-        try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("sounds-music/music-cover/Pokemon-Emerald-Opening.wav"));
-            backgroundMusic = AudioSystem.getClip();
-            backgroundMusic.open(audioStream);
-            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY); // Repite la música en bucle
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void initialize(){
+        labelModalities.setVisible(true);
+        labelModes.setVisible(true);
+        comboModalities.setVisible(true);
+        comboModes.setVisible(true);
+        gameStarted = true;
+
     }
 
     public static void main(String[] args) {
         POOBkemonGUI game = new POOBkemonGUI();
         game.setVisible(true);
     }
+
+    
 }
+
+
+
