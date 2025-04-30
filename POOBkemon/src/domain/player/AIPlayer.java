@@ -1,0 +1,21 @@
+package domain.player;
+
+import domain.entities.Pokemon;
+import domain.entities.Item;
+import java.util.List;
+import java.util.Random;
+
+public class AIPlayer extends Player {
+    private Random random;
+
+    public AIPlayer(String name, List<Pokemon> team, List<Item> items) {
+        super(name, team, items);
+        random = new Random();
+    }
+
+    public int selectMove() {
+        // Simple AI: randomly select a move
+        Pokemon activePokemon = getActivePokemon();
+        return random.nextInt(activePokemon.getMoves().size());
+    }
+}
