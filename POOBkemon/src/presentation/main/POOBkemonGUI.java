@@ -81,7 +81,7 @@ public class POOBkemonGUI extends JFrame {
             System.exit(0);
         }
     }
-    
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             POOBkemonGUI game = new POOBkemonGUI();

@@ -3,7 +3,7 @@ package domain.enums;
 public enum GameMode {
 
     NORMAL("Normal"),
-    SURVIVAL("Surival");
+    SURVIVAL("Survival");
 
     private final String displayName;
 
