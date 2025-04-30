@@ -1,4 +1,4 @@
-package presentacion;
+package presentation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,15 +23,12 @@ public class POOBkemonGUI extends JFrame {
     public static final ArrayList<String> modalidades = new ArrayList<>();
     public static final ArrayList<String> modos = new ArrayList<>();
 
-    static{ 
+    static{
         modalidades.add("Jugador vs Jugador");
         modalidades.add("Jugador vs Maquina");
         modalidades.add("Maquina vs Maquina");
         modos.add("Normal");
         modos.add("Supervivencia");
-        
-
-
     }
 
     private POOBkemonGUI(){
@@ -40,8 +37,6 @@ public class POOBkemonGUI extends JFrame {
         prepareActions();
         prepareAnimations();
     }
-
-    
 
 
     //PREPARING
@@ -55,9 +50,6 @@ public class POOBkemonGUI extends JFrame {
             }
         });
     }
-
-
-
 
 
     private void prepareElements(){
@@ -123,13 +115,13 @@ public class POOBkemonGUI extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (gameStarted==false){
+                if (!gameStarted){
                     initialize();
                 } else {
                     stopMusic();
                     showUnderConstructionScreen();
                 }
-                                 
+
             }
         });
 
@@ -145,25 +137,8 @@ public class POOBkemonGUI extends JFrame {
             }
         });
 
-       
+
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private void prepareAnimations(){
         startButtonTimer = new Timer(700, new ActionListener() {
@@ -182,14 +157,6 @@ public class POOBkemonGUI extends JFrame {
         startButtonTimer.start();
     }
 
-
-
-
-
-
-
-
-
     private void prepareMusic(){
         try {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("sounds-music/music-cover/Pokemon-Emerald-Opening.wav"));
@@ -201,12 +168,7 @@ public class POOBkemonGUI extends JFrame {
         }
     }
 
-
-
-
-
     //Methods
-
     private void exit(){
         int confirm = JOptionPane.showConfirmDialog(this, "Sure you want to get out?", "Confirm", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION){
@@ -239,7 +201,6 @@ public class POOBkemonGUI extends JFrame {
         game.setVisible(true);
     }
 
-    
 }
 
 
