@@ -1,0 +1,9 @@
+domain.entities
+domain.enums
+domain.exceptions
+domain.game
+domain.player
+presentation.components
+presentation.controllers
+presentation.screens
+presentation.utils
