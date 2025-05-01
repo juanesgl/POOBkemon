@@ -32,24 +32,33 @@ public class GameController {
     }
 
     public void startGame(GameModality modality, GameMode mode) {
+        startGame(modality, mode, null);
+    }
+
+    public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons) {
         // Create players based on modality
         Player player1, player2;
 
+        // Use selected Pokemon if available, otherwise use sample team
+        List<Pokemon> team1 = (selectedPokemons != null && !selectedPokemons.isEmpty()) 
+                ? selectedPokemons 
+                : createSamplePokemonTeam();
+
         switch (modality) {
             case PLAYER_VS_PLAYER:
-                player1 = new HumanPlayer("Player 1", createSamplePokemonTeam(), createSampleItems());
+                player1 = new HumanPlayer("Player 1", team1, createSampleItems());
                 player2 = new HumanPlayer("Player 2", createSamplePokemonTeam(), createSampleItems());
                 break;
             case PLAYER_VS_AI:
-                player1 = new HumanPlayer("Player 1", createSamplePokemonTeam(), createSampleItems());
+                player1 = new HumanPlayer("Player 1", team1, createSampleItems());
                 player2 = new AIPlayer("CPU", createSamplePokemonTeam(), createSampleItems());
                 break;
             case AI_VS_AI:
-                player1 = new AIPlayer("CPU 1", createSamplePokemonTeam(), createSampleItems());
+                player1 = new AIPlayer("CPU 1", team1, createSampleItems());
                 player2 = new AIPlayer("CPU 2", createSamplePokemonTeam(), createSampleItems());
                 break;
             default:
-                player1 = new HumanPlayer("Player 1", createSamplePokemonTeam(), createSampleItems());
+                player1 = new HumanPlayer("Player 1", team1, createSampleItems());
                 player2 = new HumanPlayer("Player 2", createSamplePokemonTeam(), createSampleItems());
         }
 
