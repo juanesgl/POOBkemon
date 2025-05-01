@@ -5,23 +5,109 @@ import domain.enums.GameModality;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Constants used throughout the UI of the POOBkemon game.
+ * Contains window dimensions, file paths, and other UI-related constants.
+ */
 public class UIConstants {
-    // Constants for UI elements
+    /**
+     * The width of the game window in pixels.
+     */
     public static final int WINDOW_WIDTH = 1024;
+
+    /**
+     * The height of the game window in pixels.
+     */
     public static final int WINDOW_HEIGHT = 720;
 
-    // Paths
-    public static final String COVER_IMAGE_PATH = "resources/Cover/POOBkemonCover.png";
-    public static final String START_BUTTON_IMAGE_PATH = "resources/Cover/Startbutton.png";
-    public static final String BACKGROUND_MUSIC_PATH = "sounds-music/music-cover/Pokemon-Emerald-Opening.wav";
-    public static final String POKEMON_SPRITES_PATH = "images/PokemonSprites/Pokemons/Front/";
+    // Resource base paths
+    /**
+     * Base path for resources like fonts and cover images.
+     */
+    public static final String RESOURCES_PATH = "src/resources/";
+
+    /**
+     * Base path for image resources.
+     */
+    public static final String IMAGES_PATH = "src/images/";
+
+    /**
+     * Base path for sound and music resources.
+     */
+    public static final String SOUNDS_PATH = "src/sounds-music/";
+
+    // Cover resources
+    /**
+     * Path to the cover image displayed on the start screen.
+     */
+    public static final String COVER_IMAGE_PATH = RESOURCES_PATH + "Cover/POOBkemonCover.png";
+
+    /**
+     * Path to the start button image displayed on the cover screen.
+     */
+    public static final String START_BUTTON_IMAGE_PATH = RESOURCES_PATH + "Cover/Startbutton.png";
+
+    /**
+     * Path to the background music played on the cover screen.
+     */
+    public static final String BACKGROUND_MUSIC_PATH = SOUNDS_PATH + "music-cover/Pokemon-Emerald-Opening.wav";
+
+    // Pokemon sprites
+    /**
+     * Base path for all Pokemon sprite images.
+     */
+    public static final String POKEMON_SPRITES_PATH = IMAGES_PATH + "PokemonSprites/";
+
+    /**
+     * Path to the front-facing Pokemon sprite images.
+     */
+    public static final String POKEMON_FRONT_SPRITES_PATH = POKEMON_SPRITES_PATH + "Pokemons/Front/";
+
+    /**
+     * Path to the back-facing Pokemon sprite images.
+     */
+    public static final String POKEMON_BACK_SPRITES_PATH = POKEMON_SPRITES_PATH + "Pokemons/Back/";
+
+    // Items sprites
+    /**
+     * Base path for all item sprite images.
+     */
+    public static final String ITEMS_SPRITES_PATH = POKEMON_SPRITES_PATH + "Items/";
+
+    /**
+     * Path to the potion item image.
+     */
+    public static final String POTION_IMAGE_PATH = ITEMS_SPRITES_PATH + "potion.png";
+
+    /**
+     * Path to the X Attack item image.
+     */
+    public static final String X_ATTACK_IMAGE_PATH = ITEMS_SPRITES_PATH + "x-attack.png";
+
+    // Pokemon specific sprites
+    /**
+     * Path to the front-facing Pikachu sprite image.
+     */
+    public static final String PIKACHU_FRONT_SPRITE = POKEMON_FRONT_SPRITES_PATH + "pikachu-front.png";
+
+    /**
+     * Path to the front-facing Charizard sprite image.
+     */
+    public static final String CHARIZARD_FRONT_SPRITE = POKEMON_FRONT_SPRITES_PATH + "charizard-front.png";
+
     // Lists for dropdown menus (for backward compatibility)
+    /**
+     * List of game modality display names for dropdown menus.
+     */
     public static final List<String> MODALITIES = Arrays.asList(
             GameModality.PLAYER_VS_PLAYER.getDisplayName(),
             GameModality.PLAYER_VS_AI.getDisplayName(),
             GameModality.AI_VS_AI.getDisplayName()
     );
 
+    /**
+     * List of game mode display names for dropdown menus.
+     */
     public static final List<String> MODES = Arrays.asList(
             GameMode.NORMAL.getDisplayName(),
             GameMode.SURVIVAL.getDisplayName()

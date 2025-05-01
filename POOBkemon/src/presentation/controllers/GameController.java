@@ -13,28 +13,56 @@ import domain.player.Player;
 import domain.entities.Pokemon;
 import domain.entities.Move;
 import domain.entities.Item;
-import presentation.main.POOBkemonGUI;
+import presentation.utils.UIConstants;
 
-import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller class for the POOBkemon game.
+ * Handles game logic and communication between the model and view.
+ * Manages game initialization, player creation, and game flow.
+ */
 public class GameController {
-    private POOBkemonGUI mainWindow;
+    private GameView view;
     private Game game;
 
-    public GameController(POOBkemonGUI mainWindow) {
-        this.mainWindow = mainWindow;
+    /**
+     * Constructor for the GameController.
+     * 
+     * @param view The game view that this controller will interact with
+     */
+    public GameController(GameView view) {
+        this.view = view;
     }
 
+    /**
+     * Handles the start button click event.
+     * Shows the game setup screen.
+     */
     public void startButtonClicked() {
-        mainWindow.showSetupScreen();
+        view.showSetupScreen();
     }
 
+    /**
+     * Starts a new game with the specified modality and mode.
+     * Uses default Pokemon team.
+     * 
+     * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
+     * @param mode The game mode (NORMAL, SURVIVAL)
+     */
     public void startGame(GameModality modality, GameMode mode) {
         startGame(modality, mode, null);
     }
 
+    /**
+     * Starts a new game with the specified modality, mode, and Pokemon team.
+     * Creates players based on the modality and initializes the game.
+     * 
+     * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
+     * @param mode The game mode (NORMAL, SURVIVAL)
+     * @param selectedPokemons The list of Pokemon selected by the player (can be null)
+     */
     public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons) {
         // Create players based on modality
         Player player1, player2;
@@ -74,22 +102,28 @@ public class GameController {
 
         // Create and start the game
         game = new Game(gameMode, player1, player2);
-        mainWindow.showGameScreen(game);
+        view.showGameScreen(game);
     }
 
+    /**
+     * Creates a sample Pokemon team with predefined Pokemon.
+     * Each Pokemon has predefined stats, types, and moves.
+     * 
+     * @return A list containing sample Pokemon
+     */
     private List<Pokemon> createSamplePokemonTeam() {
         List<Pokemon> team = new ArrayList<>();
 
         // Create Pikachu
         Pokemon pikachu = new Pokemon("Pikachu", 100, 55, 40, 50, 50, 90,
-                PokemonType.ELECTRIC, null, "images/PokemonSprites/Pokemons/Front/pikachu-front.png");
+                PokemonType.ELECTRIC, null, UIConstants.PIKACHU_FRONT_SPRITE);
         pikachu.addMove(new Move("Thunder Shock", 40, MoveCategory.SPECIAL, PokemonType.ELECTRIC, 100, 30));
         pikachu.addMove(new Move("Quick Attack", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 30));
         team.add(pikachu);
 
         // Create Charizard
         Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
-                PokemonType.FIRE, PokemonType.FLYING, "images/PokemonSprites/Pokemons/Front/charizard-front.png");
+                PokemonType.FIRE, PokemonType.FLYING, UIConstants.CHARIZARD_FRONT_SPRITE);
         charizard.addMove(new Move("Flamethrower", 90, MoveCategory.SPECIAL, PokemonType.FIRE, 100, 15));
         charizard.addMove(new Move("Dragon Claw", 80, MoveCategory.PHYSICAL, PokemonType.DRAGON, 100, 15));
         team.add(charizard);
@@ -97,16 +131,21 @@ public class GameController {
         return team;
     }
 
+    /**
+     * Creates a sample list of items with predefined effects.
+     * 
+     * @return A list containing sample items
+     */
     private List<Item> createSampleItems() {
         List<Item> items = new ArrayList<>();
 
         // Create Potion
-        Item potion = new Item("Potion", "Heals 20 HP", "images/PokemonSprites/Items/potion.png",
+        Item potion = new Item("Potion", "Heals 20 HP", UIConstants.POTION_IMAGE_PATH,
                 new Item.HealingEffect(20));
         items.add(potion);
 
         // Create X Attack
-        Item xAttack = new Item("X Attack", "Raises Attack by 10", "images/PokemonSprites/Items/x-attack.png",
+        Item xAttack = new Item("X Attack", "Raises Attack by 10", UIConstants.X_ATTACK_IMAGE_PATH,
                 new Item.AttackBoostEffect(10));
         items.add(xAttack);
 

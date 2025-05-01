@@ -156,7 +156,7 @@ public class GameSetupScreen extends JPanel {
         JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
         selectionArea.removeAll(); // Clear any existing components
 
-        File spritesFolder = new File(UIConstants.POKEMON_SPRITES_PATH);
+        File spritesFolder = new File(UIConstants.POKEMON_FRONT_SPRITES_PATH);
         if (spritesFolder.exists() && spritesFolder.isDirectory()) {
             File[] spriteFiles = spritesFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
 
@@ -166,7 +166,7 @@ public class GameSetupScreen extends JPanel {
                     pokemonName = pokemonName.substring(0, 1).toUpperCase() + pokemonName.substring(1);
 
                     // Create a panel for each Pokemon
-                    JPanel pokemonPanel = createPokemonPanel(pokemonName, spriteFile.getPath());
+                    JPanel pokemonPanel = createPokemonPanel(pokemonName, UIConstants.POKEMON_FRONT_SPRITES_PATH + spriteFile.getName());
                     selectionArea.add(pokemonPanel);
                 }
             }

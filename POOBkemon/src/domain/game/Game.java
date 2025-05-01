@@ -6,6 +6,11 @@ import domain.player.Player;
 import domain.enums.GameState;
 
 
+/**
+ * Represents a game session in the POOBkemon game.
+ * Manages the game state, players, and turn-based battle mechanics.
+ * Implements different game modes through the GameMode interface.
+ */
 public class Game {
     private GameMode gameMode;
     private Player player1;
@@ -15,6 +20,15 @@ public class Game {
     private Player winner;
     private GameState state;
 
+    /**
+     * Constructor for creating a new Game.
+     * Initializes the game with the specified game mode and players.
+     * Determines the first player based on Pokemon speed.
+     * 
+     * @param gameMode The game mode that defines the rules
+     * @param player1 The first player
+     * @param player2 The second player
+     */
     public Game(GameMode gameMode, Player player1, Player player2) {
         this.gameMode = gameMode;
         this.player1 = player1;
@@ -42,11 +56,23 @@ public class Game {
         }
     }
 */
+    /**
+     * Notifies the presentation layer to update the display.
+     * This method would be used with an observer pattern or callback mechanism.
+     */
     public void render() {
         // This method would notify the presentation layer to update the display
         // You can use an observer pattern or callback to communicate with the GUI
     }
 
+    /**
+     * Executes a move in the battle.
+     * The current player's active Pokemon attacks the opponent's active Pokemon with the selected move.
+     * Handles Pokemon fainting and checks if the game is over after the move.
+     * Switches turns to the opponent after the move is executed.
+     * 
+     * @param moveIndex The index of the move to execute from the active Pokemon's move list
+     */
     public void executeMove(int moveIndex) {
         if (isGameOver) return;
 
@@ -74,6 +100,12 @@ public class Game {
         currentPlayer = opponent;
     }
 
+    /**
+     * Uses an item on the current player's active Pokemon.
+     * Applies the item's effect and then switches turns to the opponent.
+     * 
+     * @param item The item to use
+     */
     public void useItem(Item item) {
         if (isGameOver) return;
 
@@ -86,11 +118,39 @@ public class Game {
     }
 
     // Getters
+    /**
+     * Checks if the game is over.
+     * @return true if the game is over, false otherwise
+     */
     public boolean isGameOver() { return isGameOver; }
+
+    /**
+     * Gets the winner of the game.
+     * @return The winning player, or null if the game is not over
+     */
     public Player getWinner() { return winner; }
+
+    /**
+     * Gets the player whose turn it currently is.
+     * @return The current player
+     */
     public Player getCurrentPlayer() { return currentPlayer; }
+
+    /**
+     * Gets the first player.
+     * @return Player 1
+     */
     public Player getPlayer1() { return player1; }
+
+    /**
+     * Gets the second player.
+     * @return Player 2
+     */
     public Player getPlayer2() { return player2; }
+
+    /**
+     * Gets the current state of the game.
+     * @return The game state
+     */
     public GameState getState() { return state; }
 }
-

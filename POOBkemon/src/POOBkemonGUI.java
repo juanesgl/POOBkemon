@@ -1,8 +1,9 @@
-package presentation.main;
-
-import presentation.screens.*;
+import presentation.screens.CoverScreen;
+import presentation.screens.GameScreen;
+import presentation.screens.GameSetupScreen;
 import presentation.utils.SoundManager;
 import presentation.controllers.GameController;
+import presentation.controllers.GameView;
 import presentation.utils.UIConstants;
 import domain.game.Game;
 
@@ -11,13 +12,23 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class POOBkemonGUI extends JFrame {
+/**
+ * Main GUI class for the POOBkemon game.
+ * This class serves as the entry point for the application and manages the different game screens.
+ * It implements the GameView interface to communicate with the GameController.
+ */
+public class POOBkemonGUI extends JFrame implements GameView {
     private CoverScreen coverScreen;
     private GameSetupScreen setupScreen;
     private GameScreen gameScreen;
     private SoundManager soundManager;
     private GameController gameController;
 
+    /**
+     * Constructor for the POOBkemonGUI.
+     * Initializes the main window, components, screens, and sets up event handlers.
+     * Shows the cover screen as the initial view.
+     */
     public POOBkemonGUI() {
         setTitle("POOBkemon");
         setSize(new Dimension(UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT));
@@ -40,6 +51,11 @@ public class POOBkemonGUI extends JFrame {
         setupWindowCloseEvent();
     }
 
+    /**
+     * Displays the cover screen.
+     * Removes all components from the content pane, adds the cover screen,
+     * plays background music, and refreshes the display.
+     */
     public void showCoverScreen() {
         getContentPane().removeAll();
         getContentPane().add(coverScreen);
@@ -48,6 +64,11 @@ public class POOBkemonGUI extends JFrame {
         repaint();
     }
 
+    /**
+     * Displays the game setup screen.
+     * Removes all components from the content pane, adds the setup screen,
+     * and refreshes the display.
+     */
     public void showSetupScreen() {
         getContentPane().removeAll();
         getContentPane().add(setupScreen);
@@ -55,6 +76,13 @@ public class POOBkemonGUI extends JFrame {
         repaint();
     }
 
+    /**
+     * Displays the game screen with the specified game.
+     * Removes all components from the content pane, sets the game in the game screen,
+     * adds the game screen to the content pane, and refreshes the display.
+     * 
+     * @param game The game to be displayed
+     */
     public void showGameScreen(Game game) {
         getContentPane().removeAll();
         gameScreen.setGame(game);
@@ -63,6 +91,10 @@ public class POOBkemonGUI extends JFrame {
         repaint();
     }
 
+    /**
+     * Sets up the window close event handler.
+     * Adds a window listener to handle the window closing event by calling the exit method.
+     */
     private void setupWindowCloseEvent() {
         addWindowListener(new WindowAdapter() {
             @Override
@@ -72,6 +104,11 @@ public class POOBkemonGUI extends JFrame {
         });
     }
 
+    /**
+     * Exits the application after confirmation.
+     * Displays a confirmation dialog, and if confirmed, stops all sounds,
+     * disposes the window, and exits the application.
+     */
     public void exit() {
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Sure you want to get out?", "Confirm", JOptionPane.YES_NO_OPTION);
@@ -82,6 +119,12 @@ public class POOBkemonGUI extends JFrame {
         }
     }
 
+    /**
+     * The main entry point for the application.
+     * Creates and displays the main GUI window on the Event Dispatch Thread.
+     * 
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             POOBkemonGUI game = new POOBkemonGUI();

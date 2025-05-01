@@ -6,8 +6,6 @@ import presentation.utils.UIConstants;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class CoverScreen extends JPanel {
     private JLabel coverLabel;
@@ -31,8 +29,6 @@ public class CoverScreen extends JPanel {
 
         // Start button
         ImageIcon startIconNormal = new ImageIcon(UIConstants.START_BUTTON_IMAGE_PATH);
-        ImageIcon startIconHover = new ImageIcon(UIConstants.START_BUTTON_IMAGE_PATH); // Same image for now
-        ImageIcon startIconShiny = new ImageIcon(UIConstants.START_BUTTON_IMAGE_PATH); // Same image for now
 
         startButton = new AnimatedButton(startIconNormal);
         startButton.setBounds(423, 550, 179, 71);
