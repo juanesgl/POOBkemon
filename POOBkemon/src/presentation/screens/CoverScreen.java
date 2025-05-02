@@ -28,7 +28,7 @@ public class CoverScreen extends JPanel {
         add(coverLabel);
 
         // Start button
-        ImageIcon startIconNormal = new ImageIcon(UIConstants.START_BUTTON_IMAGE_PATH);
+        ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
 
         startButton = new AnimatedButton(startIconNormal);
         startButton.setBounds(423, 550, 179, 71);

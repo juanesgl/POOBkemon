@@ -182,7 +182,7 @@ public class GameSetupScreen extends JPanel {
         selectionArea.removeAll(); // Clear any existing components
 
         // Define known Pokemon names (hardcoded since we can't list classpath resources directly)
-        String[] pokemonNames = {"charizard", "blastoise", "gengar", "pikachu", "raichu"};
+        String[] pokemonNames = {"charizard", "blastoise", "gengar", "raichu"};
 
         for (String name : pokemonNames) {
             String fileName = name + "-front.png";

@@ -33,7 +33,6 @@ import java.awt.Color;
 public class GameController {
     private GameView view;
     private Game game;
- 
 
     /**
      * Constructor for the GameController.
@@ -42,9 +41,7 @@ public class GameController {
      */
     public GameController(GameView view) {
         this.view = view;
-        
     }
-
     /**
      * Handles the start button click event.
      * Shows the game setup screen.
