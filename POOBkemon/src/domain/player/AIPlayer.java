@@ -4,12 +4,13 @@ import domain.entities.Pokemon;
 import domain.entities.Item;
 import java.util.List;
 import java.util.Random;
+import domain.enums.MachineType;
 
 public class AIPlayer extends Player {
     private Random random;
 
-    public AIPlayer(String name, List<Pokemon> team, List<Item> items) {
-        super(name, team, items);
+    public AIPlayer(String name, MachineType machineType, List<Pokemon> team, List<Item> items) {
+        super(name,machineType, team, items);
         random = new Random();
     }
 

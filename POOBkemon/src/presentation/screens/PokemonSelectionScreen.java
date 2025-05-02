@@ -54,7 +54,7 @@ public class PokemonSelectionScreen extends JPanel {
                 // Save player 1's selection and prepare for player 2 (if PvP)
                 player1Pokemons.addAll(selectedPokemons);
 
-                if (selectedModality == GameModality.PLAYER_VS_PLAYER) {
+                if (selectedMode == GameMode.NORMAL) {
                     isPlayer1Selection = false;
                     selectedPokemons.clear();
                     updateSelectionPanelForPlayer2();

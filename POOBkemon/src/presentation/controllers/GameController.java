@@ -21,6 +21,7 @@ import java.util.List;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import java.awt.Color;
+import domain.enums.MachineType;
 
 /**
  * Controller class for the POOBkemon game.
@@ -73,6 +74,7 @@ public class GameController {
         Player player1, player2;
         String playerName;
         Color playerColor;
+        MachineType machineType;
 
         // Use selected Pokemon if available, otherwise use sample team
         List<Pokemon> team1 = (selectedPokemons != null && !selectedPokemons.isEmpty())
@@ -99,11 +101,14 @@ public class GameController {
                 playerName= askName();
                 playerColor=askColor();
                 player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
-                player2 = new AIPlayer("CPU", createSamplePokemonTeam(), createSampleItems());
+                machineType= askMachineType();
+                player2 = new AIPlayer("CPU",machineType, createSamplePokemonTeam(), createSampleItems());
                 break;
             case AI_VS_AI:
-                player1 = new AIPlayer("CPU 1", team1, createSampleItems());
-                player2 = new AIPlayer("CPU 2", createSamplePokemonTeam(), createSampleItems());
+                machineType= askMachineType();
+                player1 = new AIPlayer("CPU 1",machineType,team1, createSampleItems());
+                machineType= askMachineType();
+                player2 = new AIPlayer("CPU 2",machineType, createSamplePokemonTeam(), createSampleItems());
                 break;
             default:
                 playerName= askName();
@@ -211,5 +216,21 @@ public class GameController {
             // For other modes, start the game directly
             startGame(modality, mode, null, null);
         }
+    }
+
+
+    public MachineType askMachineType() {
+        MachineType machineType = (MachineType) JOptionPane.showInputDialog(
+                null,
+                "Select Machine Type:",
+                "Machine Type Selection",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                MachineType.values(), // opciones del enum como lista desplegable
+                MachineType.values()[0] // valor por defecto
+        );
+
+        System.out.println("Machine Type: " + machineType);
+        return machineType;
     }
 }
