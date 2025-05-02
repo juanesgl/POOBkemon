@@ -2,6 +2,7 @@ package presentation.utils;
 
 import javax.sound.sampled.*;
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,11 +15,18 @@ public class SoundManager {
         soundEffects = new HashMap<>();
     }
 
-    public void playBackgroundMusic(String filePath) {
+    public void playBackgroundMusic(String resourcePath) {
         stopBackgroundMusic();
 
         try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(filePath));
+            // Use getResourceAsStream instead of new File()
+            InputStream inputStream = getClass().getResourceAsStream(resourcePath);
+            if (inputStream == null) {
+                System.err.println("Could not find resource: " + resourcePath);
+                return;
+            }
+
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(inputStream);
             backgroundMusic = AudioSystem.getClip();
             backgroundMusic.open(audioStream);
             backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
@@ -27,6 +35,11 @@ public class SoundManager {
         }
     }
 
+
+
+
+
+
     public void stopBackgroundMusic() {
         if (backgroundMusic != null && backgroundMusic.isRunning()) {
             backgroundMusic.stop();
@@ -34,15 +47,22 @@ public class SoundManager {
         }
     }
 
-    public void playSoundEffect(String name, String filePath) {
+    public void playSoundEffect(String name, String resourcePath) {
         try {
             if (!soundEffects.containsKey(name)) {
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(filePath));
+                InputStream inputStream = getClass().getResourceAsStream(resourcePath);
+                if (inputStream == null) {
+                    System.err.println("Could not find resource: " + resourcePath);
+                    return;
+                }
+
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(inputStream);
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioStream);
                 soundEffects.put(name, clip);
             }
 
+            // Rest of the method remains the same
             Clip clip = soundEffects.get(name);
             if (clip.isRunning()) {
                 clip.stop();

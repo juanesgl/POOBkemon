@@ -5,7 +5,7 @@ import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
 
 import javax.swing.*;
-import java.awt.*;
+
 
 public class CoverScreen extends JPanel {
     private JLabel coverLabel;
@@ -22,7 +22,7 @@ public class CoverScreen extends JPanel {
 
     private void initializeComponents() {
         // Cover image
-        ImageIcon cover = new ImageIcon(UIConstants.COVER_IMAGE_PATH);
+        ImageIcon cover = new ImageIcon(getClass().getResource(UIConstants.COVER_IMAGE_PATH));
         coverLabel = new JLabel(cover);
         coverLabel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
         add(coverLabel);

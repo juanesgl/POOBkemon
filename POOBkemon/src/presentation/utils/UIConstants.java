@@ -24,17 +24,17 @@ public class UIConstants {
     /**
      * Base path for resources like fonts and cover images.
      */
-    public static final String RESOURCES_PATH = "src/resources/";
+    public static final String RESOURCES_PATH = "/resources/";
 
     /**
      * Base path for image resources.
      */
-    public static final String IMAGES_PATH = "src/images/";
+    public static final String IMAGES_PATH = "/images/";
 
     /**
      * Base path for sound and music resources.
      */
-    public static final String SOUNDS_PATH = "src/sounds-music/";
+    public static final String SOUNDS_PATH = "/sounds-music/";
 
     // Cover resources
     /**

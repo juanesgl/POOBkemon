@@ -10,7 +10,6 @@ import presentation.utils.UIConstants;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class GameSetupScreen extends JPanel {
 
     private void initializeComponents() {
         // Background
-        ImageIcon background = new ImageIcon(UIConstants.COVER_IMAGE_PATH);
+        ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.COVER_IMAGE_PATH));
         backgroundLabel = new JLabel(background);
         backgroundLabel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
 
@@ -91,7 +90,7 @@ public class GameSetupScreen extends JPanel {
 
         // Create Pokemon selection panel (initially hidden)
         createPokemonSelectionPanel();
-        ImageIcon startIconNormal = new ImageIcon(UIConstants.START_BUTTON_IMAGE_PATH);
+        ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
 
         // Start game button
         startGameButton = new AnimatedButton(startIconNormal);
@@ -182,19 +181,20 @@ public class GameSetupScreen extends JPanel {
         JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
         selectionArea.removeAll(); // Clear any existing components
 
-        File spritesFolder = new File(UIConstants.POKEMON_FRONT_SPRITES_PATH);
-        if (spritesFolder.exists() && spritesFolder.isDirectory()) {
-            File[] spriteFiles = spritesFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
+        // Define known Pokemon names (hardcoded since we can't list classpath resources directly)
+        String[] pokemonNames = {"charizard", "blastoise", "gengar", "pikachu", "raichu"};
 
-            if (spriteFiles != null) {
-                for (File spriteFile : spriteFiles) {
-                    String pokemonName = spriteFile.getName().replace("-front.png", "");
-                    pokemonName = pokemonName.substring(0, 1).toUpperCase() + pokemonName.substring(1);
+        for (String name : pokemonNames) {
+            String fileName = name + "-front.png";
+            String resourcePath = UIConstants.POKEMON_FRONT_SPRITES_PATH + fileName;
 
-                    // Create a panel for each Pokemon
-                    JPanel pokemonPanel = createPokemonPanel(pokemonName, UIConstants.POKEMON_FRONT_SPRITES_PATH + spriteFile.getName());
-                    selectionArea.add(pokemonPanel);
-                }
+            // Check if resource exists
+            if (getClass().getResource(resourcePath) != null) {
+                String pokemonName = name.substring(0, 1).toUpperCase() + name.substring(1);
+
+                // Create a panel for each Pokemon
+                JPanel pokemonPanel = createPokemonPanel(pokemonName, resourcePath);
+                selectionArea.add(pokemonPanel);
             }
         }
 
@@ -213,7 +213,7 @@ public class GameSetupScreen extends JPanel {
         panel.setBackground(new Color(50, 50, 50));
 
         // Pokemon sprite
-        ImageIcon spriteIcon = new ImageIcon(spritePath);
+        ImageIcon spriteIcon = new ImageIcon(getClass().getResource(spritePath));
         Image scaledImage = spriteIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         JLabel spriteLabel = new JLabel(new ImageIcon(scaledImage));
         spriteLabel.setHorizontalAlignment(JLabel.CENTER);
