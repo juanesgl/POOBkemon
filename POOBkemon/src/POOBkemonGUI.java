@@ -6,6 +6,9 @@ import presentation.controllers.GameController;
 import presentation.controllers.GameView;
 import presentation.utils.UIConstants;
 import domain.game.Game;
+import presentation.screens.PokemonSelectionScreen;
+import domain.enums.GameMode;
+import domain.enums.GameModality;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +21,7 @@ import java.awt.event.WindowEvent;
  * It implements the GameView interface to communicate with the GameController.
  */
 public class POOBkemonGUI extends JFrame implements GameView {
+    private PokemonSelectionScreen pokemonSelectionScreen;
     private CoverScreen coverScreen;
     private GameSetupScreen setupScreen;
     private GameScreen gameScreen;
@@ -43,6 +47,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
         coverScreen = new CoverScreen(gameController);
         setupScreen = new GameSetupScreen(gameController);
         gameScreen = new GameScreen(gameController);
+        pokemonSelectionScreen = new PokemonSelectionScreen(gameController);
 
         // Show initial screen
         showCoverScreen();
@@ -80,13 +85,29 @@ public class POOBkemonGUI extends JFrame implements GameView {
      * Displays the game screen with the specified game.
      * Removes all components from the content pane, sets the game in the game screen,
      * adds the game screen to the content pane, and refreshes the display.
-     * 
+     *
      * @param game The game to be displayed
      */
     public void showGameScreen(Game game) {
         getContentPane().removeAll();
         gameScreen.setGame(game);
         getContentPane().add(gameScreen);
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * Displays the Pokemon selection screen with the specified game modality and mode.
+     * Removes all components from the content pane, sets the game options in the Pokemon selection screen,
+     * adds the Pokemon selection screen to the content pane, and refreshes the display.
+     *
+     * @param modality The game modality to be used
+     * @param mode The game mode to be used
+     */
+    public void showPokemonSelectionScreen(GameModality modality, GameMode mode) {
+        getContentPane().removeAll();
+        pokemonSelectionScreen.setGameOptions(modality, mode);
+        getContentPane().add(pokemonSelectionScreen);
         revalidate();
         repaint();
     }
@@ -122,7 +143,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
     /**
      * The main entry point for the application.
      * Creates and displays the main GUI window on the Event Dispatch Thread.
-     * 
+     *
      * @param args Command line arguments (not used)
      */
     public static void main(String[] args) {
@@ -131,5 +152,4 @@ public class POOBkemonGUI extends JFrame implements GameView {
             game.setVisible(true);
         });
     }
-
 }

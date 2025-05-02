@@ -13,7 +13,6 @@ import domain.player.Player;
 import domain.entities.Pokemon;
 import domain.entities.Move;
 import domain.entities.Item;
-import presentation.screens.GameSetupScreen;
 import presentation.utils.UIConstants;
 
 import java.util.ArrayList;
@@ -22,8 +21,6 @@ import java.util.List;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import java.awt.Color;
-
-
 
 /**
  * Controller class for the POOBkemon game.
@@ -36,7 +33,7 @@ public class GameController {
 
     /**
      * Constructor for the GameController.
-     * 
+     *
      * @param view The game view that this controller will interact with
      */
     public GameController(GameView view) {
@@ -53,10 +50,10 @@ public class GameController {
     /**
      * Starts a new game with the specified modality and mode.
      * Uses default Pokemon team.
-     * 
+     *
      * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
      * @param mode The game mode (NORMAL, SURVIVAL)
-     * 
+     *
      */
     public void startGame(GameModality modality, GameMode mode) {
         startGame(modality, mode, null,null);
@@ -65,7 +62,7 @@ public class GameController {
     /**
      * Starts a new game with the specified modality, mode, and Pokemon team.
      * Creates players based on the modality and initializes the game.
-     * 
+     *
      * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
      * @param mode The game mode (NORMAL, SURVIVAL)
      * @param selectedPokemons The list of Pokemon selected by the player1 (can be null)
@@ -78,20 +75,20 @@ public class GameController {
         Color playerColor;
 
         // Use selected Pokemon if available, otherwise use sample team
-        List<Pokemon> team1 = (selectedPokemons != null && !selectedPokemons.isEmpty()) 
-                ? selectedPokemons 
+        List<Pokemon> team1 = (selectedPokemons != null && !selectedPokemons.isEmpty())
+                ? selectedPokemons
                 : createSamplePokemonTeam();
-        List<Pokemon> team2 = (selectedPokemons2 != null && !selectedPokemons2.isEmpty()) 
-                ? selectedPokemons2 
+        List<Pokemon> team2 = (selectedPokemons2 != null && !selectedPokemons2.isEmpty())
+                ? selectedPokemons2
                 : createSamplePokemonTeam();
-                
+
 
         switch (modality) {
             case PLAYER_VS_PLAYER:
                 playerName= askName();
                 playerColor=askColor();
-                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems()); 
-                
+                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
+
                 playerName= askName();
                 playerColor=askColor();
                 player2 = new HumanPlayer(playerName, playerColor, team2, createSampleItems());
@@ -101,7 +98,7 @@ public class GameController {
             case PLAYER_VS_AI:
                 playerName= askName();
                 playerColor=askColor();
-                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems()); 
+                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
                 player2 = new AIPlayer("CPU", createSamplePokemonTeam(), createSampleItems());
                 break;
             case AI_VS_AI:
@@ -111,7 +108,7 @@ public class GameController {
             default:
                 playerName= askName();
                 playerColor=askColor();
-                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems()); 
+                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
                 playerName= askName();
                 playerColor=askColor();
                 player2 = new HumanPlayer(playerName, playerColor, createSamplePokemonTeam(), createSampleItems());
@@ -137,7 +134,7 @@ public class GameController {
     /**
      * Creates a sample Pokemon team with predefined Pokemon.
      * Each Pokemon has predefined stats, types, and moves.
-     * 
+     *
      * @return A list containing sample Pokemon
      */
     private List<Pokemon> createSamplePokemonTeam() {
@@ -162,7 +159,7 @@ public class GameController {
 
     /**
      * Creates a sample list of items with predefined effects.
-     * 
+     *
      * @return A list containing sample items
      */
     private List<Item> createSampleItems() {
@@ -180,7 +177,7 @@ public class GameController {
 
         return items;
     }
-    
+
     /**
      * Asks the user for their name and returns it.
      * @return The user's name
@@ -194,9 +191,25 @@ public class GameController {
 
 
     private Color askColor() {
-    Color playerColor = JColorChooser.showDialog(null, "Select a color", Color.WHITE);
-    return playerColor != null ? playerColor : Color.WHITE;  
+        Color playerColor = JColorChooser.showDialog(null, "Select a color", Color.WHITE);
+        return playerColor != null ? playerColor : Color.WHITE;
     }
 
-    
+
+    /**
+     * Starts the game setup process with the specified modality and mode.
+     * If Normal mode is selected, shows the Pokemon selection screen.
+     * Otherwise, starts the game directly.
+     *
+     * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
+     * @param mode The game mode (NORMAL, SURVIVAL)
+     */
+    public void startGameSetup(GameModality modality, GameMode mode) {
+        if (mode == GameMode.NORMAL) {
+            view.showPokemonSelectionScreen(modality, mode);
+        } else {
+            // For other modes, start the game directly
+            startGame(modality, mode, null, null);
+        }
+    }
 }
