@@ -98,8 +98,8 @@ public class GameController {
                 playerName= askName();
                 playerColor=askColor();
                 player2 = new HumanPlayer(playerName, playerColor, team2, createSampleItems());
-                System.out.println("Pokémon player 1: " + team1);
-                System.out.println("Pokémon player 2: " + team2);
+                //System.out.println("Pokémon player 1: " + team1);
+                //System.out.println("Pokémon player 2: " + team2);
                 break;
             case PLAYER_VS_AI:
                 playerName= askName();
