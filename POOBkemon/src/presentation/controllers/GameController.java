@@ -59,9 +59,10 @@ public class GameController {
      * 
      * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
      * @param mode The game mode (NORMAL, SURVIVAL)
+     * 
      */
     public void startGame(GameModality modality, GameMode mode) {
-        startGame(modality, mode, null);
+        startGame(modality, mode, null,null);
     }
 
     /**
@@ -70,9 +71,10 @@ public class GameController {
      * 
      * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
      * @param mode The game mode (NORMAL, SURVIVAL)
-     * @param selectedPokemons The list of Pokemon selected by the player (can be null)
+     * @param selectedPokemons The list of Pokemon selected by the player1 (can be null)
+     * @param selectedPokemons2 The list of Pokemon selected by the player2 (can be null)
      */
-    public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons) {
+    public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons,List<Pokemon> selectedPokemons2) {
         // Create players based on modality
         Player player1, player2;
         String playerName;
@@ -81,6 +83,9 @@ public class GameController {
         // Use selected Pokemon if available, otherwise use sample team
         List<Pokemon> team1 = (selectedPokemons != null && !selectedPokemons.isEmpty()) 
                 ? selectedPokemons 
+                : createSamplePokemonTeam();
+        List<Pokemon> team2 = (selectedPokemons2 != null && !selectedPokemons2.isEmpty()) 
+                ? selectedPokemons2 
                 : createSamplePokemonTeam();
                 
 
@@ -92,7 +97,9 @@ public class GameController {
                 
                 playerName= askName();
                 playerColor=askColor();
-                player2 = new HumanPlayer(playerName, playerColor, createSamplePokemonTeam(), createSampleItems());
+                player2 = new HumanPlayer(playerName, playerColor, team2, createSampleItems());
+                System.out.println("Pokémon player 1: " + team1);
+                System.out.println("Pokémon player 2: " + team2);
                 break;
             case PLAYER_VS_AI:
                 playerName= askName();

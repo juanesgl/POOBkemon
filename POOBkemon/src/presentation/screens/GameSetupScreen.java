@@ -25,6 +25,7 @@ public class GameSetupScreen extends JPanel {
 
     public JPanel pokemonSelectionPanel;
     private List<Pokemon> selectedPokemons = new ArrayList<>();
+    private List<Pokemon> selectedPokemons2 = new ArrayList<>();
 
     public GameSetupScreen(GameController controller) {
         this.controller = controller;
@@ -95,17 +96,40 @@ public class GameSetupScreen extends JPanel {
         // Start game button
         startGameButton = new AnimatedButton(startIconNormal);
         startGameButton.setBounds(423, 550, 179, 71);
+
+        /*
+         * Add action listener to start game button
+         * If Normal mode is selected, show Pokemon selection panel
+         * Else, start the game
+         * 
+         */
         startGameButton.addActionListener(e -> {
             GameModality modality = (GameModality) modalitiesCombo.getSelectedItem();
             GameMode mode = (GameMode) modesCombo.getSelectedItem();
 
             if (mode == GameMode.NORMAL && selectedPokemons.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please select at least one Pokemon for your team!", 
+                JOptionPane.showMessageDialog(this, "Please select at least one Pokemon for a team!", 
                         "Team Selection", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+            // Player vs Player mode special case
+            if (mode == GameMode.NORMAL) {
+                if (selectedPokemons2.isEmpty()) {
+                    selectedPokemons2.addAll(selectedPokemons);
+                    player2PokemonSelectionPanel(); 
+                    JOptionPane.showMessageDialog(this, "Player 1 has a team. Now select Player 2 Pokémons");
+                    updateStatusLabel(); 
+                    return; 
+                } else {
+                    //System.out.println("Pokémon player 1: " + selectedPokemons2);
+                    //System.out.println("Pokémon player 2: " + selectedPokemons);
+                    controller.startGame(modality, mode, selectedPokemons2, selectedPokemons);
+                    return;
+                }
+            }
 
-            controller.startGame(modality, mode, selectedPokemons);
+            controller.startGame(modality, mode, selectedPokemons, selectedPokemons2);
+            
         });
 
         // Add components
@@ -129,7 +153,7 @@ public class GameSetupScreen extends JPanel {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(50, 50, 150));
 
-        JLabel titleLabel = new JLabel("SELECT YOUR POKEMON TEAM", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("SELECT PLAYER 1 POKEMON TEAM", JLabel.CENTER);
         titleLabel.setFont(new Font("Georgia", Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
 
@@ -320,5 +344,34 @@ public class GameSetupScreen extends JPanel {
 
     private void hidePokemonSelectionPanel() {
         pokemonSelectionPanel.setVisible(false);
+    }
+
+
+    /**
+     * player2tPokemonSelectionPanel
+     * 
+     * Updates the player2tPokemonSelectionPanel
+     * 
+     * @returns void
+     */
+    private void player2PokemonSelectionPanel() {
+        selectedPokemons.clear();
+        JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
+        for (Component comp : selectionArea.getComponents()) {
+            if (comp instanceof JPanel) {
+                JPanel pokemonPanel = (JPanel) comp;
+                pokemonPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+                pokemonPanel.setBackground(new Color(50, 50, 50));
+                for (Component panelComp : pokemonPanel.getComponents()) {
+                    if (panelComp instanceof JCheckBox) {
+                        ((JCheckBox) panelComp).setSelected(false);
+                    }
+                }
+            }
+        }
+        updateStatusLabel();
+        JPanel headerPanel = (JPanel) pokemonSelectionPanel.getComponent(0);
+        JLabel titleLabel = (JLabel) headerPanel.getComponent(0);
+        titleLabel.setText("SELECT PLAYER 2 POKEMON TEAM");
     }
 }
