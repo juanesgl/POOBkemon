@@ -21,6 +21,8 @@ public enum GameModality {
      */
     AI_VS_AI("Machine vs Machine");
 
+
+
     private final String displayName;
 
     /**

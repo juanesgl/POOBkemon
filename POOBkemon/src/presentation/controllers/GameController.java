@@ -13,10 +13,17 @@ import domain.player.Player;
 import domain.entities.Pokemon;
 import domain.entities.Move;
 import domain.entities.Item;
+import presentation.screens.GameSetupScreen;
 import presentation.utils.UIConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JColorChooser;
+import javax.swing.JOptionPane;
+import java.awt.Color;
+
+
 
 /**
  * Controller class for the POOBkemon game.
@@ -26,6 +33,7 @@ import java.util.List;
 public class GameController {
     private GameView view;
     private Game game;
+ 
 
     /**
      * Constructor for the GameController.
@@ -34,6 +42,7 @@ public class GameController {
      */
     public GameController(GameView view) {
         this.view = view;
+        
     }
 
     /**
@@ -66,19 +75,29 @@ public class GameController {
     public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons) {
         // Create players based on modality
         Player player1, player2;
+        String playerName;
+        Color playerColor;
 
         // Use selected Pokemon if available, otherwise use sample team
         List<Pokemon> team1 = (selectedPokemons != null && !selectedPokemons.isEmpty()) 
                 ? selectedPokemons 
                 : createSamplePokemonTeam();
+                
 
         switch (modality) {
             case PLAYER_VS_PLAYER:
-                player1 = new HumanPlayer("Player 1", team1, createSampleItems());
-                player2 = new HumanPlayer("Player 2", createSamplePokemonTeam(), createSampleItems());
+                playerName= askName();
+                playerColor=askColor();
+                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems()); 
+                
+                playerName= askName();
+                playerColor=askColor();
+                player2 = new HumanPlayer(playerName, playerColor, createSamplePokemonTeam(), createSampleItems());
                 break;
             case PLAYER_VS_AI:
-                player1 = new HumanPlayer("Player 1", team1, createSampleItems());
+                playerName= askName();
+                playerColor=askColor();
+                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems()); 
                 player2 = new AIPlayer("CPU", createSamplePokemonTeam(), createSampleItems());
                 break;
             case AI_VS_AI:
@@ -86,8 +105,14 @@ public class GameController {
                 player2 = new AIPlayer("CPU 2", createSamplePokemonTeam(), createSampleItems());
                 break;
             default:
-                player1 = new HumanPlayer("Player 1", team1, createSampleItems());
-                player2 = new HumanPlayer("Player 2", createSamplePokemonTeam(), createSampleItems());
+                playerName= askName();
+                playerColor=askColor();
+                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems()); 
+                playerName= askName();
+                playerColor=askColor();
+                player2 = new HumanPlayer(playerName, playerColor, createSamplePokemonTeam(), createSampleItems());
+                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
+                player2 = new HumanPlayer(playerName,playerColor, createSamplePokemonTeam(), createSampleItems());
         }
 
         // Create game mode
@@ -151,4 +176,23 @@ public class GameController {
 
         return items;
     }
+    
+    /**
+     * Asks the user for their name and returns it.
+     * @return The user's name
+     */
+
+    private String askName() {
+        String playerName = JOptionPane.showInputDialog(null, "Insert Player Name:");
+        System.out.println("Welcome: " + playerName);
+        return playerName;
+    }
+
+
+    private Color askColor() {
+    Color playerColor = JColorChooser.showDialog(null, "Select a color", Color.WHITE);
+    return playerColor != null ? playerColor : Color.WHITE;  
+    }
+
+    
 }

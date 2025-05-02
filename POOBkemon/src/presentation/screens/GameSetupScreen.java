@@ -4,6 +4,7 @@ import domain.enums.GameMode;
 import domain.enums.GameModality;
 import domain.enums.PokemonType;
 import domain.entities.Pokemon;
+import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
 
@@ -19,10 +20,10 @@ public class GameSetupScreen extends JPanel {
     private JLabel modesLabel;
     private JComboBox<GameModality> modalitiesCombo;
     private JComboBox<GameMode> modesCombo;
-    private JButton startGameButton;
+    private AnimatedButton startGameButton;
     private GameController controller;
 
-    private JPanel pokemonSelectionPanel;
+    public JPanel pokemonSelectionPanel;
     private List<Pokemon> selectedPokemons = new ArrayList<>();
 
     public GameSetupScreen(GameController controller) {
@@ -40,7 +41,7 @@ public class GameSetupScreen extends JPanel {
         backgroundLabel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
 
         // Modalities section
-        modalitiesLabel = new JLabel("Modalidades");
+        modalitiesLabel = new JLabel("Modalities");
         modalitiesLabel.setBounds(256, 300, 190, 30);
         modalitiesLabel.setFont(new Font("Georgia", Font.BOLD, 24));
         modalitiesLabel.setForeground(new Color(254, 254, 254));
@@ -59,7 +60,7 @@ public class GameSetupScreen extends JPanel {
         });
 
         // Modes section
-        modesLabel = new JLabel("Modos");
+        modesLabel = new JLabel("Modes");
         modesLabel.setBounds(600, 300, 190, 30);
         modesLabel.setFont(new Font("Georgia", Font.BOLD, 24));
         modesLabel.setForeground(new Color(254, 254, 254));
@@ -89,10 +90,11 @@ public class GameSetupScreen extends JPanel {
 
         // Create Pokemon selection panel (initially hidden)
         createPokemonSelectionPanel();
+        ImageIcon startIconNormal = new ImageIcon(UIConstants.START_BUTTON_IMAGE_PATH);
 
         // Start game button
-        startGameButton = new JButton("Start Game");
-        startGameButton.setBounds(423, 450, 179, 71);
+        startGameButton = new AnimatedButton(startIconNormal);
+        startGameButton.setBounds(423, 550, 179, 71);
         startGameButton.addActionListener(e -> {
             GameModality modality = (GameModality) modalitiesCombo.getSelectedItem();
             GameMode mode = (GameMode) modesCombo.getSelectedItem();

@@ -3,6 +3,7 @@ package domain.player;
 import domain.entities.Pokemon;
 import domain.entities.Item;
 import java.util.List;
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -12,6 +13,7 @@ import java.util.ArrayList;
  */
 public abstract class Player {
     protected String name;
+    protected Color color;
     protected List<Pokemon> team;
     protected List<Item> items;
     protected int activePokemonIndex;
@@ -23,7 +25,7 @@ public abstract class Player {
      * @param team The list of Pokemon in the player's team
      * @param items The list of items the player has
      */
-    public Player(String name, List<Pokemon> team, List<Item> items) {
+    public Player(String name,  List<Pokemon> team, List<Item> items) {
         this.name = name;
         this.team = new ArrayList<>(team);
         this.items = new ArrayList<>(items);
