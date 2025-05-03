@@ -94,16 +94,25 @@ public class POOBkemonGUI extends JFrame implements GameView {
      * @param game The game to be displayed
      */
     public void showGameScreen(Game game) {
+        System.out.println("POOBkemonGUI.showGameScreen called");
         getContentPane().removeAll();
+        System.out.println("Content pane cleared");
         gameScreen.setGame(game);
+        System.out.println("Game set in GameScreen");
         getContentPane().add(gameScreen);
+        System.out.println("GameScreen added to content pane");
         revalidate();
         repaint();
+        System.out.println("Content pane revalidated and repainted");
+
+        // Ensure the GameScreen is visible
+        gameScreen.setVisible(true);
+        System.out.println("GameScreen visibility set to true");
     }
 
     /**
      * Displays the Pokemon selection screen with the specified game modality and mode.
-     * Removes all components from the content pane, sets the game options in the Pokemon selection screen,
+     * Removes all components from the content pane, sets the game options in the Pokémon selection screen,
      * adds the Pokemon selection screen to the content pane, and refreshes the display.
      *
      * @param modality The game modality to be used
@@ -118,7 +127,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
     }
 
     /**
-     * Displays the item selection screen with the specified game modality, mode, and Pokemon selections.
+     * Displays the item selection screen with the specified game modality, mode, and Pokémon selections.
      * Removes all components from the content pane, sets the game options in the item selection screen,
      * adds the item selection screen to the content pane, and refreshes the display.
      *

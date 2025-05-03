@@ -120,4 +120,34 @@ public class Item {
             target.setAttack(target.getAttack() + boostAmount);
         }
     }
+
+    /**
+     * An item effect that revives a fainted Pokemon with a percentage of its maximum health.
+     */
+    public static class ReviveEffect implements ItemEffect {
+        private float healthPercentage;
+
+        /**
+         * Constructor for creating a new ReviveEffect.
+         * 
+         * @param healthPercentage The percentage of maximum health to restore (0.0 to 1.0)
+         */
+        public ReviveEffect(float healthPercentage) {
+            this.healthPercentage = healthPercentage;
+        }
+
+        /**
+         * Applies the revive effect to the target Pokemon.
+         * Only works if the Pokemon is fainted (health is 0).
+         * 
+         * @param target The Pokemon to revive
+         */
+        @Override
+        public void apply(Pokemon target) {
+            if (target.isFainted()) {
+                int newHealth = (int)(target.getMaxHealth() * healthPercentage);
+                target.setHealth(Math.max(1, newHealth)); // Ensure at least 1 HP
+            }
+        }
+    }
 }

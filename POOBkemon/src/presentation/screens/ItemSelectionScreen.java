@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import domain.enums.ItemDescription;
 /**
  * Screen for selecting items for the player's team.
  * Similar to PokemonSelectionScreen but for items.
@@ -76,12 +76,13 @@ public class ItemSelectionScreen extends JPanel {
                 }
             }
 
-            // Start the game with the selected Pokemon
-            // TODO: Update GameController to use selected items
+            // Start the game with the selected Pokemon and items
             if (isPlayer1Selection) {
-                controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
+                controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, selectedItems, null);
+                System.out.println("Starting game with player 1 items: " + selectedItems.size());
             } else {
-                controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
+                controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, player1Items, selectedItems);
+                System.out.println("Starting game with player 1 items: " + player1Items.size() + " and player 2 items: " + selectedItems.size());
             }
         });
 
@@ -180,8 +181,13 @@ public class ItemSelectionScreen extends JPanel {
         selectionArea.removeAll(); // Clear any existing components
 
         // Define known item names (hardcoded since we can't list classpath resources directly)
-        String[] itemNames = {"potion", "x-attack"};
-        String[] itemDescriptions = {"Heals 20 HP", "Raises Attack by 10"};
+        String[] itemNames = {"potion", "super-potion", "Hiperpoción", "revive"};
+        String[] itemDescriptions = {
+            ItemDescription.POTION.getDescription(),
+            ItemDescription.SUPER_POTION.getDescription(), 
+            ItemDescription.HYPER_POTION.getDescription(), 
+            ItemDescription.REVIVE.getDescription()
+        };
 
         for (int i = 0; i < itemNames.length; i++) {
             String name = itemNames[i];
@@ -191,8 +197,11 @@ public class ItemSelectionScreen extends JPanel {
             // Check if resource exists
             if (getClass().getResource(resourcePath) != null) {
                 String itemName = name.substring(0, 1).toUpperCase() + name.substring(1);
-                if (name.equals("x-attack")) {
-                    itemName = "X Attack"; // Special case for X Attack
+                // Handle special cases
+                if (name.equals("super-potion")) {
+                    itemName = "Super Potion";
+                } else if (name.equals("Hiperpoción")) {
+                    itemName = "Hyper Potion";
                 }
 
                 // Create a panel for each item
@@ -346,8 +355,12 @@ public class ItemSelectionScreen extends JPanel {
         Item.ItemEffect effect;
         if (itemName.equalsIgnoreCase("Potion")) {
             effect = new Item.HealingEffect(20);
-        } else if (itemName.equalsIgnoreCase("X Attack")) {
-            effect = new Item.AttackBoostEffect(10);
+        } else if (itemName.equalsIgnoreCase("Super Potion")) {
+            effect = new Item.HealingEffect(50);
+        } else if (itemName.equalsIgnoreCase("Hyper Potion")) {
+            effect = new Item.HealingEffect(200);
+        } else if (itemName.equalsIgnoreCase("Revive")) {
+            effect = new Item.ReviveEffect(0.5f); // Revive with 50% HP
         } else {
             // Default effect
             effect = new Item.HealingEffect(10);

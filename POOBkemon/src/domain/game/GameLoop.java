@@ -52,7 +52,7 @@ public class GameLoop implements Runnable {
             // FPS counter
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                System.out.println("FPS: " + frames);
+                game.setFPS(frames);
                 frames = 0;
             }
 

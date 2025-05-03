@@ -69,15 +69,60 @@ public class Pokemon {
     /**
      * Attacks a target Pokemon with a specified move.
      * Calculates damage based on move power, Pokemon stats, and type effectiveness.
+     * Reduces the PP of the move by 1.
      * 
      * @param target The target Pokemon to attack
      * @param move The move to use for the attack
      * @return The amount of damage dealt
      */
     public int attack(Pokemon target, Move move) {
+        // Reduce PP by 1
+        move.reducePP(1);
+
         int damage = calculateDamage(move, target);
         target.takeDamage(damage);
         return damage;
+    }
+
+    /**
+     * Executes the "Forcejeo" move when a Pokemon has no PP left in any of its moves.
+     * The Pokemon takes half of the damage it inflicts on the opponent.
+     * 
+     * @param target The target Pokemon to attack
+     * @return The amount of damage dealt
+     */
+    public int executeForcejeMove(Pokemon target) {
+        // Calculate damage as if it were a normal move with 50 power
+        Move forcejeMove = new Move("Forcejeo", 50, domain.enums.MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 1);
+        int damage = calculateDamage(forcejeMove, target);
+
+        // Target takes damage
+        target.takeDamage(damage);
+
+        // Attacker takes half the damage
+        int recoilDamage = damage / 2;
+        this.takeDamage(recoilDamage);
+
+        return damage;
+    }
+
+    /**
+     * Checks if all moves of the Pokemon are out of PP.
+     * 
+     * @return true if all moves are out of PP, false otherwise
+     */
+    public boolean allMovesOutOfPP() {
+        if (moves.isEmpty()) {
+            return false;
+        }
+
+        for (Move move : moves) {
+            if (move.getPowerPoints() > 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     protected int calculateDamage(Move move, Pokemon target) {
@@ -91,8 +136,161 @@ public class Pokemon {
     }
 
     protected double calculateTypeEffectiveness(Move move, Pokemon target) {
-        // Simple implementation for now
-        return 1.0;
+        PokemonType moveType = move.getType();
+        PokemonType targetPrimaryType = target.getPrimaryType();
+        PokemonType targetSecondaryType = target.getSecondaryType();
+
+        double effectiveness = getTypeEffectiveness(moveType, targetPrimaryType);
+
+        // If the target has a secondary type, multiply by its effectiveness too
+        if (targetSecondaryType != null) {
+            effectiveness *= getTypeEffectiveness(moveType, targetSecondaryType);
+        }
+
+        return effectiveness;
+    }
+
+    /**
+     * Gets the effectiveness multiplier of a move type against a Pokemon type.
+     * 
+     * @param moveType The type of the move
+     * @param targetType The type of the target Pokemon
+     * @return The effectiveness multiplier (0.0 for no effect, 0.5 for not very effective, 1.0 for normal, 2.0 for super effective)
+     */
+    private double getTypeEffectiveness(PokemonType moveType, PokemonType targetType) {
+        // Type effectiveness chart
+        switch (moveType) {
+            case NORMAL:
+                if (targetType == PokemonType.ROCK || targetType == PokemonType.STEEL) return 0.5;
+                if (targetType == PokemonType.GHOST) return 0.0;
+                return 1.0;
+
+            case FIRE:
+                if (targetType == PokemonType.GRASS || targetType == PokemonType.ICE || 
+                    targetType == PokemonType.BUG || targetType == PokemonType.STEEL) return 2.0;
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.WATER || 
+                    targetType == PokemonType.ROCK || targetType == PokemonType.DRAGON) return 0.5;
+                return 1.0;
+
+            case WATER:
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.GROUND || 
+                    targetType == PokemonType.ROCK) return 2.0;
+                if (targetType == PokemonType.WATER || targetType == PokemonType.GRASS || 
+                    targetType == PokemonType.DRAGON) return 0.5;
+                return 1.0;
+
+            case ELECTRIC:
+                if (targetType == PokemonType.WATER || targetType == PokemonType.FLYING) return 2.0;
+                if (targetType == PokemonType.ELECTRIC || targetType == PokemonType.GRASS || 
+                    targetType == PokemonType.DRAGON) return 0.5;
+                if (targetType == PokemonType.GROUND) return 0.0;
+                return 1.0;
+
+            case GRASS:
+                if (targetType == PokemonType.WATER || targetType == PokemonType.GROUND || 
+                    targetType == PokemonType.ROCK) return 2.0;
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.GRASS || 
+                    targetType == PokemonType.POISON || targetType == PokemonType.FLYING || 
+                    targetType == PokemonType.BUG || targetType == PokemonType.DRAGON || 
+                    targetType == PokemonType.STEEL) return 0.5;
+                return 1.0;
+
+            case ICE:
+                if (targetType == PokemonType.GRASS || targetType == PokemonType.GROUND || 
+                    targetType == PokemonType.FLYING || targetType == PokemonType.DRAGON) return 2.0;
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.WATER || 
+                    targetType == PokemonType.ICE || targetType == PokemonType.STEEL) return 0.5;
+                return 1.0;
+
+            case FIGHTING:
+                if (targetType == PokemonType.NORMAL || targetType == PokemonType.ICE || 
+                    targetType == PokemonType.ROCK || targetType == PokemonType.DARK || 
+                    targetType == PokemonType.STEEL) return 2.0;
+                if (targetType == PokemonType.POISON || targetType == PokemonType.FLYING || 
+                    targetType == PokemonType.PSYCHIC || targetType == PokemonType.BUG || 
+                    targetType == PokemonType.FAIRY) return 0.5;
+                if (targetType == PokemonType.GHOST) return 0.0;
+                return 1.0;
+
+            case POISON:
+                if (targetType == PokemonType.GRASS || targetType == PokemonType.FAIRY) return 2.0;
+                if (targetType == PokemonType.POISON || targetType == PokemonType.GROUND || 
+                    targetType == PokemonType.ROCK || targetType == PokemonType.GHOST) return 0.5;
+                if (targetType == PokemonType.STEEL) return 0.0;
+                return 1.0;
+
+            case GROUND:
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.ELECTRIC || 
+                    targetType == PokemonType.POISON || targetType == PokemonType.ROCK || 
+                    targetType == PokemonType.STEEL) return 2.0;
+                if (targetType == PokemonType.GRASS || targetType == PokemonType.BUG) return 0.5;
+                if (targetType == PokemonType.FLYING) return 0.0;
+                return 1.0;
+
+            case FLYING:
+                if (targetType == PokemonType.GRASS || targetType == PokemonType.FIGHTING || 
+                    targetType == PokemonType.BUG) return 2.0;
+                if (targetType == PokemonType.ELECTRIC || targetType == PokemonType.ROCK || 
+                    targetType == PokemonType.STEEL) return 0.5;
+                return 1.0;
+
+            case PSYCHIC:
+                if (targetType == PokemonType.FIGHTING || targetType == PokemonType.POISON) return 2.0;
+                if (targetType == PokemonType.PSYCHIC || targetType == PokemonType.STEEL) return 0.5;
+                if (targetType == PokemonType.DARK) return 0.0;
+                return 1.0;
+
+            case BUG:
+                if (targetType == PokemonType.GRASS || targetType == PokemonType.PSYCHIC || 
+                    targetType == PokemonType.DARK) return 2.0;
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.FIGHTING || 
+                    targetType == PokemonType.POISON || targetType == PokemonType.FLYING || 
+                    targetType == PokemonType.GHOST || targetType == PokemonType.STEEL || 
+                    targetType == PokemonType.FAIRY) return 0.5;
+                return 1.0;
+
+            case ROCK:
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.ICE || 
+                    targetType == PokemonType.FLYING || targetType == PokemonType.BUG) return 2.0;
+                if (targetType == PokemonType.FIGHTING || targetType == PokemonType.GROUND || 
+                    targetType == PokemonType.STEEL) return 0.5;
+                return 1.0;
+
+            case GHOST:
+                if (targetType == PokemonType.PSYCHIC || targetType == PokemonType.GHOST) return 2.0;
+                if (targetType == PokemonType.DARK) return 0.5;
+                if (targetType == PokemonType.NORMAL) return 0.0;
+                return 1.0;
+
+            case DRAGON:
+                if (targetType == PokemonType.DRAGON) return 2.0;
+                if (targetType == PokemonType.STEEL) return 0.5;
+                if (targetType == PokemonType.FAIRY) return 0.0;
+                return 1.0;
+
+            case DARK:
+                if (targetType == PokemonType.PSYCHIC || targetType == PokemonType.GHOST) return 2.0;
+                if (targetType == PokemonType.FIGHTING || targetType == PokemonType.DARK || 
+                    targetType == PokemonType.FAIRY) return 0.5;
+                return 1.0;
+
+            case STEEL:
+                if (targetType == PokemonType.ICE || targetType == PokemonType.ROCK || 
+                    targetType == PokemonType.FAIRY) return 2.0;
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.WATER || 
+                    targetType == PokemonType.ELECTRIC || targetType == PokemonType.STEEL) return 0.5;
+                return 1.0;
+
+            case FAIRY:
+                if (targetType == PokemonType.FIGHTING || targetType == PokemonType.DRAGON || 
+                    targetType == PokemonType.DARK) return 2.0;
+                if (targetType == PokemonType.FIRE || targetType == PokemonType.POISON || 
+                    targetType == PokemonType.STEEL) return 0.5;
+                return 1.0;
+
+            default:
+                return 1.0;
+        }
     }
 
     /**

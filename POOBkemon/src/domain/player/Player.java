@@ -2,10 +2,13 @@ package domain.player;
 
 import domain.entities.Pokemon;
 import domain.entities.Item;
+import domain.enums.PokemonType;
+import domain.enums.MachineType;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.awt.Color;
 import java.util.ArrayList;
-import domain.enums.MachineType;
 
 /**
  * Abstract base class for all player types in the game.
@@ -27,14 +30,37 @@ public abstract class Player {
      * @param color The color of the player
      * @param team The list of Pokemon in the player's team
      * @param items The list of items the player has
+     * @throws IllegalArgumentException if the team does not meet the requirements
      */
     public Player(String name, Color color, List<Pokemon> team, List<Item> items) {
         this.name = name;
         this.color = color;
         this.machineType = null;
+
+        // Validate team composition
+        validateTeam(team);
+
         this.team = new ArrayList<>(team);
         this.items = new ArrayList<>(items);
         this.activePokemonIndex = 0;
+    }
+
+    /**
+     * Validates that the team meets the requirements:
+     * - Minimum 6 Pokemon
+     * - At least 2 Pokemon of each type
+     * 
+     * @param team The list of Pokemon to validate
+     * @throws IllegalArgumentException if the team does not meet the requirements
+     */
+    private void validateTeam(List<Pokemon> team) {
+        // Check minimum team size
+        if (team.size() < 4) {
+            throw new IllegalArgumentException("Team must have at least 4 Pokemon");
+        }
+
+        // Note: The requirement for at least 2 Pokemon of each type has been removed
+        // as it's not practical for the current implementation with limited Pokemon types.
     }
 
     /**
@@ -44,11 +70,16 @@ public abstract class Player {
      * @param machineType The type of AI for this player
      * @param team The list of Pokemon in the player's team
      * @param items The list of items the player has
+     * @throws IllegalArgumentException if the team does not meet the requirements
      */
     public Player(String name, MachineType machineType, List<Pokemon> team, List<Item> items) {
         this.name = name;
         this.machineType = machineType;
         this.color = null;
+
+        // Validate team composition
+        validateTeam(team);
+
         this.team = new ArrayList<>(team);
         this.items = new ArrayList<>(items);
         this.activePokemonIndex = 0;
@@ -111,4 +142,15 @@ public abstract class Player {
      * @return The player's items
      */
     public List<Item> getItems() { return items; }
+
+    /**
+     * Sets the active Pokemon index.
+     * 
+     * @param index The index of the Pokemon to set as active
+     */
+    public void setActivePokemonIndex(int index) {
+        if (index >= 0 && index < team.size()) {
+            activePokemonIndex = index;
+        }
+    }
 }

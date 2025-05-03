@@ -167,19 +167,47 @@ public class GameController {
     private List<Pokemon> createSamplePokemonTeam() {
         List<Pokemon> team = new ArrayList<>();
 
-        // Create Pikachu
-        Pokemon pikachu = new Pokemon("Pikachu", 100, 55, 40, 50, 50, 90,
-                PokemonType.ELECTRIC, null, UIConstants.PIKACHU_FRONT_SPRITE);
-        pikachu.addMove(new Move("Thunder Shock", 40, MoveCategory.SPECIAL, PokemonType.ELECTRIC, 100, 30));
-        pikachu.addMove(new Move("Quick Attack", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 30));
-        team.add(pikachu);
-
         // Create Charizard
         Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
-                PokemonType.FIRE, PokemonType.FLYING, UIConstants.CHARIZARD_FRONT_SPRITE);
+                PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
         charizard.addMove(new Move("Flamethrower", 90, MoveCategory.SPECIAL, PokemonType.FIRE, 100, 15));
         charizard.addMove(new Move("Dragon Claw", 80, MoveCategory.PHYSICAL, PokemonType.DRAGON, 100, 15));
         team.add(charizard);
+
+        // Create Blastoise
+        Pokemon blastoise = new Pokemon("Blastoise", 150, 83, 100, 85, 105, 78,
+                PokemonType.WATER, null, "/images/PokemonSprites/Pokemons/Front/blastoise-front.png");
+        blastoise.addMove(new Move("Hydro Pump", 110, MoveCategory.SPECIAL, PokemonType.WATER, 80, 5));
+        blastoise.addMove(new Move("Ice Beam", 90, MoveCategory.SPECIAL, PokemonType.ICE, 100, 10));
+        team.add(blastoise);
+
+        // Create Gengar
+        Pokemon gengar = new Pokemon("Gengar", 120, 65, 60, 130, 75, 110,
+                PokemonType.GHOST, PokemonType.POISON, "/images/PokemonSprites/Pokemons/Front/gengar-front.png");
+        gengar.addMove(new Move("Shadow Ball", 80, MoveCategory.SPECIAL, PokemonType.GHOST, 100, 15));
+        gengar.addMove(new Move("Sludge Bomb", 90, MoveCategory.SPECIAL, PokemonType.POISON, 100, 10));
+        team.add(gengar);
+
+        // Create Raichu
+        Pokemon raichu = new Pokemon("Raichu", 120, 90, 55, 90, 80, 110,
+                PokemonType.ELECTRIC, null, "/images/PokemonSprites/Pokemons/Front/raichu-front.png");
+        raichu.addMove(new Move("Thunderbolt", 90, MoveCategory.SPECIAL, PokemonType.ELECTRIC, 100, 15));
+        raichu.addMove(new Move("Iron Tail", 100, MoveCategory.PHYSICAL, PokemonType.STEEL, 75, 15));
+        team.add(raichu);
+
+        // Create a second Charizard with different moves
+        Pokemon charizard2 = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
+                PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
+        charizard2.addMove(new Move("Fire Blast", 110, MoveCategory.SPECIAL, PokemonType.FIRE, 85, 5));
+        charizard2.addMove(new Move("Air Slash", 75, MoveCategory.SPECIAL, PokemonType.FLYING, 95, 15));
+        team.add(charizard2);
+
+        // Create a second Blastoise with different moves
+        Pokemon blastoise2 = new Pokemon("Blastoise", 150, 83, 100, 85, 105, 78,
+                PokemonType.WATER, null, "/images/PokemonSprites/Pokemons/Front/blastoise-front.png");
+        blastoise2.addMove(new Move("Surf", 90, MoveCategory.SPECIAL, PokemonType.WATER, 100, 15));
+        blastoise2.addMove(new Move("Flash Cannon", 80, MoveCategory.SPECIAL, PokemonType.STEEL, 100, 10));
+        team.add(blastoise2);
 
         return team;
     }

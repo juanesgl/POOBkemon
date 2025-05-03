@@ -45,8 +45,8 @@ public class PokemonSelectionScreen extends JPanel {
         JButton startGameButton = new JButton("Start Game");
         startGameButton.setBounds(423, 550, 179, 71);
         startGameButton.addActionListener(e -> {
-            if (selectedPokemons.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please select at least one Pokemon for a team!",
+            if (selectedPokemons.size() < 4) {
+                JOptionPane.showMessageDialog(this, "Please select at least 4 Pokemon for a team!",
                         "Team Selection", JOptionPane.WARNING_MESSAGE);
                 return;
             }
