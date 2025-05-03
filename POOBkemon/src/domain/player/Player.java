@@ -21,15 +21,34 @@ public abstract class Player {
     protected int activePokemonIndex;
 
     /**
-     * Constructor for creating a new Player.
+     * Constructor for creating a new Human Player.
      * 
      * @param name The name of the player
+     * @param color The color of the player
+     * @param team The list of Pokemon in the player's team
+     * @param items The list of items the player has
+     */
+    public Player(String name, Color color, List<Pokemon> team, List<Item> items) {
+        this.name = name;
+        this.color = color;
+        this.machineType = null;
+        this.team = new ArrayList<>(team);
+        this.items = new ArrayList<>(items);
+        this.activePokemonIndex = 0;
+    }
+
+    /**
+     * Constructor for creating a new AI Player.
+     * 
+     * @param name The name of the player
+     * @param machineType The type of AI for this player
      * @param team The list of Pokemon in the player's team
      * @param items The list of items the player has
      */
     public Player(String name, MachineType machineType, List<Pokemon> team, List<Item> items) {
         this.name = name;
         this.machineType = machineType;
+        this.color = null;
         this.team = new ArrayList<>(team);
         this.items = new ArrayList<>(items);
         this.activePokemonIndex = 0;

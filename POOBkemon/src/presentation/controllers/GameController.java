@@ -69,7 +69,23 @@ public class GameController {
      * @param selectedPokemons The list of Pokemon selected by the player1 (can be null)
      * @param selectedPokemons2 The list of Pokemon selected by the player2 (can be null)
      */
-    public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons,List<Pokemon> selectedPokemons2) {
+    public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons, List<Pokemon> selectedPokemons2) {
+        startGame(modality, mode, selectedPokemons, selectedPokemons2, null, null);
+    }
+
+    /**
+     * Starts a new game with the specified modality, mode, Pokemon team, and items.
+     * Creates players based on the modality and initializes the game.
+     *
+     * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
+     * @param mode The game mode (NORMAL, SURVIVAL)
+     * @param selectedPokemons The list of Pokemon selected by the player1 (can be null)
+     * @param selectedPokemons2 The list of Pokemon selected by the player2 (can be null)
+     * @param selectedItems The list of items selected by the player1 (can be null)
+     * @param selectedItems2 The list of items selected by the player2 (can be null)
+     */
+    public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons, List<Pokemon> selectedPokemons2, 
+                          List<Item> selectedItems, List<Item> selectedItems2) {
         // Create players based on modality
         Player player1, player2;
         String playerName;
@@ -84,41 +100,47 @@ public class GameController {
                 ? selectedPokemons2
                 : createSamplePokemonTeam();
 
+        // Use selected items if available, otherwise use sample items
+        List<Item> items1 = (selectedItems != null && !selectedItems.isEmpty())
+                ? selectedItems
+                : createSampleItems();
+        List<Item> items2 = (selectedItems2 != null && !selectedItems2.isEmpty())
+                ? selectedItems2
+                : createSampleItems();
+
 
         switch (modality) {
             case PLAYER_VS_PLAYER:
                 playerName= askName();
                 playerColor=askColor();
-                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
+                player1 = new HumanPlayer(playerName, playerColor, team1, items1);
 
                 playerName= askName();
                 playerColor=askColor();
-                player2 = new HumanPlayer(playerName, playerColor, team2, createSampleItems());
+                player2 = new HumanPlayer(playerName, playerColor, team2, items2);
                 //System.out.println("Pokémon player 1: " + team1);
                 //System.out.println("Pokémon player 2: " + team2);
                 break;
             case PLAYER_VS_AI:
                 playerName= askName();
                 playerColor=askColor();
-                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
+                player1 = new HumanPlayer(playerName, playerColor, team1, items1);
                 machineType= askMachineType();
-                player2 = new AIPlayer("CPU",machineType, createSamplePokemonTeam(), createSampleItems());
+                player2 = new AIPlayer("CPU",machineType, team2, items2);
                 break;
             case AI_VS_AI:
                 machineType= askMachineType();
-                player1 = new AIPlayer("CPU 1",machineType,team1, createSampleItems());
+                player1 = new AIPlayer("CPU 1",machineType, team1, items1);
                 machineType= askMachineType();
-                player2 = new AIPlayer("CPU 2",machineType, createSamplePokemonTeam(), createSampleItems());
+                player2 = new AIPlayer("CPU 2",machineType, team2, items2);
                 break;
             default:
                 playerName= askName();
                 playerColor=askColor();
-                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
+                player1 = new HumanPlayer(playerName, playerColor, team1, items1);
                 playerName= askName();
                 playerColor=askColor();
-                player2 = new HumanPlayer(playerName, playerColor, createSamplePokemonTeam(), createSampleItems());
-                player1 = new HumanPlayer(playerName, playerColor, team1, createSampleItems());
-                player2 = new HumanPlayer(playerName,playerColor, createSamplePokemonTeam(), createSampleItems());
+                player2 = new HumanPlayer(playerName, playerColor, team2, items2);
         }
 
         // Create game mode
@@ -190,8 +212,23 @@ public class GameController {
 
     private String askName() {
         String playerName = JOptionPane.showInputDialog(null, "Insert Player Name:");
-        System.out.println("Welcome: " + playerName);
+        showInfoMessage("Welcome", playerName);
         return playerName;
+    }
+
+    /**
+     * Displays an information message in a JPanel.
+     * 
+     * @param title The title of the message
+     * @param message The message to display
+     */
+    private void showInfoMessage(String title, String message) {
+        JOptionPane.showMessageDialog(
+            null,
+            message,
+            title,
+            JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
 
@@ -230,7 +267,19 @@ public class GameController {
                 MachineType.values()[0] // valor por defecto
         );
 
-        System.out.println("Machine Type: " + machineType);
+        showInfoMessage("Machine Type", machineType.toString());
         return machineType;
+    }
+
+    /**
+     * Shows the item selection screen with the specified game modality, mode, and Pokemon selections.
+     * 
+     * @param modality The game modality to be used
+     * @param mode The game mode to be used
+     * @param player1Pokemons The Pokemon selected by player 1
+     * @param player2Pokemons The Pokemon selected by player 2 (can be null)
+     */
+    public void showItemSelectionScreen(GameModality modality, GameMode mode, List<Pokemon> player1Pokemons, List<Pokemon> player2Pokemons) {
+        view.showItemSelectionScreen(modality, mode, player1Pokemons, player2Pokemons);
     }
 }

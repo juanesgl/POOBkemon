@@ -1,6 +1,6 @@
 package presentation.screens;
 
-import domain.enums.PokemonType;
+import domain.entities.Item;
 import domain.entities.Pokemon;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
@@ -12,18 +12,29 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PokemonSelectionScreen extends JPanel {
+/**
+ * Screen for selecting items for the player's team.
+ * Similar to PokemonSelectionScreen but for items.
+ */
+public class ItemSelectionScreen extends JPanel {
     private JLabel backgroundLabel;
-    private JPanel pokemonSelectionPanel;
-    private List<Pokemon> selectedPokemons = new ArrayList<>();
+    private JPanel itemSelectionPanel;
+    private List<Item> selectedItems = new ArrayList<>();
     private GameController controller;
     private GameModality selectedModality;
     private GameMode selectedMode;
     private boolean isPlayer1Selection = true;
-    private List<Pokemon> player1Pokemons = new ArrayList<>();
+    private List<Item> player1Items = new ArrayList<>();
     private JTextArea descriptionTextArea;
+    private List<Pokemon> player1Pokemons;
+    private List<Pokemon> player2Pokemons;
 
-    public PokemonSelectionScreen(GameController controller) {
+    /**
+     * Constructor for the ItemSelectionScreen.
+     * 
+     * @param controller The game controller
+     */
+    public ItemSelectionScreen(GameController controller) {
         this.controller = controller;
         setLayout(null);
         setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
@@ -31,80 +42,86 @@ public class PokemonSelectionScreen extends JPanel {
         initializeComponents();
     }
 
+    /**
+     * Initializes the components of the screen.
+     */
     private void initializeComponents() {
         // Background
         ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.SELECTION_IMAGE_PATH));
         backgroundLabel = new JLabel(background);
         backgroundLabel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
 
-        // Create Pokemon selection panel
-        createPokemonSelectionPanel();
+        // Create item selection panel
+        createItemSelectionPanel();
 
         // Start game button
-        ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
         JButton startGameButton = new JButton("Start Game");
         startGameButton.setBounds(423, 550, 179, 71);
         startGameButton.addActionListener(e -> {
-            if (selectedPokemons.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please select at least one Pokemon for a team!",
-                        "Team Selection", JOptionPane.WARNING_MESSAGE);
+            if (selectedItems.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please select at least one item!",
+                        "Item Selection", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             if (isPlayer1Selection) {
                 // Save player 1's selection and prepare for player 2 (if PvP)
-                player1Pokemons.addAll(selectedPokemons);
+                player1Items.addAll(selectedItems);
 
-                if (selectedMode == GameMode.NORMAL) {
+                if (selectedModality == GameModality.PLAYER_VS_PLAYER) {
                     isPlayer1Selection = false;
-                    selectedPokemons.clear();
+                    selectedItems.clear();
                     updateSelectionPanelForPlayer2();
                     return;
                 }
             }
 
-            // Proceed to item selection with the selected Pokemon
+            // Start the game with the selected Pokemon
+            // TODO: Update GameController to use selected items
             if (isPlayer1Selection) {
-                controller.showItemSelectionScreen(selectedModality, selectedMode, selectedPokemons, null);
+                controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
             } else {
-                controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, selectedPokemons);
+                controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
             }
         });
 
         // Add components
         add(startGameButton);
-        add(pokemonSelectionPanel);
+        add(itemSelectionPanel);
         add(backgroundLabel);
     }
 
-    private void createPokemonSelectionPanel() {
-        pokemonSelectionPanel = new JPanel();
-        pokemonSelectionPanel.setLayout(new BorderLayout());
-        pokemonSelectionPanel.setBounds(150, 100, 724, 500); // Increased height to accommodate description
-        pokemonSelectionPanel.setBackground(new Color(0, 0, 0, 180));
-        pokemonSelectionPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2));
+    /**
+     * Creates the item selection panel.
+     */
+    private void createItemSelectionPanel() {
+        itemSelectionPanel = new JPanel();
+        itemSelectionPanel.setLayout(new BorderLayout());
+        itemSelectionPanel.setBounds(150, 100, 724, 500);
+        itemSelectionPanel.setBackground(new Color(0, 0, 0, 180));
+        itemSelectionPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2));
 
         // Header panel with title and instructions
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(50, 50, 150));
 
-        JLabel titleLabel = new JLabel("SELECT PLAYER 1 POKEMON TEAM", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("SELECT PLAYER 1 ITEMS", JLabel.CENTER);
         titleLabel.setFont(new Font("Georgia", Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
 
-        JLabel instructionsLabel = new JLabel("Click on the checkboxes below to select Pokémon for your team", JLabel.CENTER);
+        JLabel instructionsLabel = new JLabel("Click on the checkboxes below to select items for your team", JLabel.CENTER);
         instructionsLabel.setFont(new Font("Arial", Font.ITALIC, 14));
         instructionsLabel.setForeground(Color.YELLOW);
 
         headerPanel.add(titleLabel, BorderLayout.NORTH);
         headerPanel.add(instructionsLabel, BorderLayout.CENTER);
 
-        pokemonSelectionPanel.add(headerPanel, BorderLayout.NORTH);
+        itemSelectionPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // Create a panel for the Pokémon selection
+        // Create a panel for the item selection
         JPanel selectionArea = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         selectionArea.setBackground(new Color(0, 0, 0, 0)); // Transparent
-        pokemonSelectionPanel.add(selectionArea, BorderLayout.CENTER);
+        itemSelectionPanel.add(selectionArea, BorderLayout.CENTER);
 
         // Create description text area
         descriptionTextArea = new JTextArea(8, 50);
@@ -116,13 +133,13 @@ public class PokemonSelectionScreen extends JPanel {
         descriptionTextArea.setFont(new Font("Arial", Font.PLAIN, 12));
         descriptionTextArea.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.GRAY), 
-            "Pokemon Description", 
+            "Item Description", 
             javax.swing.border.TitledBorder.CENTER, 
             javax.swing.border.TitledBorder.TOP,
             new Font("Arial", Font.BOLD, 14),
             Color.WHITE
         ));
-        descriptionTextArea.setText("Select a Pokemon to see its description");
+        descriptionTextArea.setText("Select an item to see its description");
 
         JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -133,7 +150,7 @@ public class PokemonSelectionScreen extends JPanel {
         descriptionPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Add a status label at the bottom of the selection panel
-        JLabel statusLabel = new JLabel("No Pokémon selected yet", JLabel.CENTER);
+        JLabel statusLabel = new JLabel("No items selected yet", JLabel.CENTER);
         statusLabel.setForeground(Color.WHITE);
         statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
@@ -148,81 +165,90 @@ public class PokemonSelectionScreen extends JPanel {
         bottomPanel.add(descriptionPanel, BorderLayout.CENTER);
         bottomPanel.add(statusPanel, BorderLayout.SOUTH);
 
-        pokemonSelectionPanel.add(bottomPanel, BorderLayout.SOUTH);
+        itemSelectionPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Load available Pokemon from the sprites folder
-        loadAvailablePokemon();
+        // Load available items
+        loadAvailableItems();
     }
 
-    private void loadAvailablePokemon() {
+    /**
+     * Loads the available items for selection.
+     */
+    private void loadAvailableItems() {
         // Get the selection area panel
-        JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
+        JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         selectionArea.removeAll(); // Clear any existing components
 
-        // Define known Pokemon names (hardcoded since we can't list classpath resources directly)
-        String[] pokemonNames = {"charizard", "blastoise", "gengar", "raichu"};
+        // Define known item names (hardcoded since we can't list classpath resources directly)
+        String[] itemNames = {"potion", "x-attack"};
+        String[] itemDescriptions = {"Heals 20 HP", "Raises Attack by 10"};
 
-        for (String name : pokemonNames) {
-            String fileName = name + "-front.png";
-            String resourcePath = UIConstants.POKEMON_FRONT_SPRITES_PATH + fileName;
+        for (int i = 0; i < itemNames.length; i++) {
+            String name = itemNames[i];
+            String description = itemDescriptions[i];
+            String resourcePath = UIConstants.ITEMS_SPRITES_PATH + name + ".png";
 
             // Check if resource exists
             if (getClass().getResource(resourcePath) != null) {
-                String pokemonName = name.substring(0, 1).toUpperCase() + name.substring(1);
+                String itemName = name.substring(0, 1).toUpperCase() + name.substring(1);
+                if (name.equals("x-attack")) {
+                    itemName = "X Attack"; // Special case for X Attack
+                }
 
-                // Create a panel for each Pokemon
-                JPanel pokemonPanel = createPokemonPanel(pokemonName, resourcePath);
-                selectionArea.add(pokemonPanel);
+                // Create a panel for each item
+                JPanel itemPanel = createItemPanel(itemName, resourcePath, description);
+                selectionArea.add(itemPanel);
             }
         }
-
-        // Add a status label at the bottom of the selection panel
-        //JLabel statusLabel = (JLabel) pokemonSelectionPanel.getComponent(2);
-        //statusLabel.setText("No Pokémon selected yet");
     }
 
-    private JPanel createPokemonPanel(String pokemonName, String spritePath) {
+    /**
+     * Creates a panel for an item.
+     * 
+     * @param itemName The name of the item
+     * @param spritePath The path to the item's sprite
+     * @param description The description of the item
+     * @return The panel for the item
+     */
+    private JPanel createItemPanel(String itemName, String spritePath, String description) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setPreferredSize(new Dimension(120, 120));
         panel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         panel.setBackground(new Color(50, 50, 50));
 
-        // Pokemon sprite
+        // Item sprite
         ImageIcon spriteIcon = new ImageIcon(getClass().getResource(spritePath));
         Image scaledImage = spriteIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         JLabel spriteLabel = new JLabel(new ImageIcon(scaledImage));
         spriteLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        // Pokemon name with type-based color
-        PokemonType type = getPokemonTypeFromName(pokemonName);
-        Color typeColor = getPokemonTypeColor(type);
-
-        JLabel nameLabel = new JLabel(pokemonName);
-        nameLabel.setForeground(typeColor);
+        // Item name
+        JLabel nameLabel = new JLabel(itemName);
+        nameLabel.setForeground(Color.WHITE);
         nameLabel.setFont(new Font("Arial", Font.BOLD, 12));
         nameLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        // Panel for the name with type-based background
+        // Panel for the name
         JPanel namePanel = new JPanel();
         namePanel.setLayout(new BorderLayout());
         namePanel.setBackground(new Color(30, 30, 30));
         namePanel.add(nameLabel, BorderLayout.CENTER);
 
-        // Selection checkbox with better label
-        JCheckBox selectBox = new JCheckBox("Add to Team");
+        // Selection checkbox
+        JCheckBox selectBox = new JCheckBox("Add to Items");
         selectBox.setForeground(Color.WHITE);
         selectBox.setBackground(new Color(50, 50, 50));
         selectBox.setFont(new Font("Arial", Font.BOLD, 11));
 
         // Add tooltip
-        selectBox.setToolTipText("Click to add " + pokemonName + " to your team");
+        selectBox.setToolTipText("Click to add " + itemName + " to your items");
 
         // Add mouse listener to display description when clicked
         panel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                updatePokemonDescription(pokemonName);
+                updateItemDescription(itemName, description);
             }
         });
 
@@ -230,15 +256,15 @@ public class PokemonSelectionScreen extends JPanel {
         spriteLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                updatePokemonDescription(pokemonName);
+                updateItemDescription(itemName, description);
             }
         });
 
         selectBox.addActionListener(e -> {
             if (selectBox.isSelected()) {
-                // Create a Pokemon object and add to selected list
-                Pokemon pokemon = createPokemonFromSprite(pokemonName, spritePath);
-                selectedPokemons.add(pokemon);
+                // Create an Item object and add to selected list
+                Item item = createItemFromSprite(itemName, spritePath, description);
+                selectedItems.add(item);
 
                 // Change panel appearance when selected
                 panel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
@@ -248,10 +274,10 @@ public class PokemonSelectionScreen extends JPanel {
                 updateStatusLabel();
 
                 // Update description
-                updatePokemonDescription(pokemonName);
+                updateItemDescription(itemName, description);
             } else {
                 // Remove from selected list
-                selectedPokemons.removeIf(p -> p.getName().equalsIgnoreCase(pokemonName));
+                selectedItems.removeIf(p -> p.getName().equalsIgnoreCase(itemName));
 
                 // Reset panel appearance
                 panel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
@@ -270,110 +296,98 @@ public class PokemonSelectionScreen extends JPanel {
     }
 
     /**
-     * Updates the description text area with the description of the specified Pokemon.
+     * Updates the description text area with the description of the specified item.
      * 
-     * @param pokemonName The name of the Pokemon
+     * @param itemName The name of the item
+     * @param description The description of the item
      */
-    private void updatePokemonDescription(String pokemonName) {
-        // Get the description from the PokemonDescription enum
-        domain.enums.PokemonDescription description = domain.enums.PokemonDescription.fromPokemonName(pokemonName);
-
-        if (description != null) {
-            descriptionTextArea.setText(description.getDescription());
-        } else {
-            descriptionTextArea.setText("No description available for " + pokemonName);
-        }
+    private void updateItemDescription(String itemName, String description) {
+        descriptionTextArea.setText(itemName + ": " + description);
     }
 
-    private Color getPokemonTypeColor(PokemonType type) {
-        switch (type) {
-            case FIRE: return new Color(255, 100, 0);
-            case WATER: return new Color(0, 150, 255);
-            case ELECTRIC: return new Color(255, 255, 0);
-            case GRASS: return new Color(0, 200, 0);
-            case GHOST: return new Color(150, 0, 200);
-            default: return Color.WHITE;
-        }
-    }
-
+    /**
+     * Updates the status label with the current selection status.
+     */
     private void updateStatusLabel() {
         // Get the bottom panel (index 2)
-        JPanel bottomPanel = (JPanel) pokemonSelectionPanel.getComponent(2);
+        JPanel bottomPanel = (JPanel) itemSelectionPanel.getComponent(2);
         // Get the status panel (index 1)
         JPanel statusPanel = (JPanel) bottomPanel.getComponent(1);
         // Get the status label (index 0)
         JLabel statusLabel = (JLabel) statusPanel.getComponent(0);
 
-        if (selectedPokemons.isEmpty()) {
-            statusLabel.setText("No Pokémon selected yet");
+        if (selectedItems.isEmpty()) {
+            statusLabel.setText("No items selected yet");
             statusLabel.setForeground(Color.WHITE);
-        } else if (selectedPokemons.size() == 1) {
-            statusLabel.setText("1 Pokémon selected: " + selectedPokemons.get(0).getName());
+        } else if (selectedItems.size() == 1) {
+            statusLabel.setText("1 item selected: " + selectedItems.get(0).getName());
             statusLabel.setForeground(Color.GREEN);
         } else {
             StringBuilder names = new StringBuilder();
-            for (int i = 0; i < selectedPokemons.size(); i++) {
+            for (int i = 0; i < selectedItems.size(); i++) {
                 if (i > 0) names.append(", ");
-                names.append(selectedPokemons.get(i).getName());
+                names.append(selectedItems.get(i).getName());
             }
-            statusLabel.setText(selectedPokemons.size() + " Pokémon selected: " + names.toString());
+            statusLabel.setText(selectedItems.size() + " items selected: " + names.toString());
             statusLabel.setForeground(Color.GREEN);
         }
     }
 
-    private Pokemon createPokemonFromSprite(String pokemonName, String spritePath) {
-        // Create a Pokemon with default stats based on the sprite
-        PokemonType primaryType = getPokemonTypeFromName(pokemonName);
-
-        Pokemon pokemon = new Pokemon(
-                pokemonName,
-                100,  // health
-                70,   // attack
-                65,   // defense
-                80,   // specialAttack
-                75,   // specialDefense
-                85,   // speed
-                primaryType,
-                null,  // secondaryType
-                spritePath
-        );
-
-        return pokemon;
-    }
-
-    private PokemonType getPokemonTypeFromName(String pokemonName) {
-        // Simple mapping of Pokemon names to types
-        switch (pokemonName.toLowerCase()) {
-            case "charizard": return PokemonType.FIRE;
-            case "blastoise": return PokemonType.WATER;
-            case "gengar": return PokemonType.GHOST;
-            case "raichu": return PokemonType.ELECTRIC;
-            default: return PokemonType.NORMAL;
+    /**
+     * Creates an Item object from a sprite.
+     * 
+     * @param itemName The name of the item
+     * @param spritePath The path to the item's sprite
+     * @param description The description of the item
+     * @return The created Item object
+     */
+    private Item createItemFromSprite(String itemName, String spritePath, String description) {
+        // Create an Item with appropriate effect based on the name
+        Item.ItemEffect effect;
+        if (itemName.equalsIgnoreCase("Potion")) {
+            effect = new Item.HealingEffect(20);
+        } else if (itemName.equalsIgnoreCase("X Attack")) {
+            effect = new Item.AttackBoostEffect(10);
+        } else {
+            // Default effect
+            effect = new Item.HealingEffect(10);
         }
+
+        return new Item(itemName, description, spritePath, effect);
     }
 
-    public void setGameOptions(GameModality modality, GameMode mode) {
+    /**
+     * Sets the game options and Pokemon selections.
+     * 
+     * @param modality The game modality
+     * @param mode The game mode
+     * @param player1Pokemons The Pokemon selected by player 1
+     * @param player2Pokemons The Pokemon selected by player 2 (can be null)
+     */
+    public void setGameOptions(GameModality modality, GameMode mode, List<Pokemon> player1Pokemons, List<Pokemon> player2Pokemons) {
         this.selectedModality = modality;
         this.selectedMode = mode;
+        this.player1Pokemons = player1Pokemons;
+        this.player2Pokemons = player2Pokemons;
 
         // Reset selections when new options are set
-        this.selectedPokemons.clear();
-        this.player1Pokemons.clear();
+        this.selectedItems.clear();
+        this.player1Items.clear();
         this.isPlayer1Selection = true;
 
         // Update UI to show player 1 selection
-        JPanel headerPanel = (JPanel) pokemonSelectionPanel.getComponent(0);
+        JPanel headerPanel = (JPanel) itemSelectionPanel.getComponent(0);
         JLabel titleLabel = (JLabel) headerPanel.getComponent(0);
-        titleLabel.setText("SELECT PLAYER 1 POKEMON TEAM");
+        titleLabel.setText("SELECT PLAYER 1 ITEMS");
 
         // Reset all checkboxes
-        JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
+        JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         for (Component comp : selectionArea.getComponents()) {
             if (comp instanceof JPanel) {
-                JPanel pokemonPanel = (JPanel) comp;
-                pokemonPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-                pokemonPanel.setBackground(new Color(50, 50, 50));
-                for (Component panelComp : pokemonPanel.getComponents()) {
+                JPanel itemPanel = (JPanel) comp;
+                itemPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+                itemPanel.setBackground(new Color(50, 50, 50));
+                for (Component panelComp : itemPanel.getComponents()) {
                     if (panelComp instanceof JCheckBox) {
                         ((JCheckBox) panelComp).setSelected(false);
                     }
@@ -382,25 +396,28 @@ public class PokemonSelectionScreen extends JPanel {
         }
 
         // Reset description text area
-        descriptionTextArea.setText("Select a Pokemon to see its description");
+        descriptionTextArea.setText("Select an item to see its description");
 
         updateStatusLabel();
     }
 
+    /**
+     * Updates the selection panel for player 2.
+     */
     private void updateSelectionPanelForPlayer2() {
         // Update title
-        JPanel headerPanel = (JPanel) pokemonSelectionPanel.getComponent(0);
+        JPanel headerPanel = (JPanel) itemSelectionPanel.getComponent(0);
         JLabel titleLabel = (JLabel) headerPanel.getComponent(0);
-        titleLabel.setText("SELECT PLAYER 2 POKEMON TEAM");
+        titleLabel.setText("SELECT PLAYER 2 ITEMS");
 
         // Reset all checkboxes
-        JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
+        JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         for (Component comp : selectionArea.getComponents()) {
             if (comp instanceof JPanel) {
-                JPanel pokemonPanel = (JPanel) comp;
-                pokemonPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-                pokemonPanel.setBackground(new Color(50, 50, 50));
-                for (Component panelComp : pokemonPanel.getComponents()) {
+                JPanel itemPanel = (JPanel) comp;
+                itemPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+                itemPanel.setBackground(new Color(50, 50, 50));
+                for (Component panelComp : itemPanel.getComponents()) {
                     if (panelComp instanceof JCheckBox) {
                         ((JCheckBox) panelComp).setSelected(false);
                     }
@@ -409,11 +426,11 @@ public class PokemonSelectionScreen extends JPanel {
         }
 
         // Reset description text area
-        descriptionTextArea.setText("Select a Pokemon to see its description");
+        descriptionTextArea.setText("Select an item to see its description");
 
         updateStatusLabel();
 
         // Show a message to the user
-        JOptionPane.showMessageDialog(this, "Player 1 has selected their team. Now select Player 2's Pokémon.");
+        JOptionPane.showMessageDialog(this, "Player 1 has selected their items. Now select Player 2's items.");
     }
 }

@@ -1,14 +1,17 @@
 import presentation.screens.CoverScreen;
 import presentation.screens.GameScreen;
 import presentation.screens.GameSetupScreen;
+import presentation.screens.ItemSelectionScreen;
 import presentation.utils.SoundManager;
 import presentation.controllers.GameController;
 import presentation.controllers.GameView;
 import presentation.utils.UIConstants;
+import domain.entities.Pokemon;
 import domain.game.Game;
 import presentation.screens.PokemonSelectionScreen;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
+import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +25,7 @@ import java.awt.event.WindowEvent;
  */
 public class POOBkemonGUI extends JFrame implements GameView {
     private PokemonSelectionScreen pokemonSelectionScreen;
+    private ItemSelectionScreen itemSelectionScreen;
     private CoverScreen coverScreen;
     private GameSetupScreen setupScreen;
     private GameScreen gameScreen;
@@ -48,6 +52,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
         setupScreen = new GameSetupScreen(gameController);
         gameScreen = new GameScreen(gameController);
         pokemonSelectionScreen = new PokemonSelectionScreen(gameController);
+        itemSelectionScreen = new ItemSelectionScreen(gameController);
 
         // Show initial screen
         showCoverScreen();
@@ -108,6 +113,24 @@ public class POOBkemonGUI extends JFrame implements GameView {
         getContentPane().removeAll();
         pokemonSelectionScreen.setGameOptions(modality, mode);
         getContentPane().add(pokemonSelectionScreen);
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * Displays the item selection screen with the specified game modality, mode, and Pokemon selections.
+     * Removes all components from the content pane, sets the game options in the item selection screen,
+     * adds the item selection screen to the content pane, and refreshes the display.
+     *
+     * @param modality The game modality to be used
+     * @param mode The game mode to be used
+     * @param player1Pokemons The Pokemon selected by player 1
+     * @param player2Pokemons The Pokemon selected by player 2 (can be null)
+     */
+    public void showItemSelectionScreen(GameModality modality, GameMode mode, List<Pokemon> player1Pokemons, List<Pokemon> player2Pokemons) {
+        getContentPane().removeAll();
+        itemSelectionScreen.setGameOptions(modality, mode, player1Pokemons, player2Pokemons);
+        getContentPane().add(itemSelectionScreen);
         revalidate();
         repaint();
     }
