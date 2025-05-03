@@ -1,0 +1,72 @@
+# Game Initialization Sequence Diagram
+
+```
++----------------+    +----------------+    +----------------+    +----------------+    +----------------+
+| GameController |    |  POOBkemonGUI  |    |      Game      |    |   GameMode     |    |     Player     |
++----------------+    +----------------+    +----------------+    +----------------+    +----------------+
+        |                     |                     |                     |                     |
+        | startGame()         |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        | createSamplePokemonTeam()                 |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        | createSampleItems() |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        | askName()           |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        | askColor()          |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        | Create HumanPlayer  |                     |                     |                     |
+        |---------------------------------------------------------->|     |
+        |                     |                     |                     |                     |
+        | askName()           |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        | askColor()          |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        | Create HumanPlayer  |                     |                     |                     |
+        |---------------------------------------------------------->|     |
+        |                     |                     |                     |                     |
+        | Create NormalMode   |                     |                     |                     |
+        |------------------------------------------>|                     |
+        |                     |                     |                     |                     |
+        | Create Game         |                     |                     |                     |
+        |------------------------------------>|     |                     |
+        |                     |                     |                     |                     |
+        |                     |                     | coinToss()          |                     |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        |                     |                     | startTurnTimer()    |                     |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        | showGameScreen(game)|                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        |                     | setGame(game)       |                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     | initializeBattleUI()|                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+```
+
+## Sequence Description
+
+1. The GameController initiates the game creation process by calling startGame().
+2. The controller creates sample Pokemon teams and items if not provided.
+3. The controller asks for player names and colors through dialog boxes.
+4. The controller creates HumanPlayer instances with the provided information.
+5. The controller creates a NormalMode instance as the game mode.
+6. The controller creates a new Game instance with the game mode and players.
+7. During Game initialization:
+   - A coin toss determines which player goes first
+   - The turn timer is started
+8. The controller tells the POOBkemonGUI to show the game screen with the created game.
+9. The POOBkemonGUI sets the game in the GameScreen and initializes the battle UI.
+
+This sequence diagram shows the initialization process of a game in the POOBkemon application, from the controller creating the necessary objects to the UI being updated to show the game screen.

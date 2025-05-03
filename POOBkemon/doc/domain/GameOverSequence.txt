@@ -1,0 +1,57 @@
+# Game Over Detection Sequence Diagram
+
+```
++----------------+    +----------------+    +----------------+    +----------------+    +----------------+
+| GameScreen     |    |      Game      |    |   GameMode     |    |     Player     |    |    Pokemon     |
++----------------+    +----------------+    +----------------+    +----------------+    +----------------+
+        |                     |                     |                     |                     |
+        |                     | After each turn     |                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     | isGameOver()        |                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     |                     | isGameOver(player1, player2)              |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        |                     |                     |                     | allPokemonFainted() |
+        |                     |                     |                     |-------------------->|
+        |                     |                     |                     |                     |
+        |                     |                     | Game is over        |                     |
+        |                     |<--------------------|                     |                     |
+        |                     |                     |                     |                     |
+        |                     | determineWinner()   |                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     |                     | determineWinner(player1, player2)         |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        |                     |                     | Return winner       |                     |
+        |                     |<--------------------|                     |                     |
+        |                     |                     |                     |                     |
+        |                     | Set winner and isGameOver flag            |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        | updateBattleUI()    |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        | Display winner dialog|                    |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+```
+
+## Sequence Description
+
+1. After each turn, the Game checks if the game is over by calling the isGameOver() method on the GameMode.
+2. The GameMode checks if the game is over based on its specific rules:
+   - In NormalMode, it checks if all Pokemon of either player have fainted by calling allPokemonFainted() on each Player.
+   - In SurvivalMode, it would check if the maximum number of turns has been reached or if all Pokemon of either player have fainted.
+3. If the game is over, the Game calls determineWinner() on the GameMode to determine the winner.
+4. The GameMode determines the winner based on its specific rules:
+   - In NormalMode, the winner is the player whose Pokemon are still standing.
+   - In SurvivalMode, the winner would be determined based on remaining Pokemon health or other criteria.
+5. The Game sets the winner and the isGameOver flag.
+6. The GameScreen updates the battle UI to reflect the game over state.
+7. The GameScreen displays a dialog showing the winner.
+
+This sequence diagram illustrates how the game detects when it's over and determines the winner based on the specific rules of the current game mode. The use of the GameMode interface allows for different game modes to implement their own rules for game over detection and winner determination.

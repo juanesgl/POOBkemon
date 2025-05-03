@@ -1,0 +1,104 @@
+# Presentation Layer Class Diagram
+
+```
++------------------+       +------------------+
+|   POOBkemonGUI   |<----->| GameController   |
++------------------+       +------------------+
+| - pokemonSelectionScreen | - view: GameView |
+| - itemSelectionScreen    | + startButtonClicked() |
+| - coverScreen           | + startGame() |
+| - setupScreen           | + startGameSetup() |
+| - gameScreen            | + showItemSelectionScreen() |
+| - soundManager          | + askName() |
+| - gameController        | + askColor() |
+| + showCoverScreen()     | + askMachineType() |
+| + showSetupScreen()     | + createSamplePokemonTeam() |
+| + showGameScreen()      | + createSampleItems() |
+| + showPokemonSelectionScreen() |                |
+| + showItemSelectionScreen() |                   |
+| + exit()                |                       |
++------------------+       +------------------+
+       ^                          ^
+       |                          |
+       |                          |
+       |                          |
+       |                          |
++------v-------+          +------v-------+
+|   GameView   |          |  UIConstants  |
++--------------+          +--------------+
+| + showSetupScreen() |   | + WINDOW_WIDTH |
+| + showPokemonSelectionScreen() | + WINDOW_HEIGHT |
+| + showItemSelectionScreen() | + BACKGROUND_MUSIC_PATH |
+| + showGameScreen() |      | + POTION_IMAGE_PATH |
++--------------+          | + X_ATTACK_IMAGE_PATH |
+                          +--------------+
+                                 ^
+                                 |
++------------------+       +-----v--------+
+|  AnimatedButton  |       | SoundManager |
++------------------+       +--------------+
+| - normalIcon     |       | + playBackgroundMusic() |
+| - hoverIcon      |       | + stopAllSounds() |
+| - pressedIcon    |       +--------------+
+| + setIcons()     |
++------------------+
+
++------------------+       +------------------+       +------------------+
+|   CoverScreen    |       | GameSetupScreen  |       |    GameScreen    |
++------------------+       +------------------+       +------------------+
+| - controller     |       | - controller     |       | - controller     |
+| - backgroundImage|       | - modalityComboBox |     | - game           |
+| + initComponents()|      | - modeComboBox   |       | - player1Panel   |
++------------------+       | + initComponents()|      | - player2Panel   |
+                           +------------------+       | - actionPanel    |
+                                                     | + initializeBattleUI() |
+                                                     | + updateBattleUI() |
++------------------+       +------------------+       | + executeMove()  |
+| PokemonSelection |       | ItemSelection    |       | + useItem()      |
+|     Screen       |       |     Screen       |       | + switchPokemon()|
++------------------+       +------------------+       +------------------+
+| - controller     |       | - controller     |
+| - pokemonList    |       | - itemList       |
+| - selectedPokemon|       | - selectedItems  |
+| + initComponents()|      | + initComponents()|
+| + selectPokemon() |      | + selectItem()    |
++------------------+       +------------------+
+```
+
+## Class Descriptions
+
+### POOBkemonGUI
+- Main GUI class that serves as the entry point for the application
+- Implements GameView interface to communicate with GameController
+- Manages different screens and navigation between them
+- Contains references to all screens and the controller
+
+### GameController
+- Controls the game logic and communication between the view and domain layer
+- Creates and initializes the game with appropriate players and game mode
+- Handles user interactions and updates the view accordingly
+- Creates sample Pokemon teams and items
+
+### GameView (Interface)
+- Defines the contract between the controller and the view
+- Methods for showing different screens with appropriate parameters
+
+### UIConstants
+- Contains constants used throughout the UI (colors, dimensions, paths)
+
+### SoundManager
+- Manages sound effects and music in the game
+- Methods for playing and stopping sounds
+
+### AnimatedButton
+- Custom button component with animation capabilities
+- Used for interactive elements in the UI
+
+### Screen Classes
+- CoverScreen: Title/start screen
+- GameSetupScreen: Screen for setting up the game (selecting mode, etc.)
+- GameScreen: Main game screen where battles take place
+- PokemonSelectionScreen: Screen for selecting Pokemon
+- ItemSelectionScreen: Screen for selecting items
+
+Each screen has a reference to the controller and handles specific user interactions related to its purpose.

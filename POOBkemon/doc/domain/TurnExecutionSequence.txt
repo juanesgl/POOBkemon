@@ -1,0 +1,137 @@
+# Turn Execution Sequence Diagram
+
+```
++----------------+    +----------------+    +----------------+    +----------------+    +----------------+
+| GameScreen     |    |      Game      |    |     Player     |    |    Pokemon     |    |     Move       |
++----------------+    +----------------+    +----------------+    +----------------+    +----------------+
+        |                     |                     |                     |                     |
+        | Move Button Clicked |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+        |                     | executeMove(index)  |                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     |                     | getActivePokemon()  |                     |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        |                     |                     | getMove(index)      |                     |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        |                     |                     |                     | getMove()           |
+        |                     |                     |                     |-------------------->|
+        |                     |                     |                     |                     |
+        |                     | executeMove(attacker, defender, move)     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     |                     | takeDamage()        |                     |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        |                     |                     | isFainted()         |                     |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        |                     | handleFaintedPokemon()|                   |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     |                     | switchToNextAvailablePokemon()            |
+        |                     |                     |-------------------->|                     |
+        |                     |                     |                     |                     |
+        |                     | endTurn()           |                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     | stopTurnTimer()     |                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     | switchCurrentPlayer()|                    |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        |                     | startTurnTimer()    |                     |                     |
+        |                     |-------------------->|                     |                     |
+        |                     |                     |                     |                     |
+        | updateBattleUI()    |                     |                     |                     |
+        |-------------------->|                     |                     |                     |
+        |                     |                     |                     |                     |
+```
+
+## Alternative Flow: Using an Item
+
+```
++----------------+    +----------------+    +----------------+    +----------------+
+| GameScreen     |    |      Game      |    |     Player     |    |     Item       |
++----------------+    +----------------+    +----------------+    +----------------+
+        |                     |                     |                     |
+        | Item Button Clicked |                     |                     |
+        |-------------------->|                     |                     |
+        |                     |                     |                     |
+        |                     | useItem(item)       |                     |
+        |                     |-------------------->|                     |
+        |                     |                     |                     |
+        |                     |                     | getItem(index)      |
+        |                     |                     |-------------------->|
+        |                     |                     |                     |
+        |                     |                     | applyEffect()       |
+        |                     |                     |-------------------->|
+        |                     |                     |                     |
+        |                     |                     | removeItem()        |
+        |                     |                     |-------------------->|
+        |                     |                     |                     |
+        |                     | endTurn()           |                     |
+        |                     |-------------------->|                     |
+        |                     |                     |                     |
+        | updateBattleUI()    |                     |                     |
+        |-------------------->|                     |                     |
+        |                     |                     |                     |
+```
+
+## Alternative Flow: Switching Pokemon
+
+```
++----------------+    +----------------+    +----------------+    +----------------+
+| GameScreen     |    |      Game      |    |     Player     |    |    Pokemon     |
++----------------+    +----------------+    +----------------+    +----------------+
+        |                     |                     |                     |
+        | Switch Button Clicked|                    |                     |
+        |-------------------->|                     |                     |
+        |                     |                     |                     |
+        |                     | switchPokemon(index)|                     |
+        |                     |-------------------->|                     |
+        |                     |                     |                     |
+        |                     |                     | setActivePokemon(index)|
+        |                     |                     |-------------------->|
+        |                     |                     |                     |
+        |                     | endTurn()           |                     |
+        |                     |-------------------->|                     |
+        |                     |                     |                     |
+        | updateBattleUI()    |                     |                     |
+        |-------------------->|                     |                     |
+        |                     |                     |                     |
+```
+
+## Sequence Description
+
+### Main Flow: Executing a Move
+1. The player clicks a move button in the GameScreen.
+2. The GameScreen tells the Game to execute the selected move.
+3. The Game gets the active Pokemon and the selected move from the current player.
+4. The Game executes the move, calculating damage based on Pokemon stats and move power.
+5. The defender Pokemon takes damage.
+6. If the defender Pokemon faints, the Game handles the fainted Pokemon according to the game mode.
+7. The Game ends the current turn, stops the turn timer, switches to the next player, and starts a new turn timer.
+8. The GameScreen updates the battle UI to reflect the new game state.
+
+### Alternative Flow: Using an Item
+1. The player clicks an item button in the GameScreen.
+2. The GameScreen tells the Game to use the selected item.
+3. The Game gets the item from the current player.
+4. The item's effect is applied to the target (usually the active Pokemon).
+5. The item is removed from the player's inventory.
+6. The Game ends the current turn.
+7. The GameScreen updates the battle UI to reflect the new game state.
+
+### Alternative Flow: Switching Pokemon
+1. The player clicks a switch button in the GameScreen.
+2. The GameScreen tells the Game to switch to the selected Pokemon.
+3. The Game tells the current player to set the selected Pokemon as the active Pokemon.
+4. The Game ends the current turn.
+5. The GameScreen updates the battle UI to reflect the new game state.
+
+These sequence diagrams illustrate the different actions a player can take during their turn and how these actions are processed by the game.

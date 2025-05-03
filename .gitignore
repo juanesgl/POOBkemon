@@ -203,5 +203,8 @@ $RECYCLE.BIN/
 # Extras JavaDOC
 *.html
 *.css
-
+*.js
+*.svg
+.idea/
+*.iml
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,visualstudiocode,windows,linux
