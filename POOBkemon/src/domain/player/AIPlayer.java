@@ -11,7 +11,7 @@ public class AIPlayer extends Player {
     private Random random;
     private MachineType machineType;
     public AIPlayer(String name, MachineType machineType, List<Pokemon> team, List<Item> items) {
-        super(name, team, items);
+        super(name, machineType,team, items);
         random = new Random();
     }
 
