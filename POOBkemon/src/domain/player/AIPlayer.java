@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Random;
 import domain.enums.MachineType;
 
+
 public class AIPlayer extends Player {
     private Random random;
-
+    private MachineType machineType;
     public AIPlayer(String name, MachineType machineType, List<Pokemon> team, List<Item> items) {
-        super(name,machineType, team, items);
+        super(name, team, items);
         random = new Random();
     }
 
