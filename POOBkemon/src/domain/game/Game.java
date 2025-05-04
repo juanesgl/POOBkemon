@@ -2,9 +2,9 @@ package domain.game;
 
 import domain.entities.Pokemon;
 import domain.entities.Item;
-import domain.entities.Move;
 import domain.player.Player;
 import domain.enums.GameState;
+import domain.moves.Move;
 import presentation.screens.GameScreen;
 import java.util.List;
 import java.util.Random;

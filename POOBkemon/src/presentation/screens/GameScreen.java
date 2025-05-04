@@ -2,10 +2,10 @@ package presentation.screens;
 
 import domain.entities.Pokemon;
 import domain.enums.PokemonType;
-import domain.entities.Move;
 import domain.entities.Item;
 import domain.game.Game;
 import domain.game.TypeEffectivenessTable;
+import domain.moves.Move;
 import domain.game.TypeEffectivenessTable;
 import domain.player.Player;
 import presentation.controllers.GameController;

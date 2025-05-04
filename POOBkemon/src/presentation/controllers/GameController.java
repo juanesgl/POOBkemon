@@ -6,12 +6,17 @@ import domain.enums.MoveCategory;
 import domain.enums.PokemonType;
 import domain.game.Game;
 import domain.game.NormalMode;
+import domain.moves.BubbleMove;
+import domain.moves.FakeOutMove;
+import domain.moves.FieryDanceMove;
+import domain.moves.InfernoMove;
+import domain.moves.Move;
+import domain.moves.BubbleMove;
 //import domain.game.SurvivalMode;
 import domain.player.AIPlayer;
 import domain.player.HumanPlayer;
 import domain.player.Player;
 import domain.entities.Pokemon;
-import domain.entities.Move;
 import domain.entities.Item;
 import presentation.utils.UIConstants;
 
@@ -171,43 +176,55 @@ public class GameController {
         // Create Charizard
         Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
                 PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
-        charizard.addMove(new Move("Flamethrower", 90, MoveCategory.SPECIAL, PokemonType.FIRE, 100, 15));
-        charizard.addMove(new Move("Dragon Claw", 80, MoveCategory.PHYSICAL, PokemonType.DRAGON, 100, 15));
+        charizard.addMove(new BubbleMove());
+        charizard.addMove(new FieryDanceMove());
+        charizard.addMove(new FakeOutMove());
+        charizard.addMove(new InfernoMove());
         team.add(charizard);
 
         // Create Blastoise
         Pokemon blastoise = new Pokemon("Blastoise", 150, 83, 100, 85, 105, 78,
                 PokemonType.WATER, null, "/images/PokemonSprites/Pokemons/Front/blastoise-front.png");
-        blastoise.addMove(new Move("Hydro Pump", 110, MoveCategory.SPECIAL, PokemonType.WATER, 80, 5));
-        blastoise.addMove(new Move("Ice Beam", 90, MoveCategory.SPECIAL, PokemonType.ICE, 100, 10));
+        blastoise.addMove(new BubbleMove());
+        blastoise.addMove(new FieryDanceMove());
+        blastoise.addMove(new FakeOutMove());
+        blastoise.addMove(new InfernoMove());
         team.add(blastoise);
 
         // Create Gengar
         Pokemon gengar = new Pokemon("Gengar", 120, 65, 60, 130, 75, 110,
                 PokemonType.GHOST, PokemonType.POISON, "/images/PokemonSprites/Pokemons/Front/gengar-front.png");
-        gengar.addMove(new Move("Shadow Ball", 80, MoveCategory.SPECIAL, PokemonType.GHOST, 100, 15));
-        gengar.addMove(new Move("Sludge Bomb", 90, MoveCategory.SPECIAL, PokemonType.POISON, 100, 10));
+        gengar.addMove(new BubbleMove());
+        gengar.addMove(new FieryDanceMove());
+        gengar.addMove(new FakeOutMove());
+        gengar.addMove(new InfernoMove());
         team.add(gengar);
 
         // Create Raichu
         Pokemon raichu = new Pokemon("Raichu", 120, 90, 55, 90, 80, 110,
                 PokemonType.ELECTRIC, null, "/images/PokemonSprites/Pokemons/Front/raichu-front.png");
-        raichu.addMove(new Move("Thunderbolt", 90, MoveCategory.SPECIAL, PokemonType.ELECTRIC, 100, 15));
-        raichu.addMove(new Move("Iron Tail", 100, MoveCategory.PHYSICAL, PokemonType.STEEL, 75, 15));
+        raichu.addMove(new BubbleMove());
+        raichu.addMove(new FieryDanceMove());
+        raichu.addMove(new FakeOutMove());
+        raichu.addMove(new InfernoMove());
         team.add(raichu);
 
         // Create a second Charizard with different moves
         Pokemon charizard2 = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
                 PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
-        charizard2.addMove(new Move("Fire Blast", 110, MoveCategory.SPECIAL, PokemonType.FIRE, 85, 5));
-        charizard2.addMove(new Move("Air Slash", 75, MoveCategory.SPECIAL, PokemonType.FLYING, 95, 15));
+        charizard2.addMove(new BubbleMove());
+        charizard2.addMove(new FieryDanceMove());
+        charizard2.addMove(new FakeOutMove());
+        charizard2.addMove(new InfernoMove());
         team.add(charizard2);
 
         // Create a second Blastoise with different moves
         Pokemon blastoise2 = new Pokemon("Blastoise", 150, 83, 100, 85, 105, 78,
                 PokemonType.WATER, null, "/images/PokemonSprites/Pokemons/Front/blastoise-front.png");
-        blastoise2.addMove(new Move("Surf", 90, MoveCategory.SPECIAL, PokemonType.WATER, 100, 15));
-        blastoise2.addMove(new Move("Flash Cannon", 80, MoveCategory.SPECIAL, PokemonType.STEEL, 100, 10));
+        blastoise2.addMove(new BubbleMove());
+        blastoise2.addMove(new FieryDanceMove());
+        blastoise2.addMove(new FakeOutMove());
+        blastoise2.addMove(new InfernoMove());
         team.add(blastoise2);
 
         return team;

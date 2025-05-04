@@ -1,4 +1,4 @@
-package domain.entities;
+package domain.moves;
 
 import domain.enums.MoveCategory;
 import domain.enums.PokemonType;
@@ -7,7 +7,7 @@ import domain.enums.PokemonType;
  * Represents a move that a Pokemon can use in battle.
  * Contains attributes like name, power, category, type, accuracy, power points, and priority.
  */
-public class Move {
+public abstract class Move {
     private String name;
     private int power;
     private MoveCategory category;

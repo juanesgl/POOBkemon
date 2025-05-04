@@ -2,6 +2,8 @@ package domain.entities;
 
 import domain.enums.PokemonType;
 import domain.game.TypeEffectivenessTable;
+import domain.moves.BubbleMove;
+import domain.moves.Move;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +97,7 @@ public class Pokemon {
      */
     public int executeForcejeMove(Pokemon target) {
         // Calculate damage as if it were a normal move with 50 power
-        Move forcejeMove = new Move("Forcejeo", 50, domain.enums.MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 1);
+        Move forcejeMove = new BubbleMove();
         int damage = calculateDamage(forcejeMove, target);
 
         // Target takes damage
