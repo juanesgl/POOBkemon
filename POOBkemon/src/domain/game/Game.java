@@ -101,7 +101,7 @@ public class Game {
         turnTimer = new Timer();
         secondsRemaining = TURN_TIME_LIMIT;
         if (!gif) {
-            secondsRemaining = TURN_TIME_LIMIT + 10;
+            secondsRemaining = TURN_TIME_LIMIT + 12;
             gif = true;
         }
     

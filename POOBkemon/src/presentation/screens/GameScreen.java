@@ -25,7 +25,7 @@ public class GameScreen extends JPanel {
     private JLabel timerLabel; // Label to display the turn timer
 
     // Battle UI components
-    private JPanel battlePanel;
+    private JLabel battlePanel;
     private JLabel player1PokemonLabel;
     private JLabel player2PokemonLabel;
     private JProgressBar player1HealthBar;
@@ -98,7 +98,8 @@ public class GameScreen extends JPanel {
      */
     private void initializeBattleUI() {
         // Create battle panel
-        battlePanel = new JPanel();
+        ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.COVER_ARENA_PATH));
+        battlePanel = new JLabel(background);
         battlePanel.setLayout(null);
         battlePanel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
         battlePanel.setBackground(new Color(50, 50, 100)); // Dark blue background
