@@ -58,7 +58,7 @@ public class ItemSelectionScreen extends JPanel {
         // Start game button
         ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
         JButton startGameButton = new AnimatedButton(startIconNormal); 
-        startGameButton.setBounds(423, 550, 179, 71);
+        startGameButton.setBounds(423, 600, 179, 71);
         startGameButton.addActionListener(e -> {
             if (selectedItems.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please select at least one item!",

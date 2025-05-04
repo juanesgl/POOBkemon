@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.List;
+import java.net.URL;
+
 
 public class GameScreen extends JPanel {
     private Game game;
@@ -618,34 +620,64 @@ public class GameScreen extends JPanel {
      * @param player1First True if player 1 goes first, false if player 2 goes first
      */
     public void showCoinTossDialog(String player1Name, String player2Name, boolean player1First) {
-        // Create the dialog
-        coinTossDialog = new JDialog();
-        coinTossDialog.setTitle("Coin Toss");
-        coinTossDialog.setSize(300, 200);
-        coinTossDialog.setLocationRelativeTo(this);
-        coinTossDialog.setModal(true);
-        coinTossDialog.setLayout(new BorderLayout());
-
-        // Create the content
+        // Paso 1: Mostrar el GIF en un diálogo
+        JDialog gifDialog = new JDialog();
+        gifDialog.setTitle("Coin Toss");
+        gifDialog.setSize(640, 272);
+        gifDialog.setLocationRelativeTo(this);
+        gifDialog.setModal(true); // Cambiado a modal para bloquear interacción
+        gifDialog.setLayout(new BorderLayout());
+        
+        URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
+        if (gifURL == null) {
+            System.err.println("No se encontró el archivo GIF.");
+            return;
+        }
+    
+        JLabel gifLabel = new JLabel(new ImageIcon(gifURL));
+        gifLabel.setHorizontalAlignment(JLabel.CENTER);
+        gifDialog.add(gifLabel, BorderLayout.CENTER);
+        
+        // Timer para cerrar automáticamente el diálogo del GIF después de la duración
+        Timer gifTimer = new Timer(10000, e -> {
+            gifDialog.dispose();
+            showResultDialog(player1Name, player2Name, player1First);
+        });
+        gifTimer.setRepeats(false); // Solo se ejecuta una vez
+        gifTimer.start();
+        
+        gifDialog.setVisible(true);
+    }
+    
+    private void showResultDialog(String player1Name, String player2Name, boolean player1First) {
+        // Crear el diálogo de resultado (modal)
+        JDialog resultDialog = new JDialog();
+        resultDialog.setTitle("Coin Toss Result");
+        resultDialog.setSize(300, 200);
+        resultDialog.setLocationRelativeTo(this);
+        resultDialog.setModal(true); // Modal para esperar el OK
+        resultDialog.setLayout(new BorderLayout());
+    
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+    
         JLabel titleLabel = new JLabel("Coin Toss Result", JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         contentPanel.add(titleLabel, BorderLayout.NORTH);
-
+    
         String winner = player1First ? player1Name : player2Name;
         JLabel resultLabel = new JLabel(winner + " goes first!", JLabel.CENTER);
         resultLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         contentPanel.add(resultLabel, BorderLayout.CENTER);
-
+    
         JButton okButton = new JButton("OK");
-        okButton.addActionListener(e -> coinTossDialog.dispose());
+        okButton.addActionListener(e -> resultDialog.dispose());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(okButton);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-        coinTossDialog.add(contentPanel);
-        coinTossDialog.setVisible(true);
+    
+        resultDialog.add(contentPanel);
+        resultDialog.setVisible(true);
     }
+            
 }

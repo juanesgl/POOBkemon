@@ -30,6 +30,8 @@ public class Game {
     private int fps;
     private boolean coinTossShown;
     private boolean player1First;
+    private static boolean gif = false;
+
 
     // Turn timer fields
     private static final int TURN_TIME_LIMIT = 20; // 20 seconds per turn
@@ -98,6 +100,11 @@ public class Game {
         // Create a new timer
         turnTimer = new Timer();
         secondsRemaining = TURN_TIME_LIMIT;
+        if (!gif) {
+            secondsRemaining = TURN_TIME_LIMIT + 10;
+            gif = true;
+        }
+    
         turnTimedOut = false;
         turnActionTaken = false;
 
