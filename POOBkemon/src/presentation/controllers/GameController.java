@@ -121,6 +121,7 @@ public class GameController {
                 //System.out.println("Pokémon player 1: " + team1);
                 //System.out.println("Pokémon player 2: " + team2);
                 break;
+
             case PLAYER_VS_AI:
                 playerName= askName();
                 playerColor=askColor();
