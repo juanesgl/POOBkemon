@@ -4,6 +4,7 @@ import domain.entities.Item;
 import domain.entities.Pokemon;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
+import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
 
@@ -55,7 +56,8 @@ public class ItemSelectionScreen extends JPanel {
         createItemSelectionPanel();
 
         // Start game button
-        JButton startGameButton = new JButton("Start Game");
+        ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
+        JButton startGameButton = new AnimatedButton(startIconNormal); 
         startGameButton.setBounds(423, 550, 179, 71);
         startGameButton.addActionListener(e -> {
             if (selectedItems.isEmpty()) {

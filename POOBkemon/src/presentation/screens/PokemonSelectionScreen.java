@@ -4,6 +4,7 @@ import domain.enums.PokemonType;
 import domain.entities.Pokemon;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
+import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
 
@@ -42,8 +43,8 @@ public class PokemonSelectionScreen extends JPanel {
 
         // Start game button
         ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
-        JButton startGameButton = new JButton("Start Game");
-        startGameButton.setBounds(423, 550, 179, 71);
+        JButton startGameButton = new AnimatedButton(startIconNormal); 
+        startGameButton.setBounds(423, 600, 179, 71);
         startGameButton.addActionListener(e -> {
             if (selectedPokemons.size() < 4) {
                 JOptionPane.showMessageDialog(this, "Please select at least 4 Pokemon for a team!",
