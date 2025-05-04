@@ -28,21 +28,21 @@ public final class TypeEffectivenessTable {
                 String[] values = line.split(",");
                 
                 if (isFirstLine) {
-                    // Procesar la primera fila (tipos defensores)
+                    
                     defendingTypes = parseDefendingTypes(values);
                     isFirstLine = false;
                 } else {
-                    // Procesar filas siguientes (tipo atacante + efectividades)
+                   
                     parseAttackingType(values, defendingTypes);
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error al cargar la tabla de efectividad: " + e.getMessage(), e);
+            throw new RuntimeException("Effectiveness table could not be loaded: " + e.getMessage(), e);
         }
     }
 
     private static PokemonType[] parseDefendingTypes(String[] values) {
-        PokemonType[] types = new PokemonType[values.length - 1]; // Ignorar la primera celda vacía
+        PokemonType[] types = new PokemonType[values.length - 1]; 
         for (int i = 1; i < values.length; i++) {
             types[i - 1] = PokemonType.valueOf(values[i].trim().toUpperCase());
         }
@@ -58,7 +58,7 @@ public final class TypeEffectivenessTable {
                 double effectiveness = Double.parseDouble(values[i].trim());
                 effectivenessRow.put(defendingTypes[i - 1], effectiveness);
             } catch (NumberFormatException e) {
-                effectivenessRow.put(defendingTypes[i - 1], 1.0); // Valor por defecto
+                effectivenessRow.put(defendingTypes[i - 1], 1.0); 
             }
         }
 

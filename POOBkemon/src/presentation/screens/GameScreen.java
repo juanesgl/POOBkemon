@@ -101,8 +101,6 @@ public class GameScreen extends JPanel {
      * Initializes the battle UI components.
      */
     private void initializeBattleUI() {
-        double effectiveness = TypeEffectivenessTable.getEffectiveness(PokemonType.BUG,PokemonType.FLYING);        
-        System.out.println("Water vs Fire: " + effectiveness);
         
         // Create battle panel
         ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.COVER_ARENA_PATH));
@@ -565,7 +563,7 @@ public class GameScreen extends JPanel {
     public void updateFPS(int fps) {
         if (fpsLabel != null) {
             fpsLabel.setText("FPS: " + fps);
-            System.out.println("FPS updated to: " + fps); // Debug message
+            //System.out.println("FPS updated to: " + fps); // Debug message
         }
     }
 
