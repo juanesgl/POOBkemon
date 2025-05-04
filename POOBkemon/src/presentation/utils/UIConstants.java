@@ -104,6 +104,8 @@ public class UIConstants {
      */
     public static final String CHARIZARD_FRONT_SPRITE = POKEMON_FRONT_SPRITES_PATH + "charizard-front.png";
 
+    
+
     // Lists for dropdown menus (for backward compatibility)
     /**
      * List of game modality display names for dropdown menus.

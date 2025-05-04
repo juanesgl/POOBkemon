@@ -94,4 +94,9 @@ public enum PokemonType {
      * Fairy type Pokemon and moves.
      */
     FAIRY;
+
+
+public static int countTypes() {
+    return PokemonType.values().length;  // Devuelve el número total de tipos
+}
 }

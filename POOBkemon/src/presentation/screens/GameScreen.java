@@ -1,9 +1,12 @@
 package presentation.screens;
 
 import domain.entities.Pokemon;
+import domain.enums.PokemonType;
 import domain.entities.Move;
 import domain.entities.Item;
 import domain.game.Game;
+import domain.game.TypeEffectivenessTable;
+import domain.game.TypeEffectivenessTable;
 import domain.player.Player;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
@@ -16,6 +19,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.net.URL;
+
 
 
 public class GameScreen extends JPanel {
@@ -97,6 +101,9 @@ public class GameScreen extends JPanel {
      * Initializes the battle UI components.
      */
     private void initializeBattleUI() {
+        double effectiveness = TypeEffectivenessTable.getEffectiveness(PokemonType.BUG,PokemonType.FLYING);        
+        System.out.println("Water vs Fire: " + effectiveness);
+        
         // Create battle panel
         ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.COVER_ARENA_PATH));
         battlePanel = new JLabel(background);
@@ -107,38 +114,38 @@ public class GameScreen extends JPanel {
 
         // Player 1 Pokemon (bottom left)
         player1PokemonLabel = new JLabel();
-        player1PokemonLabel.setBounds(100, UIConstants.WINDOW_HEIGHT - 250, POKEMON_WIDTH, POKEMON_HEIGHT);
+        player1PokemonLabel.setBounds(100, UIConstants.WINDOW_HEIGHT - 200, POKEMON_WIDTH, POKEMON_HEIGHT);
         battlePanel.add(player1PokemonLabel);
 
         // Player 2 Pokemon (top right)
         player2PokemonLabel = new JLabel();
-        player2PokemonLabel.setBounds(UIConstants.WINDOW_WIDTH - 250, 50, POKEMON_WIDTH, POKEMON_HEIGHT);
+        player2PokemonLabel.setBounds(UIConstants.WINDOW_WIDTH - 250, 100, POKEMON_WIDTH, POKEMON_HEIGHT);
         battlePanel.add(player2PokemonLabel);
 
         // Player 1 health bar
         player1HealthBar = new JProgressBar(0, 100);
-        player1HealthBar.setBounds(100, UIConstants.WINDOW_HEIGHT - 270, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
+        player1HealthBar.setBounds(100, UIConstants.WINDOW_HEIGHT - 220, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
         player1HealthBar.setForeground(Color.GREEN);
         player1HealthBar.setStringPainted(true);
         battlePanel.add(player1HealthBar);
 
         // Player 2 health bar
         player2HealthBar = new JProgressBar(0, 100);
-        player2HealthBar.setBounds(UIConstants.WINDOW_WIDTH - 300, 30, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
+        player2HealthBar.setBounds(UIConstants.WINDOW_WIDTH - 300, 80, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
         player2HealthBar.setForeground(Color.GREEN);
         player2HealthBar.setStringPainted(true);
         battlePanel.add(player2HealthBar);
 
         // Player 1 name label
         player1NameLabel = new JLabel("Player 1");
-        player1NameLabel.setBounds(100, UIConstants.WINDOW_HEIGHT - 290, 200, 20);
+        player1NameLabel.setBounds(100, UIConstants.WINDOW_HEIGHT - 240, 200, 20);
         player1NameLabel.setForeground(Color.WHITE);
         player1NameLabel.setFont(new Font("Arial", Font.BOLD, 14));
         battlePanel.add(player1NameLabel);
 
         // Player 2 name label
         player2NameLabel = new JLabel("Player 2");
-        player2NameLabel.setBounds(UIConstants.WINDOW_WIDTH - 300, 10, 200, 20);
+        player2NameLabel.setBounds(UIConstants.WINDOW_WIDTH - 300, 60, 200, 20);
         player2NameLabel.setForeground(Color.WHITE);
         player2NameLabel.setFont(new Font("Arial", Font.BOLD, 14));
         battlePanel.add(player2NameLabel);
@@ -154,7 +161,8 @@ public class GameScreen extends JPanel {
         actionMenuPanel = new JPanel();
         actionMenuPanel.setLayout(new GridLayout(1, 3, 10, 10));
         actionMenuPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 200, UIConstants.WINDOW_HEIGHT - 250, 400, 40);
-        actionMenuPanel.setBackground(new Color(70, 70, 120));
+        actionMenuPanel.setOpaque(false); 
+        actionMenuPanel.setBackground(new Color(0, 0, 0, 0)); 
         battlePanel.add(actionMenuPanel);
 
         // Action buttons
@@ -182,8 +190,9 @@ public class GameScreen extends JPanel {
         movesPanel = new JPanel();
         movesPanel.setLayout(new GridLayout(2, 2, 10, 10));
         movesPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 200, UIConstants.WINDOW_HEIGHT - 200, 400, 100);
-        movesPanel.setBackground(new Color(70, 70, 120));
-        movesPanel.setVisible(false); // Initially hidden
+        movesPanel.setOpaque(false); 
+        movesPanel.setBackground(new Color(0, 0, 0, 0)); 
+        movesPanel.setVisible(false); 
         battlePanel.add(movesPanel);
 
         // Move buttons
