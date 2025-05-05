@@ -41,7 +41,8 @@ public class GameLoop implements Runnable {
             lastUpdateTime = now;
             double delta = updateLength / (double)OPTIMAL_TIME;
 
-            // Update game state
+            // Updat
+            // e game state
             //game.update(delta);
 
             // Render game
