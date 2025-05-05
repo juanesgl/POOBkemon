@@ -11,12 +11,14 @@ import domain.player.Player;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.util.List;
 import java.net.URL;
 
@@ -45,6 +47,7 @@ public class GameScreen extends JPanel {
     private JButton[] moveButtons;
     private JButton[] itemButtons;
     private JButton[] switchButtons; // Buttons for switching Pokemon
+    private JButton exitButton;
     private JDialog coinTossDialog; // Dialog for coin toss animation
 
     // Constants for positioning
@@ -52,7 +55,7 @@ public class GameScreen extends JPanel {
     private static final int POKEMON_HEIGHT = 150;
     private static final int HEALTH_BAR_WIDTH = 200;
     private static final int HEALTH_BAR_HEIGHT = 20;
-
+    private boolean gamePaused = false;
     public GameScreen(GameController controller) {
         System.out.println("GameScreen constructor called");
         this.controller = controller;
@@ -101,6 +104,72 @@ public class GameScreen extends JPanel {
      * Initializes the battle UI components.
      */
     private void initializeBattleUI() {
+
+        
+        GameScreen.this.setLayout(null);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(900, 630, 80, 30); 
+        exitButton.setBackground(Color.RED);
+        exitButton.setForeground(Color.WHITE);
+        exitButton.setFont(new Font("Arial", Font.BOLD, 14));
+        exitButton.setFocusPainted(false);
+
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
+                if (window != null) {
+                    window.dispose();  
+                }
+        
+                try {
+                    
+                    Class<?> guiClass = Class.forName("POOBkemonGUI");
+                    Object guiObject = guiClass.getDeclaredConstructor().newInstance();
+                    
+                    
+                    guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        GameScreen.this.add(exitButton);
+
+       
+        JButton pauseButton = new JButton("II");
+        pauseButton.setBounds(240, 10, 20, 20); 
+        pauseButton.setBackground(Color.RED);
+        pauseButton.setForeground(Color.WHITE);
+        pauseButton.setFont(new Font("Arial", Font.BOLD, 5));
+        pauseButton.setFocusPainted(false);
+
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (gamePaused==false) {
+                    gamePaused=true;
+                    game.pauseGame();
+                } else {
+                    gamePaused=false;
+                    game.resumeGame();
+                }
+            }
+        
+               
+        });
+
+        GameScreen.this.add(pauseButton);
+       
+           
+        
+        
+        
+        GameScreen.this.setLayout(new BorderLayout());
+        GameScreen.this.revalidate();
+        GameScreen.this.repaint();
         
         // Create battle panel
         ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.COVER_ARENA_PATH));

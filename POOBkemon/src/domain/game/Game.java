@@ -37,6 +37,7 @@ public class Game {
     private static final int TURN_TIME_LIMIT = 20; // 20 seconds per turn
     private Timer turnTimer;
     private int secondsRemaining;
+    private int secondsInPause;
     private boolean turnTimedOut;
     private boolean turnActionTaken; // Flag to track if an action has been taken this turn
 
@@ -427,4 +428,12 @@ public class Game {
      * @return The game state
      */
     public GameState getState() { return state; }
+    public void pauseGame(){
+        secondsInPause=secondsRemaining;
+        stopTurnTimer(); // Stop the timer
+    }
+    public void resumeGame(){
+        startTurnTimer(); // Start the timer
+        secondsRemaining=secondsInPause;
+    }
 }
