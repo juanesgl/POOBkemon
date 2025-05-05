@@ -65,11 +65,10 @@ public class Pokemon {
      * @param move The move to add
      */
     public void addMove(Move move) {
-        System.out.println("Hola ");
-        System.out.println("Intentando añadir movimiento: " + move.getName());
+        // System.out.println("Intentando añadir movimiento: " + move.getName());
         if (moves.size() < 4) {
             moves.add(move);
-            System.out.println("Movimiento añadido. Total: " + moves.size());
+            // System.out.println("Movimiento añadido. Total: " + moves.size());
         } else {
             System.out.println("El Pokémon ya tiene 4 movimientos");
         }

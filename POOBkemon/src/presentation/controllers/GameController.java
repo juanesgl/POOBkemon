@@ -112,7 +112,7 @@ public class GameController {
                 Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
                 PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
             charizard.addMove(new BubbleMove());
-            System.out.println("Lista POKEMON 2 ");
+            //System.out.println("Lista POKEMON 2 ");
             charizard.addMove(new FieryDanceMove());
             charizard.addMove(new FakeOutMove());
             charizard.addMove(new InfernoMove());
@@ -185,12 +185,12 @@ public class GameController {
      */
     private List<Pokemon> createSamplePokemonTeam() {
         List<Pokemon> team = new ArrayList<>();
-        System.out.println("LLEGUE HASTA LA LISTA POKEMON ");
+        //System.out.println("LLEGUE HASTA LA LISTA POKEMON ");
         // Create Charizard
         Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
                 PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
         charizard.addMove(new BubbleMove());
-        System.out.println("Lista POKEMON 2 ");
+        //System.out.println("Lista POKEMON 2 ");
         charizard.addMove(new FieryDanceMove());
         charizard.addMove(new FakeOutMove());
         charizard.addMove(new InfernoMove());
