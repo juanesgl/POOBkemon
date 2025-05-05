@@ -81,7 +81,7 @@ public class ItemSelectionScreen extends JPanel {
             // Start the game with the selected Pokemon and items
             if (isPlayer1Selection) {
                 //System.out.println("ITEM SELECTION JUGADOR 1 ");
-                //controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, selectedItems, null);
+                controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, selectedItems, null);
                 System.out.println("Starting game with player 1 items: " + selectedItems.size());
             } else {
                 //System.out.println("ITEM SELECTION JUGADOR 2 ");
