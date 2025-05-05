@@ -65,8 +65,13 @@ public class Pokemon {
      * @param move The move to add
      */
     public void addMove(Move move) {
+        System.out.println("Hola ");
+        System.out.println("Intentando añadir movimiento: " + move.getName());
         if (moves.size() < 4) {
             moves.add(move);
+            System.out.println("Movimiento añadido. Total: " + moves.size());
+        } else {
+            System.out.println("El Pokémon ya tiene 4 movimientos");
         }
     }
 
@@ -129,7 +134,7 @@ public class Pokemon {
         return true;
     }
 
-    protected int calculateDamage(Move move, Pokemon target) {
+    public int calculateDamage(Move move, Pokemon target) {
         double typeEffectiveness = calculateTypeEffectiveness(move, target);
         double stab = (move.getType() == primaryType || move.getType() == secondaryType) ? 1.5 : 1.0;
 
@@ -271,4 +276,9 @@ public class Pokemon {
      * @return The secondary type (can be null)
      */
     public PokemonType getSecondaryType() { return secondaryType; }
+
+    @Override
+    public String toString() {
+    return this.getName(); // Si tienes un método getName() que devuelve el nombre
+    }
 }

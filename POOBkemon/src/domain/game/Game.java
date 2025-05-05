@@ -248,7 +248,7 @@ public class Game {
         // Check if all moves are out of PP
         if (activePokemon.allMovesOutOfPP()) {
             // Execute the "Forcejeo" move
-            executeForcejeMove();
+            //executeForcejeMove();
             return;
         }
 

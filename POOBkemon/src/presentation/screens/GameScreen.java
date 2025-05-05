@@ -478,7 +478,7 @@ public class GameScreen extends JPanel {
                 moveButtons[i].setToolTipText("Power: " + move.getPower() + ", Accuracy: " + move.getAccuracy() + "%");
                 moveButtons[i].setEnabled(true);
             } else {
-                moveButtons[i].setText("---");
+                moveButtons[i].setText("me jodi");
                 moveButtons[i].setToolTipText(null);
                 moveButtons[i].setEnabled(false);
             }
@@ -686,6 +686,7 @@ public class GameScreen extends JPanel {
     
         resultDialog.add(contentPanel);
         resultDialog.setVisible(true);
+        
     }
             
 }

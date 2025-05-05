@@ -101,9 +101,22 @@ public class GameController {
         List<Pokemon> team1 = (selectedPokemons != null && !selectedPokemons.isEmpty())
                 ? selectedPokemons
                 : createSamplePokemonTeam();
+                //System.out.println("Pokémon SELECCIONADO1: " + selectedPokemons2);
+                //System.out.println("LLEGUE HASTA X ");
+                
+               
+        
         List<Pokemon> team2 = (selectedPokemons2 != null && !selectedPokemons2.isEmpty())
                 ? selectedPokemons2
                 : createSamplePokemonTeam();
+                Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
+                PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
+            charizard.addMove(new BubbleMove());
+            System.out.println("Lista POKEMON 2 ");
+            charizard.addMove(new FieryDanceMove());
+            charizard.addMove(new FakeOutMove());
+            charizard.addMove(new InfernoMove());
+                //System.out.println("Pokémon SELECCIONADO2: " + selectedPokemons);
 
         // Use selected items if available, otherwise use sample items
         List<Item> items1 = (selectedItems != null && !selectedItems.isEmpty())
@@ -172,11 +185,12 @@ public class GameController {
      */
     private List<Pokemon> createSamplePokemonTeam() {
         List<Pokemon> team = new ArrayList<>();
-
+        System.out.println("LLEGUE HASTA LA LISTA POKEMON ");
         // Create Charizard
         Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
                 PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
         charizard.addMove(new BubbleMove());
+        System.out.println("Lista POKEMON 2 ");
         charizard.addMove(new FieryDanceMove());
         charizard.addMove(new FakeOutMove());
         charizard.addMove(new InfernoMove());
@@ -297,12 +311,12 @@ public class GameController {
             view.showPokemonSelectionScreen(modality, mode);
         } else {
             // For other modes, start the game directly
-            //startGame(modality, mode, null, null);
+            startGame(modality, mode, null, null);
 
-            javax.swing.JOptionPane.showMessageDialog(null,
+           /*  javax.swing.JOptionPane.showMessageDialog(null,
                     "Modo Survival en construcción",
                     "Información",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);*/
         }
     }
 

@@ -1,5 +1,6 @@
 package domain.moves;
 
+import domain.entities.Pokemon;
 import domain.enums.MoveCategory;
 import domain.enums.PokemonType;
 
@@ -122,4 +123,8 @@ public abstract class Move {
      * @return The move's priority
      */
     public int getPriority() { return priority; }
+
+
+   // public abstract void use(Pokemon attacker, Pokemon target);
+
 }

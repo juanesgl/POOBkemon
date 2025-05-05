@@ -1,6 +1,10 @@
 package presentation.screens;
 
 import domain.enums.PokemonType;
+import domain.moves.BubbleMove;
+import domain.moves.FakeOutMove;
+import domain.moves.FieryDanceMove;
+import domain.moves.InfernoMove;
 import domain.entities.Pokemon;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
@@ -47,7 +51,7 @@ public class PokemonSelectionScreen extends JPanel {
         startGameButton.setBounds(423, 600, 179, 71);
         startGameButton.addActionListener(e -> {
             if (selectedPokemons.size() < 4) {
-                JOptionPane.showMessageDialog(this, "Please select at least 6 Pokemon for a team!",
+                JOptionPane.showMessageDialog(this, "Please select at least 4 Pokemon for a team!",
                         "Team Selection", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -337,7 +341,13 @@ public class PokemonSelectionScreen extends JPanel {
                 primaryType,
                 null,  // secondaryType
                 spritePath
+                
         );
+
+        pokemon.addMove(new BubbleMove());
+        pokemon.addMove(new FieryDanceMove());
+        pokemon.addMove(new FakeOutMove());
+        pokemon.addMove(new InfernoMove());
 
         return pokemon;
     }
