@@ -1,11 +1,14 @@
 package presentation.components;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.Timer;
+import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class AnimatedButton extends JButton {
-    private ImageIcon normalIcon;
+    private final ImageIcon normalIcon;
     private Timer animationTimer;
     private boolean buttonState = false;
 
@@ -43,11 +46,7 @@ public class AnimatedButton extends JButton {
     private void setupAnimationTimer() {
         animationTimer = new Timer(700, e -> {
             if (!getModel().isRollover()) {
-                if (buttonState) {
-                    setIcon(normalIcon);
-                } else {
-                    setIcon(normalIcon);
-                }
+                setIcon(normalIcon);
                 buttonState = !buttonState;
             }
         });
