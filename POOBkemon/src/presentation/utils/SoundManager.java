@@ -19,7 +19,7 @@ public class SoundManager {
         stopBackgroundMusic();
 
         try {
-            // Use getResourceAsStream instead of new File()
+
             InputStream inputStream = getClass().getResourceAsStream(resourcePath);
             if (inputStream == null) {
                 System.err.println("Could not find resource: " + resourcePath);
@@ -34,11 +34,6 @@ public class SoundManager {
             e.printStackTrace();
         }
     }
-
-
-
-
-
 
     public void stopBackgroundMusic() {
         if (backgroundMusic != null && backgroundMusic.isRunning()) {

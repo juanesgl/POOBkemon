@@ -2,11 +2,8 @@ package domain.player;
 
 import domain.entities.Pokemon;
 import domain.entities.Item;
-import domain.enums.PokemonType;
 import domain.enums.MachineType;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -37,7 +34,6 @@ public abstract class Player {
         this.color = color;
         this.machineType = null;
 
-        // Validate team composition
         validateTeam(team);
 
         this.team = new ArrayList<>(team);
@@ -45,22 +41,11 @@ public abstract class Player {
         this.activePokemonIndex = 0;
     }
 
-    /**
-     * Validates that the team meets the requirements:
-     * - Minimum 6 Pokemon
-     * - At least 2 Pokemon of each type
-     * 
-     * @param team The list of Pokemon to validate
-     * @throws IllegalArgumentException if the team does not meet the requirements
-     */
     private void validateTeam(List<Pokemon> team) {
-        // Check minimum team size
+
         if (team.size() < 4) {
             throw new IllegalArgumentException("Team must have at least 4 Pokemon");
         }
-
-        // Note: The requirement for at least 2 Pokemon of each type has been removed
-        // as it's not practical for the current implementation with limited Pokemon types.
     }
 
     /**
@@ -72,12 +57,12 @@ public abstract class Player {
      * @param items The list of items the player has
      * @throws IllegalArgumentException if the team does not meet the requirements
      */
+
     public Player(String name, MachineType machineType, List<Pokemon> team, List<Item> items) {
         this.name = name;
         this.machineType = machineType;
         this.color = null;
 
-        // Validate team composition
         validateTeam(team);
 
         this.team = new ArrayList<>(team);
@@ -90,6 +75,7 @@ public abstract class Player {
      * 
      * @return The active Pokemon
      */
+
     public Pokemon getActivePokemon() {
         return team.get(activePokemonIndex);
     }
@@ -99,6 +85,7 @@ public abstract class Player {
      * Cycles through the team until a non-fainted Pokemon is found.
      * If all Pokemon are fainted, no change occurs.
      */
+
     public void switchToNextAvailablePokemon() {
         for (int i = 0; i < team.size(); i++) {
             int nextIndex = (activePokemonIndex + i + 1) % team.size();
@@ -107,7 +94,7 @@ public abstract class Player {
                 return;
             }
         }
-        // If we get here, all Pokemon are fainted
+
     }
 
     /**
@@ -115,6 +102,7 @@ public abstract class Player {
      * 
      * @return true if all Pokemon have fainted, false otherwise
      */
+
     public boolean allPokemonFainted() {
         for (Pokemon pokemon : team) {
             if (!pokemon.isFainted()) {
@@ -129,18 +117,21 @@ public abstract class Player {
      * Gets the name of the player.
      * @return The player's name
      */
+
     public String getName() { return name; }
 
     /**
      * Gets the list of Pokemon in the player's team.
      * @return The player's team
      */
+
     public List<Pokemon> getTeam() { return team; }
 
     /**
      * Gets the list of items the player has.
      * @return The player's items
      */
+
     public List<Item> getItems() { return items; }
 
     /**
@@ -148,6 +139,7 @@ public abstract class Player {
      * 
      * @param index The index of the Pokemon to set as active
      */
+
     public void setActivePokemonIndex(int index) {
         if (index >= 0 && index < team.size()) {
             activePokemonIndex = index;

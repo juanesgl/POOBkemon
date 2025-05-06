@@ -2,7 +2,6 @@ package presentation.controllers;
 
 import domain.enums.GameMode;
 import domain.enums.GameModality;
-import domain.enums.MoveCategory;
 import domain.enums.PokemonType;
 import domain.game.Game;
 import domain.game.NormalMode;
@@ -10,38 +9,39 @@ import domain.moves.BubbleMove;
 import domain.moves.FakeOutMove;
 import domain.moves.FieryDanceMove;
 import domain.moves.InfernoMove;
-import domain.moves.Move;
-import domain.moves.BubbleMove;
-//import domain.game.SurvivalMode;
+//TODO: import domain.game.SurvivalMode;
 import domain.player.AIPlayer;
 import domain.player.HumanPlayer;
 import domain.player.Player;
 import domain.entities.Pokemon;
 import domain.entities.Item;
 import presentation.utils.UIConstants;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import java.awt.Color;
 import domain.enums.MachineType;
+import domain.entities.HealingEffect;
+import domain.entities.AttackBoostEffect;
+
 
 /**
  * Controller class for the POOBkemon game.
  * Handles game logic and communication between the model and view.
  * Manages game initialization, player creation, and game flow.
  */
+
 public class GameController {
-    private GameView view;
-    private Game game;
+
+    private final GameView view;
 
     /**
      * Constructor for the GameController.
      *
      * @param view The game view that this controller will interact with
      */
+
     public GameController(GameView view) {
         this.view = view;
     }
@@ -61,6 +61,7 @@ public class GameController {
      * @param mode The game mode (NORMAL, SURVIVAL)
      *
      */
+
     public void startGame(GameModality modality, GameMode mode) {
         startGame(modality, mode, null,null);
     }
@@ -74,6 +75,7 @@ public class GameController {
      * @param selectedPokemons The list of Pokemon selected by the player1 (can be null)
      * @param selectedPokemons2 The list of Pokemon selected by the player2 (can be null)
      */
+
     public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons, List<Pokemon> selectedPokemons2) {
         startGame(modality, mode, selectedPokemons, selectedPokemons2, null, null);
     }
@@ -89,43 +91,36 @@ public class GameController {
      * @param selectedItems The list of items selected by the player1 (can be null)
      * @param selectedItems2 The list of items selected by the player2 (can be null)
      */
+
     public void startGame(GameModality modality, GameMode mode, List<Pokemon> selectedPokemons, List<Pokemon> selectedPokemons2, 
                           List<Item> selectedItems, List<Item> selectedItems2) {
-        // Create players based on modality
+
         Player player1, player2;
         String playerName;
         Color playerColor;
         MachineType machineType;
 
-        // Use selected Pokemon if available, otherwise use sample team
         List<Pokemon> team1 = (selectedPokemons != null && !selectedPokemons.isEmpty())
                 ? selectedPokemons
                 : createSamplePokemonTeam();
-                //System.out.println("Pokémon SELECCIONADO1: " + selectedPokemons2);
-                //System.out.println("LLEGUE HASTA X ");
-                
-               
-        
+
         List<Pokemon> team2 = (selectedPokemons2 != null && !selectedPokemons2.isEmpty())
                 ? selectedPokemons2
                 : createSamplePokemonTeam();
-                Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
+        Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
                 PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
-            charizard.addMove(new BubbleMove());
-            //System.out.println("Lista POKEMON 2 ");
+        charizard.addMove(new BubbleMove());
+
             charizard.addMove(new FieryDanceMove());
             charizard.addMove(new FakeOutMove());
             charizard.addMove(new InfernoMove());
-                //System.out.println("Pokémon SELECCIONADO2: " + selectedPokemons);
 
-        // Use selected items if available, otherwise use sample items
         List<Item> items1 = (selectedItems != null && !selectedItems.isEmpty())
                 ? selectedItems
                 : createSampleItems();
         List<Item> items2 = (selectedItems2 != null && !selectedItems2.isEmpty())
                 ? selectedItems2
                 : createSampleItems();
-
 
         switch (modality) {
             case PLAYER_VS_PLAYER:
@@ -136,8 +131,6 @@ public class GameController {
                 playerName= askName();
                 playerColor=askColor();
                 player2 = new HumanPlayer(playerName, playerColor, team2, items2);
-                //System.out.println("Pokémon player 1: " + team1);
-                //System.out.println("Pokémon player 2: " + team2);
                 break;
 
             case PLAYER_VS_AI:
@@ -162,41 +155,31 @@ public class GameController {
                 player2 = new HumanPlayer(playerName, playerColor, team2, items2);
         }
 
-        // Create game mode
         domain.game.GameMode gameMode = null;
         if (mode == GameMode.NORMAL) {
             gameMode = new NormalMode();
 
         } else {
-            //gameMode = new SurvivalMode(20); // 20 turns max
-            System.out.println("hey");
+            //TODO: Future: Implement SurvivalMode
+            assert true;
         }
 
-        // Create and start the game
-        game = new Game(gameMode, player1, player2);
+        Game game = new Game(gameMode, player1, player2);
         view.showGameScreen(game);
     }
 
-    /**
-     * Creates a sample Pokemon team with predefined Pokemon.
-     * Each Pokemon has predefined stats, types, and moves.
-     *
-     * @return A list containing sample Pokemon
-     */
     private List<Pokemon> createSamplePokemonTeam() {
         List<Pokemon> team = new ArrayList<>();
-        //System.out.println("LLEGUE HASTA LA LISTA POKEMON ");
-        // Create Charizard
+
         Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
                 PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
         charizard.addMove(new BubbleMove());
-        //System.out.println("Lista POKEMON 2 ");
+
         charizard.addMove(new FieryDanceMove());
         charizard.addMove(new FakeOutMove());
         charizard.addMove(new InfernoMove());
         team.add(charizard);
 
-        // Create Blastoise
         Pokemon blastoise = new Pokemon("Blastoise", 150, 83, 100, 85, 105, 78,
                 PokemonType.WATER, null, "/images/PokemonSprites/Pokemons/Front/blastoise-front.png");
         blastoise.addMove(new BubbleMove());
@@ -205,7 +188,6 @@ public class GameController {
         blastoise.addMove(new InfernoMove());
         team.add(blastoise);
 
-        // Create Gengar
         Pokemon gengar = new Pokemon("Gengar", 120, 65, 60, 130, 75, 110,
                 PokemonType.GHOST, PokemonType.POISON, "/images/PokemonSprites/Pokemons/Front/gengar-front.png");
         gengar.addMove(new BubbleMove());
@@ -214,7 +196,6 @@ public class GameController {
         gengar.addMove(new InfernoMove());
         team.add(gengar);
 
-        // Create Raichu
         Pokemon raichu = new Pokemon("Raichu", 120, 90, 55, 90, 80, 110,
                 PokemonType.ELECTRIC, null, "/images/PokemonSprites/Pokemons/Front/raichu-front.png");
         raichu.addMove(new BubbleMove());
@@ -223,7 +204,6 @@ public class GameController {
         raichu.addMove(new InfernoMove());
         team.add(raichu);
 
-        // Create a second Charizard with different moves
         Pokemon charizard2 = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
                 PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
         charizard2.addMove(new BubbleMove());
@@ -232,7 +212,6 @@ public class GameController {
         charizard2.addMove(new InfernoMove());
         team.add(charizard2);
 
-        // Create a second Blastoise with different moves
         Pokemon blastoise2 = new Pokemon("Blastoise", 150, 83, 100, 85, 105, 78,
                 PokemonType.WATER, null, "/images/PokemonSprites/Pokemons/Front/blastoise-front.png");
         blastoise2.addMove(new BubbleMove());
@@ -244,22 +223,16 @@ public class GameController {
         return team;
     }
 
-    /**
-     * Creates a sample list of items with predefined effects.
-     *
-     * @return A list containing sample items
-     */
     private List<Item> createSampleItems() {
+
         List<Item> items = new ArrayList<>();
 
-        // Create Potion
         Item potion = new Item("Potion", "Heals 20 HP", UIConstants.POTION_IMAGE_PATH,
-                new Item.HealingEffect(20));
+                new HealingEffect(20));
         items.add(potion);
 
-        // Create X Attack
         Item xAttack = new Item("X Attack", "Raises Attack by 10", UIConstants.X_ATTACK_IMAGE_PATH,
-                new Item.AttackBoostEffect(10));
+                new AttackBoostEffect(10));
         items.add(xAttack);
 
         return items;
@@ -269,7 +242,6 @@ public class GameController {
      * Asks the user for their name and returns it.
      * @return The user's name
      */
-
     private String askName() {
         String playerName = JOptionPane.showInputDialog(null, "Insert Player Name:");
         showInfoMessage("Welcome", playerName);
@@ -291,12 +263,17 @@ public class GameController {
         );
     }
 
+    /**
+     * Asks the user to select a color using a color chooser dialog.
+     * Returns the selected color or white if no color is selected.
+     *
+     * @return The selected color
+     */
 
     private Color askColor() {
         Color playerColor = JColorChooser.showDialog(null, "Select a color", Color.WHITE);
         return playerColor != null ? playerColor : Color.WHITE;
     }
-
 
     /**
      * Starts the game setup process with the specified modality and mode.
@@ -306,13 +283,13 @@ public class GameController {
      * @param modality The game modality (PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI)
      * @param mode The game mode (NORMAL, SURVIVAL)
      */
+
     public void startGameSetup(GameModality modality, GameMode mode) {
         if (mode == GameMode.NORMAL) {
             view.showPokemonSelectionScreen(modality, mode);
         } else {
             // For other modes, start the game directly
             //startGame(modality, mode, null, null);
-
              javax.swing.JOptionPane.showMessageDialog(null,
                     "Modo Survival en construcción",
                     "Información",
@@ -320,6 +297,12 @@ public class GameController {
         }
     }
 
+    /**
+     * Asks the user to select a machine type from a dropdown list.
+     * Displays the selected machine type in an information message.
+     *
+     * @return The selected machine type
+     */
 
     public MachineType askMachineType() {
         MachineType machineType = (MachineType) JOptionPane.showInputDialog(
@@ -328,8 +311,8 @@ public class GameController {
                 "Machine Type Selection",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                MachineType.values(), // opciones del enum como lista desplegable
-                MachineType.values()[0] // valor por defecto
+                MachineType.values(),
+                MachineType.values()[0]
         );
 
         showInfoMessage("Machine Type", machineType.toString());

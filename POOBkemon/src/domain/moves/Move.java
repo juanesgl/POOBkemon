@@ -1,6 +1,5 @@
 package domain.moves;
 
-import domain.entities.Pokemon;
 import domain.enums.MoveCategory;
 import domain.enums.PokemonType;
 
@@ -8,14 +7,15 @@ import domain.enums.PokemonType;
  * Represents a move that a Pokemon can use in battle.
  * Contains attributes like name, power, category, type, accuracy, power points, and priority.
  */
+
 public abstract class Move {
-    private String name;
-    private int power;
-    private MoveCategory category;
-    private PokemonType type;
-    private int accuracy;
+    private final String name;
+    private final int power;
+    private final MoveCategory category;
+    private final PokemonType type;
+    private final int accuracy;
     private int powerPoints;
-    private int priority; // Higher priority moves go first
+    private final int priority; // Higher priority moves go first
 
     /**
      * Constructor for creating a new Move.
@@ -28,6 +28,7 @@ public abstract class Move {
      * @param powerPoints The number of times the move can be used
      * @param priority The priority of the move (higher priority moves go first)
      */
+
     public Move(String name, int power, MoveCategory category, PokemonType type, int accuracy, int powerPoints, int priority) {
         this.name = name;
         this.power = power;
@@ -52,16 +53,7 @@ public abstract class Move {
         this(name, power, category, type, accuracy, powerPoints, 0);
     }
 
-    /**
-     * Checks if the move is a physical attack.
-     * 
-     * @return true if the move is physical, false otherwise
-     */
-    public boolean isPhysical() {
-        return category == MoveCategory.PHYSICAL;
-    }
 
-    // Getters
     /**
      * Gets the name of the move.
      * @return The move's name
@@ -107,19 +99,17 @@ public abstract class Move {
     /**
      * Reduces the power points (PP) of the move by the specified amount.
      * PP cannot go below 0.
-     * 
+     *
      * @param amount The amount to reduce PP by
-     * @return The new PP value
      */
-    public int reducePP(int amount) {
+    public void reducePP(int amount) {
         powerPoints = Math.max(0, powerPoints - amount);
-        return powerPoints;
     }
 
     /**
      * Gets the priority of the move.
      * Higher priority moves go first, regardless of Pokemon speed.
-     * 
+     *
      * @return The move's priority
      */
     public int getPriority() { return priority; }

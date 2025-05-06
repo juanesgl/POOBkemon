@@ -1,36 +1,40 @@
 package presentation.screens;
-
 import domain.entities.Pokemon;
-import domain.enums.PokemonType;
 import domain.entities.Item;
 import domain.game.Game;
-import domain.game.TypeEffectivenessTable;
 import domain.moves.Move;
-import domain.game.TypeEffectivenessTable;
 import domain.player.Player;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.IOException;
 import java.util.List;
 import java.net.URL;
-
+import java.util.Objects;
 
 
 public class GameScreen extends JPanel {
     private Game game;
-    private GameController controller;
-    private JLabel fpsLabel;
-    private JLabel timerLabel; // Label to display the turn timer
-
-    // Battle UI components
+    private final JLabel fpsLabel;
+    private final JLabel timerLabel;
     private JLabel battlePanel;
     private JLabel player1PokemonLabel;
     private JLabel player2PokemonLabel;
@@ -39,56 +43,49 @@ public class GameScreen extends JPanel {
     private JLabel player1NameLabel;
     private JLabel player2NameLabel;
     private JLabel turnLabel;
-    private JPanel actionMenuPanel; // Main menu panel for player actions
+    private JPanel actionMenuPanel;
     private JPanel movesPanel;
     private JPanel itemsPanel;
-    private JPanel switchPanel; // Panel for switch Pokemon buttons
-    private JButton[] actionButtons; // Buttons for main actions (Move, Item, Switch)
+    private JPanel switchPanel;
+    private JButton[] actionButtons;
     private JButton[] moveButtons;
     private JButton[] itemButtons;
-    private JButton[] switchButtons; // Buttons for switching Pokemon
-    private JButton exitButton;
-    private JDialog coinTossDialog; // Dialog for coin toss animation
+    private JButton[] switchButtons;
 
-    // Constants for positioning
     private static final int POKEMON_WIDTH = 150;
     private static final int POKEMON_HEIGHT = 150;
     private static final int HEALTH_BAR_WIDTH = 200;
     private static final int HEALTH_BAR_HEIGHT = 20;
     private boolean gamePaused = false;
+
     public GameScreen(GameController controller) {
-        System.out.println("GameScreen constructor called");
-        this.controller = controller;
+
         setLayout(null);
         setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
-        setBackground(new Color(20, 20, 50)); // Set background color to dark blue for better visibility
+        setBackground(new Color(20, 20, 50));
 
-        // Initialize FPS counter label
         fpsLabel = new JLabel("FPS: 0");
         fpsLabel.setBounds(10, 10, 100, 20);
         fpsLabel.setFont(new Font("Arial", Font.BOLD, 12));
         fpsLabel.setForeground(Color.YELLOW);
-        fpsLabel.setOpaque(true); // Make the label opaque
-        fpsLabel.setBackground(Color.BLACK); // Set background color to black
+        fpsLabel.setOpaque(true);
+        fpsLabel.setBackground(Color.BLACK);
         add(fpsLabel);
 
-        // Initialize timer label
         timerLabel = new JLabel("Time: 20s");
         timerLabel.setBounds(120, 10, 100, 20);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 12));
         timerLabel.setForeground(Color.YELLOW);
-        timerLabel.setOpaque(true); // Make the label opaque
-        timerLabel.setBackground(Color.BLACK); // Set background color to black
+        timerLabel.setOpaque(true);
+        timerLabel.setBackground(Color.BLACK);
         add(timerLabel);
 
-        // Initialize battle UI components
         initializeBattleUI();
 
-        // Add component listener to ensure the panel is properly sized and positioned
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                // Ensure the FPS label is always at the top-left corner
+
                 fpsLabel.setBounds(10, 10, 100, 20);
                 System.out.println("GameScreen resized. New size: " + getWidth() + "x" + getHeight());
             }
@@ -100,45 +97,14 @@ public class GameScreen extends JPanel {
         });
     }
 
-    /**
-     * Initializes the battle UI components.
-     */
     private void initializeBattleUI() {
 
-        
         GameScreen.this.setLayout(null);
 
-        JButton exitButton = new JButton("Exit");
-        exitButton.setBounds(900, 630, 80, 30); 
-        exitButton.setBackground(Color.RED);
-        exitButton.setForeground(Color.WHITE);
-        exitButton.setFont(new Font("Arial", Font.BOLD, 14));
-        exitButton.setFocusPainted(false);
-
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
-                if (window != null) {
-                    window.dispose();  
-                }
-        
-                try {
-                    
-                    Class<?> guiClass = Class.forName("POOBkemonGUI");
-                    Object guiObject = guiClass.getDeclaredConstructor().newInstance();
-                    
-                    
-                    guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        JButton exitButton = getJButton();
 
         GameScreen.this.add(exitButton);
 
-       
         JButton pauseButton = new JButton("II");
         pauseButton.setBounds(240, 10, 20, 20); 
         pauseButton.setBackground(Color.RED);
@@ -146,85 +112,67 @@ public class GameScreen extends JPanel {
         pauseButton.setFont(new Font("Arial", Font.BOLD, 5));
         pauseButton.setFocusPainted(false);
 
-        pauseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (gamePaused==false) {
-                    gamePaused=true;
-                    game.pauseGame();
-                } else {
-                    gamePaused=false;
-                    game.resumeGame();
-                }
+        pauseButton.addActionListener(e -> {
+            if (!gamePaused) {
+                gamePaused=true;
+                game.pauseGame();
+            } else {
+                gamePaused=false;
+                game.resumeGame();
             }
-        
-               
         });
 
         GameScreen.this.add(pauseButton);
-       
-           
-        
-        
-        
         GameScreen.this.setLayout(new BorderLayout());
         GameScreen.this.revalidate();
         GameScreen.this.repaint();
-        
-        // Create battle panel
-        ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.COVER_ARENA_PATH));
+
+        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.COVER_ARENA_PATH)));
         battlePanel = new JLabel(background);
         battlePanel.setLayout(null);
         battlePanel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
-        battlePanel.setBackground(new Color(50, 50, 100)); // Dark blue background
-        battlePanel.setVisible(true); // Ensure the panel is visible
+        battlePanel.setBackground(new Color(50, 50, 100));
+        battlePanel.setVisible(true);
 
-        // Player 1 Pokemon (bottom left)
         player1PokemonLabel = new JLabel();
         player1PokemonLabel.setBounds(100, UIConstants.WINDOW_HEIGHT - 200, POKEMON_WIDTH, POKEMON_HEIGHT);
         battlePanel.add(player1PokemonLabel);
 
-        // Player 2 Pokemon (top right)
         player2PokemonLabel = new JLabel();
         player2PokemonLabel.setBounds(UIConstants.WINDOW_WIDTH - 250, 100, POKEMON_WIDTH, POKEMON_HEIGHT);
         battlePanel.add(player2PokemonLabel);
 
-        // Player 1 health bar
         player1HealthBar = new JProgressBar(0, 100);
         player1HealthBar.setBounds(100, UIConstants.WINDOW_HEIGHT - 220, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
         player1HealthBar.setForeground(Color.GREEN);
         player1HealthBar.setStringPainted(true);
         battlePanel.add(player1HealthBar);
 
-        // Player 2 health bar
         player2HealthBar = new JProgressBar(0, 100);
         player2HealthBar.setBounds(UIConstants.WINDOW_WIDTH - 300, 80, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
         player2HealthBar.setForeground(Color.GREEN);
         player2HealthBar.setStringPainted(true);
         battlePanel.add(player2HealthBar);
 
-        // Player 1 name label
         player1NameLabel = new JLabel("Player 1");
         player1NameLabel.setBounds(100, UIConstants.WINDOW_HEIGHT - 240, 200, 20);
         player1NameLabel.setForeground(Color.WHITE);
         player1NameLabel.setFont(new Font("Arial", Font.BOLD, 14));
         battlePanel.add(player1NameLabel);
 
-        // Player 2 name label
         player2NameLabel = new JLabel("Player 2");
         player2NameLabel.setBounds(UIConstants.WINDOW_WIDTH - 300, 60, 200, 20);
         player2NameLabel.setForeground(Color.WHITE);
         player2NameLabel.setFont(new Font("Arial", Font.BOLD, 14));
         battlePanel.add(player2NameLabel);
 
-        // Turn label
         turnLabel = new JLabel("Player 1's Turn");
         turnLabel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 100, 10, 200, 30);
         turnLabel.setForeground(Color.YELLOW);
         turnLabel.setFont(new Font("Arial", Font.BOLD, 18));
         battlePanel.add(turnLabel);
 
-        // Action menu panel
+
         actionMenuPanel = new JPanel();
         actionMenuPanel.setLayout(new GridLayout(1, 3, 10, 10));
         actionMenuPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 200, UIConstants.WINDOW_HEIGHT - 250, 400, 40);
@@ -232,7 +180,7 @@ public class GameScreen extends JPanel {
         actionMenuPanel.setBackground(new Color(0, 0, 0, 0)); 
         battlePanel.add(actionMenuPanel);
 
-        // Action buttons
+
         actionButtons = new JButton[3];
         String[] actionNames = {"Move", "Item", "Switch"};
         Color[] actionColors = {new Color(100, 100, 200), new Color(100, 200, 100), new Color(200, 100, 100)};
@@ -244,16 +192,10 @@ public class GameScreen extends JPanel {
             actionButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             actionButtons[i].setFocusPainted(false);
             final int actionIndex = i;
-            actionButtons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    showActionPanel(actionIndex);
-                }
-            });
+            actionButtons[i].addActionListener(e -> showActionPanel(actionIndex));
             actionMenuPanel.add(actionButtons[i]);
         }
 
-        // Moves panel
         movesPanel = new JPanel();
         movesPanel.setLayout(new GridLayout(2, 2, 10, 10));
         movesPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 200, UIConstants.WINDOW_HEIGHT - 200, 400, 100);
@@ -262,7 +204,7 @@ public class GameScreen extends JPanel {
         movesPanel.setVisible(false); 
         battlePanel.add(movesPanel);
 
-        // Move buttons
+
         moveButtons = new JButton[4];
         for (int i = 0; i < 4; i++) {
             moveButtons[i] = new JButton("Move " + (i + 1));
@@ -271,29 +213,24 @@ public class GameScreen extends JPanel {
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             moveButtons[i].setFocusPainted(false);
             final int moveIndex = i;
-            moveButtons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (game != null) {
-                        game.executeMove(moveIndex);
-                        updateBattleUI();
-                        // Hide all action panels after an action is taken
-                        hideAllActionPanels();
-                    }
+            moveButtons[i].addActionListener(e -> {
+                if (game != null) {
+                    game.executeMove(moveIndex);
+                    updateBattleUI();
+
+                    hideAllActionPanels();
                 }
             });
             movesPanel.add(moveButtons[i]);
         }
 
-        // Items panel
         itemsPanel = new JPanel();
         itemsPanel.setLayout(new GridLayout(1, 4, 10, 10));
         itemsPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 200, UIConstants.WINDOW_HEIGHT - 200, 400, 40);
         itemsPanel.setBackground(new Color(70, 70, 120));
-        itemsPanel.setVisible(false); // Initially hidden
+        itemsPanel.setVisible(false);
         battlePanel.add(itemsPanel);
 
-        // Item buttons
         itemButtons = new JButton[4];
         for (int i = 0; i < 4; i++) {
             itemButtons[i] = new JButton("Item " + (i + 1));
@@ -302,30 +239,25 @@ public class GameScreen extends JPanel {
             itemButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
             itemButtons[i].setFocusPainted(false);
             final int itemIndex = i;
-            itemButtons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (game != null && game.getCurrentPlayer().getItems().size() > itemIndex) {
-                        game.useItem(game.getCurrentPlayer().getItems().get(itemIndex));
-                        updateBattleUI();
-                        // Hide all action panels after an action is taken
-                        hideAllActionPanels();
-                    }
+            itemButtons[i].addActionListener(e -> {
+                if (game != null && game.getCurrentPlayer().getItems().size() > itemIndex) {
+                    game.useItem(game.getCurrentPlayer().getItems().get(itemIndex));
+                    updateBattleUI();
+
+                    hideAllActionPanels();
                 }
             });
             itemsPanel.add(itemButtons[i]);
         }
 
-        // Switch Pokemon panel
         switchPanel = new JPanel();
         switchPanel.setLayout(new GridLayout(1, 6, 5, 5));
         switchPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 300, UIConstants.WINDOW_HEIGHT - 200, 600, 40);
         switchPanel.setBackground(new Color(70, 70, 120));
-        switchPanel.setVisible(false); // Initially hidden
+        switchPanel.setVisible(false);
         battlePanel.add(switchPanel);
 
-        // Switch Pokemon buttons
-        switchButtons = new JButton[6]; // Maximum of 6 Pokemon in a team
+        switchButtons = new JButton[6];
         for (int i = 0; i < 6; i++) {
             switchButtons[i] = new JButton("Pokemon " + (i + 1));
             switchButtons[i].setBackground(new Color(100, 100, 200));
@@ -333,24 +265,48 @@ public class GameScreen extends JPanel {
             switchButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
             switchButtons[i].setFocusPainted(false);
             final int pokemonIndex = i;
-            switchButtons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (game != null) {
-                        // Switch to the selected Pokemon
-                        game.switchPokemon(pokemonIndex);
-                        updateBattleUI();
-                        // Hide all action panels after an action is taken
-                        hideAllActionPanels();
-                    }
+            switchButtons[i].addActionListener(e -> {
+                if (game != null) {
+
+                    game.switchPokemon(pokemonIndex);
+                    updateBattleUI();
+
+                    hideAllActionPanels();
                 }
             });
             switchPanel.add(switchButtons[i]);
         }
 
-        // Add the battle panel to the GameScreen
         add(battlePanel);
         System.out.println("Added battlePanel to GameScreen");
+    }
+
+    private JButton getJButton() {
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(900, 630, 80, 30);
+        exitButton.setBackground(Color.RED);
+        exitButton.setForeground(Color.WHITE);
+        exitButton.setFont(new Font("Arial", Font.BOLD, 14));
+        exitButton.setFocusPainted(false);
+
+        exitButton.addActionListener(e -> {
+            Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
+            if (window != null) {
+                window.dispose();
+            }
+
+            try {
+
+                Class<?> guiClass = Class.forName("POOBkemonGUI");
+                Object guiObject = guiClass.getDeclaredConstructor().newInstance();
+
+
+                guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        return exitButton;
     }
 
     @Override
@@ -358,7 +314,6 @@ public class GameScreen extends JPanel {
         super.paintComponent(g);
         System.out.println("GameScreen paintComponent called");
 
-        // Draw a border around the FPS label to make it more visible
         if (fpsLabel != null) {
             g.setColor(Color.RED);
             g.drawRect(fpsLabel.getX() - 1, fpsLabel.getY() - 1, fpsLabel.getWidth() + 1, fpsLabel.getHeight() + 1);
@@ -368,7 +323,7 @@ public class GameScreen extends JPanel {
     public void setGame(Game game) {
         System.out.println("setGame called");
         this.game = game;
-        // Update UI based on game state
+
         if (game != null) {
             System.out.println("Game is not null, setting GameScreen and updating UI");
             game.setGameScreen(this);
@@ -382,6 +337,7 @@ public class GameScreen extends JPanel {
      * Updates the battle UI with the current game state.
      * This includes updating Pokemon sprites, health bars, turn label, and move buttons.
      */
+
     public void updateBattleUI() {
         System.out.println("updateBattleUI called");
         if (game == null) {
@@ -397,46 +353,32 @@ public class GameScreen extends JPanel {
         System.out.println("Player 1: " + player1.getName() + ", Pokemon: " + player1Pokemon.getName());
         System.out.println("Player 2: " + player2.getName() + ", Pokemon: " + player2Pokemon.getName());
 
-        // Update Pokemon sprites
         updatePokemonSprite(player1PokemonLabel, player1Pokemon, true);
         updatePokemonSprite(player2PokemonLabel, player2Pokemon, false);
 
-        // Update health bars
         updateHealthBar(player1HealthBar, player1Pokemon);
         updateHealthBar(player2HealthBar, player2Pokemon);
 
-        // Update player names
         player1NameLabel.setText(player1.getName() + "'s " + player1Pokemon.getName());
         player2NameLabel.setText(player2.getName() + "'s " + player2Pokemon.getName());
 
-        // Update turn label
         Player currentPlayer = game.getCurrentPlayer();
         turnLabel.setText(currentPlayer.getName() + "'s Turn");
 
-        // Update move buttons
         updateMoveButtons(currentPlayer.getActivePokemon());
 
-        // Update item buttons
         updateItemButtons(currentPlayer);
 
-        // Update switch buttons
         updateSwitchButtons(currentPlayer);
-
-        // Enable/disable controls based on whose turn it is
-        boolean isPlayer1Turn = currentPlayer == player1;
-
-        // Show/hide the action menu panel based on whose turn it is
+        
         actionMenuPanel.setVisible(true);
 
-        // Enable action buttons for the current player (whether it's Player 1 or Player 2)
         for (JButton button : actionButtons) {
             button.setEnabled(true);
         }
 
-        // Hide all action panels initially
         hideAllActionPanels();
 
-        // Ensure all buttons are visible
         for (JButton button : moveButtons) {
             button.setVisible(true);
         }
@@ -447,7 +389,6 @@ public class GameScreen extends JPanel {
             button.setVisible(true);
         }
 
-        // Ensure all components are visible
         player1PokemonLabel.setVisible(true);
         player2PokemonLabel.setVisible(true);
         player1HealthBar.setVisible(true);
@@ -456,22 +397,13 @@ public class GameScreen extends JPanel {
         player2NameLabel.setVisible(true);
         turnLabel.setVisible(true);
 
-        // Revalidate and repaint to ensure changes are reflected
         battlePanel.revalidate();
         battlePanel.repaint();
         revalidate();
         repaint();
 
-        System.out.println("Battle UI updated");
     }
 
-    /**
-     * Updates a Pokemon sprite label with the appropriate sprite.
-     * 
-     * @param label The label to update
-     * @param pokemon The Pokemon whose sprite to display
-     * @param isPlayer1 Whether this is Player 1's Pokemon (back sprite) or Player 2's Pokemon (front sprite)
-     */
     private void updatePokemonSprite(JLabel label, Pokemon pokemon, boolean isPlayer1) {
         if (pokemon == null) {
             System.out.println("Pokemon is null, not updating sprite");
@@ -482,18 +414,18 @@ public class GameScreen extends JPanel {
         System.out.println("Original sprite path: " + spritePath);
 
         if (isPlayer1) {
-            // Use back sprite for Player 1's Pokemon
-            // Extract the Pokemon name from the path
+
             String pokemonName = spritePath.substring(spritePath.lastIndexOf("/") + 1, spritePath.lastIndexOf("-front.png"));
-            // Construct the back sprite path using the POKEMON_BACK_SPRITES_PATH constant
+
             spritePath = presentation.utils.UIConstants.POKEMON_BACK_SPRITES_PATH + pokemonName + "-back.png";
             System.out.println("Using back sprite for Player 1: " + spritePath);
+
         } else {
             System.out.println("Using front sprite for Player 2: " + spritePath);
         }
 
         System.out.println("Loading sprite from: " + spritePath);
-        ImageIcon icon = new ImageIcon(getClass().getResource(spritePath));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(spritePath)));
         if (icon.getIconWidth() <= 0) {
             System.out.println("Failed to load sprite from: " + spritePath);
         } else {
@@ -502,15 +434,9 @@ public class GameScreen extends JPanel {
 
         Image scaledImage = icon.getImage().getScaledInstance(POKEMON_WIDTH, POKEMON_HEIGHT, Image.SCALE_SMOOTH);
         label.setIcon(new ImageIcon(scaledImage));
-        label.setVisible(true); // Ensure the label is visible
+        label.setVisible(true);
     }
 
-    /**
-     * Updates a health bar with the current health of a Pokemon.
-     * 
-     * @param healthBar The health bar to update
-     * @param pokemon The Pokemon whose health to display
-     */
     private void updateHealthBar(JProgressBar healthBar, Pokemon pokemon) {
         if (pokemon == null) return;
 
@@ -521,7 +447,6 @@ public class GameScreen extends JPanel {
         healthBar.setValue(healthPercentage);
         healthBar.setString(currentHealth + " / " + maxHealth);
 
-        // Change color based on health percentage
         if (healthPercentage < 20) {
             healthBar.setForeground(Color.RED);
         } else if (healthPercentage < 50) {
@@ -531,11 +456,6 @@ public class GameScreen extends JPanel {
         }
     }
 
-    /**
-     * Updates the move buttons with the current Pokemon's moves.
-     * 
-     * @param pokemon The Pokemon whose moves to display
-     */
     private void updateMoveButtons(Pokemon pokemon) {
         if (pokemon == null) return;
 
@@ -554,11 +474,6 @@ public class GameScreen extends JPanel {
         }
     }
 
-    /**
-     * Updates the item buttons with the current player's items.
-     * 
-     * @param player The player whose items to display
-     */
     private void updateItemButtons(Player player) {
         if (player == null) return;
 
@@ -577,11 +492,6 @@ public class GameScreen extends JPanel {
         }
     }
 
-    /**
-     * Updates the switch buttons with the current player's Pokemon team.
-     * 
-     * @param player The player whose Pokemon team to display
-     */
     private void updateSwitchButtons(Player player) {
         if (player == null) return;
 
@@ -591,13 +501,11 @@ public class GameScreen extends JPanel {
                 Pokemon pokemon = team.get(i);
                 switchButtons[i].setText(pokemon.getName());
 
-                // Disable the button if the Pokemon is fainted or is the active Pokemon
                 boolean isFainted = pokemon.isFainted();
                 boolean isActive = (i == player.getTeam().indexOf(player.getActivePokemon()));
 
                 switchButtons[i].setEnabled(!isFainted && !isActive);
 
-                // Set tooltip with Pokemon info
                 String tooltip = pokemon.getName() + " - HP: " + pokemon.getHealth() + "/" + pokemon.getMaxHealth();
                 if (isFainted) {
                     tooltip += " (Fainted)";
@@ -607,7 +515,7 @@ public class GameScreen extends JPanel {
                 }
                 switchButtons[i].setToolTipText(tooltip);
 
-                // Set background color based on Pokemon status
+
                 if (isFainted) {
                     switchButtons[i].setBackground(Color.GRAY);
                 } else if (isActive) {
@@ -615,6 +523,7 @@ public class GameScreen extends JPanel {
                 } else {
                     switchButtons[i].setBackground(new Color(100, 100, 200));
                 }
+
             } else {
                 switchButtons[i].setText("---");
                 switchButtons[i].setToolTipText(null);
@@ -629,10 +538,10 @@ public class GameScreen extends JPanel {
      * 
      * @param fps The current frames per second
      */
+
     public void updateFPS(int fps) {
         if (fpsLabel != null) {
             fpsLabel.setText("FPS: " + fps);
-            //System.out.println("FPS updated to: " + fps); // Debug message
         }
     }
 
@@ -641,11 +550,12 @@ public class GameScreen extends JPanel {
      * 
      * @param seconds The remaining time in seconds
      */
+
     public void updateTimer(int seconds) {
+
         if (timerLabel != null) {
             timerLabel.setText("Time: " + seconds + "s");
 
-            // Change color based on remaining time
             if (seconds <= 5) {
                 timerLabel.setForeground(Color.RED);
             } else if (seconds <= 10) {
@@ -656,33 +566,23 @@ public class GameScreen extends JPanel {
         }
     }
 
-    /**
-     * Shows the action panel corresponding to the given action index.
-     * 0 = Move, 1 = Item, 2 = Switch
-     * 
-     * @param actionIndex The index of the action to show
-     */
     private void showActionPanel(int actionIndex) {
-        // Hide all panels first
+
         hideAllActionPanels();
 
-        // Show the selected panel
         switch (actionIndex) {
-            case 0: // Move
+            case 0:
                 movesPanel.setVisible(true);
                 break;
-            case 1: // Item
+            case 1:
                 itemsPanel.setVisible(true);
                 break;
-            case 2: // Switch
+            case 2:
                 switchPanel.setVisible(true);
                 break;
         }
     }
 
-    /**
-     * Hides all action panels.
-     */
     private void hideAllActionPanels() {
         movesPanel.setVisible(false);
         itemsPanel.setVisible(false);
@@ -696,13 +596,14 @@ public class GameScreen extends JPanel {
      * @param player2Name The name of player 2
      * @param player1First True if player 1 goes first, false if player 2 goes first
      */
+
     public void showCoinTossDialog(String player1Name, String player2Name, boolean player1First) {
-        // Paso 1: Mostrar el GIF en un diálogo
+
         JDialog gifDialog = new JDialog();
         gifDialog.setTitle("Coin Toss");
         gifDialog.setSize(640, 272);
         gifDialog.setLocationRelativeTo(this);
-        gifDialog.setModal(true); // Cambiado a modal para bloquear interacción
+        gifDialog.setModal(true);
         gifDialog.setLayout(new BorderLayout());
         
         URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
@@ -714,25 +615,24 @@ public class GameScreen extends JPanel {
         JLabel gifLabel = new JLabel(new ImageIcon(gifURL));
         gifLabel.setHorizontalAlignment(JLabel.CENTER);
         gifDialog.add(gifLabel, BorderLayout.CENTER);
-        
-        // Timer para cerrar automáticamente el diálogo del GIF después de la duración
+
         Timer gifTimer = new Timer(10000, e -> {
             gifDialog.dispose();
             showResultDialog(player1Name, player2Name, player1First);
         });
-        gifTimer.setRepeats(false); // Solo se ejecuta una vez
+        gifTimer.setRepeats(false);
         gifTimer.start();
         
         gifDialog.setVisible(true);
     }
     
     private void showResultDialog(String player1Name, String player2Name, boolean player1First) {
-        // Crear el diálogo de resultado (modal)
+
         JDialog resultDialog = new JDialog();
         resultDialog.setTitle("Coin Toss Result");
         resultDialog.setSize(300, 200);
         resultDialog.setLocationRelativeTo(this);
-        resultDialog.setModal(true); // Modal para esperar el OK
+        resultDialog.setModal(true);
         resultDialog.setLayout(new BorderLayout());
     
         JPanel contentPanel = new JPanel(new BorderLayout());

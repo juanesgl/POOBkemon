@@ -6,8 +6,15 @@ import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 
 public class GameSetupScreen extends JPanel {
     private JLabel backgroundLabel;
@@ -27,12 +34,13 @@ public class GameSetupScreen extends JPanel {
     }
 
     private void initializeComponents() {
-        // Background
-        ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.COVER_IMAGE_PATH));
+
+        ImageIcon background;
+        background = new ImageIcon(getClass().getResource(UIConstants.COVER_IMAGE_PATH));
         backgroundLabel = new JLabel(background);
         backgroundLabel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
 
-        // Modalities section
+
         modalitiesLabel = new JLabel("Modalities");
         modalitiesLabel.setBounds(256, 300, 190, 30);
         modalitiesLabel.setFont(new Font("Georgia", Font.BOLD, 24));
@@ -41,6 +49,7 @@ public class GameSetupScreen extends JPanel {
         modalitiesCombo = new JComboBox<>(GameModality.values());
         modalitiesCombo.setBounds(256, 350, 190, 30);
         modalitiesCombo.setRenderer(new DefaultListCellRenderer() {
+
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -51,7 +60,6 @@ public class GameSetupScreen extends JPanel {
             }
         });
 
-        // Modes section
         modesLabel = new JLabel("Modes");
         modesLabel.setBounds(600, 300, 190, 30);
         modesLabel.setFont(new Font("Georgia", Font.BOLD, 24));
@@ -60,6 +68,7 @@ public class GameSetupScreen extends JPanel {
         modesCombo = new JComboBox<>(GameMode.values());
         modesCombo.setBounds(600, 350, 190, 30);
         modesCombo.setRenderer(new DefaultListCellRenderer() {
+
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -70,9 +79,9 @@ public class GameSetupScreen extends JPanel {
             }
         });
 
-        ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
+        ImageIcon startIconNormal;
+        startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
 
-        // Start game button
         startGameButton = new AnimatedButton(startIconNormal);
         startGameButton.setBounds(423, 550, 179, 71);
 
@@ -82,7 +91,6 @@ public class GameSetupScreen extends JPanel {
             controller.startGameSetup(modality, mode);
         });
 
-        // Add components to the panel
         add(modalitiesLabel);
         add(modalitiesCombo);
         add(modesLabel);

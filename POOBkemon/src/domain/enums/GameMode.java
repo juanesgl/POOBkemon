@@ -36,21 +36,4 @@ public enum GameMode {
         return displayName;
     }
 
-    /**
-     * Finds a GameMode enum value by its display name.
-     * 
-     * @param displayName The display name to search for
-     * @return The corresponding GameMode enum value
-     * @throws IllegalArgumentException if no mode with the given display name exists
-     */
-    public static GameMode fromDisplayName(String displayName) {
-        for (GameMode mode : values()) {
-            if (mode.getDisplayName().equals(displayName)) {
-                return mode;
-            }
-        }
-        throw new IllegalArgumentException("No mode with display name: " + displayName);
-    }
-
-
 }

@@ -1,5 +1,4 @@
 package presentation.utils;
-
 import domain.enums.GameMode;
 import domain.enums.GameModality;
 import java.util.Arrays;

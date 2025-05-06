@@ -14,18 +14,18 @@ import java.util.List;
  * Provides methods for battle mechanics like attacking and taking damage.
  */
 public class Pokemon {
-    private String name;
+    private final String name;
     private int health;
-    private int maxHealth;
+    private final int maxHealth;
     private int attack;
-    private int defense;
-    private int specialAttack;
-    private int specialDefense;
-    private int speed;
-    private List<Move> moves;
-    private String spritePath;
-    private PokemonType primaryType;
-    private PokemonType secondaryType; // Can be null
+    private final int defense;
+    private final int specialAttack;
+    private final int specialDefense;
+    private final int speed;
+    private final List<Move> moves;
+    private final String spritePath;
+    private final PokemonType primaryType;
+    private final PokemonType secondaryType;
 
     /**
      * Constructor for creating a new Pokemon.
@@ -41,6 +41,7 @@ public class Pokemon {
      * @param secondaryType The secondary type of the Pokemon (can be null)
      * @param spritePath The file path to the Pokemon's sprite image
      */
+
     public Pokemon(String name, int health, int attack, int defense,
                    int specialAttack, int specialDefense, int speed,
                    PokemonType primaryType, PokemonType secondaryType, String spritePath) {
@@ -64,13 +65,14 @@ public class Pokemon {
      * 
      * @param move The move to add
      */
+
     public void addMove(Move move) {
-        // System.out.println("Intentando añadir movimiento: " + move.getName());
+
         if (moves.size() < 4) {
             moves.add(move);
-            // System.out.println("Movimiento añadido. Total: " + moves.size());
+
         } else {
-            System.out.println("El Pokémon ya tiene 4 movimientos");
+            System.out.println("El Pokémon ya tiene 4 pimientos");
         }
     }
 
@@ -84,7 +86,12 @@ public class Pokemon {
      * @return The amount of damage dealt
      */
     public int attack(Pokemon target, Move move) {
-        // Reduce PP by 1
+
+        if (move.getPowerPoints() <= 0) {
+            System.out.println("No tienes PP para usar este movimiento");
+            return 0;
+        }
+
         move.reducePP(1);
 
         int damage = calculateDamage(move, target);
@@ -95,11 +102,11 @@ public class Pokemon {
     /**
      * Executes the "Forcejeo" move when a Pokemon has no PP left in any of its moves.
      * The Pokemon takes half of the damage it inflicts on the opponent.
-     * 
+     *
      * @param target The target Pokemon to attack
-     * @return The amount of damage dealt
      */
-    public int executeForcejeMove(Pokemon target) {
+
+    public void executeForcejeMove(Pokemon target) {
         // Calculate damage as if it were a normal move with 50 power
         Move forcejeMove = new BubbleMove();
         int damage = calculateDamage(forcejeMove, target);
@@ -111,7 +118,6 @@ public class Pokemon {
         int recoilDamage = damage / 2;
         this.takeDamage(recoilDamage);
 
-        return damage;
     }
 
     /**
@@ -119,6 +125,7 @@ public class Pokemon {
      * 
      * @return true if all moves are out of PP, false otherwise
      */
+
     public boolean allMovesOutOfPP() {
         if (moves.isEmpty()) {
             return false;
@@ -140,7 +147,7 @@ public class Pokemon {
         int attackStat = move.getCategory() == domain.enums.MoveCategory.PHYSICAL ? attack : specialAttack;
         int defenseStat = move.getCategory() == domain.enums.MoveCategory.PHYSICAL ? target.getDefense() : target.getSpecialDefense();
 
-        return (int)((move.getPower() * attackStat / defenseStat * 0.5 * typeEffectiveness * stab) + 1);
+        return (int)(((double) (move.getPower() * attackStat) / defenseStat * 0.5 * typeEffectiveness * stab) + 1);
     }
 
     protected double calculateTypeEffectiveness(Move move, Pokemon target) {
@@ -150,7 +157,6 @@ public class Pokemon {
 
         double effectiveness = getTypeEffectiveness(moveType, targetPrimaryType);
 
-        // If the target has a secondary type, multiply by its effectiveness too
         if (targetSecondaryType != null) {
             effectiveness *= getTypeEffectiveness(moveType, targetSecondaryType);
         }
@@ -158,15 +164,7 @@ public class Pokemon {
         return effectiveness;
     }
 
-    /**
-     * Gets the effectiveness multiplier of a move type against a Pokemon type.
-     * 
-     * @param moveType The type of the move
-     * @param targetType The type of the target Pokemon
-     * @return The effectiveness multiplier (0.0 for no effect, 0.5 for not very effective, 1.0 for normal, 2.0 for super effective)
-     */
     private double getTypeEffectiveness(PokemonType moveType, PokemonType targetType) {
-        // Type effectiveness chart
         double effectiveness = TypeEffectivenessTable.getEffectiveness(moveType,targetType);        
         System.out.println("Effectiveness: " + effectiveness);
         return effectiveness;
@@ -175,7 +173,7 @@ public class Pokemon {
     /**
      * Reduces the Pokemon's health by the specified damage amount.
      * Health cannot go below 0.
-     * 
+     *
      * @param damage The amount of damage to take
      */
     public void takeDamage(int damage) {
@@ -184,7 +182,7 @@ public class Pokemon {
 
     /**
      * Checks if the Pokemon has fainted (health is 0 or less).
-     * 
+     *
      * @return true if the Pokemon has fainted, false otherwise
      */
     public boolean isFainted() {
@@ -234,11 +232,11 @@ public class Pokemon {
      */
     public int getDefense() { return defense; }
 
-    /**
-     * Gets the special attack stat of the Pokemon.
-     * @return The special attack stat
-     */
-    public int getSpecialAttack() { return specialAttack; }
+    //**
+    // * Gets the special attack stat of the Pokemon.
+     //* @return The special attack stat
+     //*/
+    //public int getSpecialAttack() { return specialAttack; }
 
     /**
      * Gets the special defense stat of the Pokemon.
@@ -278,6 +276,6 @@ public class Pokemon {
 
     @Override
     public String toString() {
-    return this.getName(); // Si tienes un método getName() que devuelve el nombre
+    return this.getName();
     }
 }

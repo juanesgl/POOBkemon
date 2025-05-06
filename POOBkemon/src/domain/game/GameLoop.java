@@ -4,7 +4,7 @@ public class GameLoop implements Runnable {
     private static final int TARGET_FPS = 60;
     private static final long OPTIMAL_TIME = 1000000000 / TARGET_FPS; // Time in nanoseconds
 
-    private Game game;
+    private final Game game;
     private boolean running = false;
     private Thread gameThread;
 
@@ -31,17 +31,17 @@ public class GameLoop implements Runnable {
 
     @Override
     public void run() {
-        long lastUpdateTime = System.nanoTime();
+        System.nanoTime();
+        long lastUpdateTime;
         long timer = System.currentTimeMillis();
         int frames = 0;
 
         while (running) {
-            long now = System.nanoTime();
-            long updateLength = now - lastUpdateTime;
-            lastUpdateTime = now;
-            double delta = updateLength / (double)OPTIMAL_TIME;
+            //long updateLength = now - lastUpdateTime;
+            lastUpdateTime = System.nanoTime();
+            //double delta = updateLength / (double)OPTIMAL_TIME;
 
-            // Updat
+            // Update
             // e game state
             //game.update(delta);
 

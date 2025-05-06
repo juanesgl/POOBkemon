@@ -1,4 +1,5 @@
 package domain.enums;
+
 public enum MachineType {
 
     defensiveTrainer,

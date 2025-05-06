@@ -16,7 +16,7 @@ public class AIPlayer extends Player {
     }
 
     public int selectMove() {
-        // Simple AI: randomly select a move
+
         Pokemon activePokemon = getActivePokemon();
         return random.nextInt(activePokemon.getMoves().size());
     }

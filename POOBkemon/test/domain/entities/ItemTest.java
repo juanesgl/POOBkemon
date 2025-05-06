@@ -1,7 +1,5 @@
-package test.domain.entities;
+package domain.entities;
 
-import domain.entities.Item;
-import domain.entities.Pokemon;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +13,7 @@ public class ItemTest {
         pokemon.setHealth(30);
         int initialHealth = pokemon.getHealth();
         int healAmount = 20;
-        Item.HealingEffect healingEffect = new Item.HealingEffect(healAmount);
+        HealingEffect healingEffect = new HealingEffect(healAmount);
         Item potion = new Item("Potion", "Heals a Pokemon by 20 HP.", "", healingEffect);
 
         potion.use(pokemon);
@@ -30,7 +28,7 @@ public class ItemTest {
         Pokemon pokemon = new Pokemon("Pikachu", 50, 55, 40, 50, 50, 90, null, null, "");
         pokemon.setHealth(pokemon.getMaxHealth() - 5);
         int healAmount = 10;
-        Item.HealingEffect healingEffect = new Item.HealingEffect(healAmount);
+        HealingEffect healingEffect = new HealingEffect(healAmount);
         Item superPotion = new Item("Super Potion", "Heals a Pokemon by 50 HP.", "", healingEffect);
 
         superPotion.use(pokemon);
@@ -44,7 +42,7 @@ public class ItemTest {
         Pokemon pokemon = new Pokemon("Charmander", 39, 52, 43, 60, 50, 65, null, null, "");
         int initialAttack = pokemon.getAttack();
         int boostAmount = 10;
-        Item.AttackBoostEffect attackBoostEffect = new Item.AttackBoostEffect(boostAmount);
+        AttackBoostEffect attackBoostEffect = new AttackBoostEffect(boostAmount);
         Item protein = new Item("Protein", "Increases a Pokemon's Attack stat.", "", attackBoostEffect);
 
         protein.use(pokemon);
@@ -56,9 +54,9 @@ public class ItemTest {
     void use_reviveEffect_shouldReviveFaintedPokemon() {
 
         Pokemon pokemon = new Pokemon("Squirtle", 44, 48, 65, 50, 64, 43, null, null, "");
-        pokemon.setHealth(0); // Make the Pokemon faint
+        pokemon.setHealth(0);
         float revivePercentage = 0.5f;
-        Item.ReviveEffect reviveEffect = new Item.ReviveEffect(revivePercentage);
+        ReviveEffect reviveEffect = new ReviveEffect(revivePercentage);
         Item revive = new Item("Revive", "Revives a fainted Pokemon with half its HP.", "", reviveEffect);
 
         revive.use(pokemon);
@@ -73,7 +71,7 @@ public class ItemTest {
         Pokemon pokemon = new Pokemon("Bulbasaur", 45, 49, 49, 65, 65, 45, null, null, "");
         int initialHealth = pokemon.getHealth();
         float revivePercentage = 0.5f;
-        Item.ReviveEffect reviveEffect = new Item.ReviveEffect(revivePercentage);
+        ReviveEffect reviveEffect = new ReviveEffect(revivePercentage);
         Item revive = new Item("Revive", "Revives a fainted Pokemon with half its HP.", "", reviveEffect);
 
         revive.use(pokemon);

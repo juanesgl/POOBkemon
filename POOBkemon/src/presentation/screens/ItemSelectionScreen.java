@@ -8,15 +8,38 @@ import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import domain.enums.ItemDescription;
+import domain.entities.HealingEffect;
+import domain.entities.ItemEffect;
+import domain.entities.ReviveEffect;
+import domain.entities.AttackBoostEffect;
+
+
 /**
  * Screen for selecting items for the player's team.
  * Similar to PokemonSelectionScreen but for items.
  */
+
 public class ItemSelectionScreen extends JPanel {
     private JLabel backgroundLabel;
     private JPanel itemSelectionPanel;
@@ -35,6 +58,7 @@ public class ItemSelectionScreen extends JPanel {
      * 
      * @param controller The game controller
      */
+
     public ItemSelectionScreen(GameController controller) {
         this.controller = controller;
         setLayout(null);
@@ -43,20 +67,15 @@ public class ItemSelectionScreen extends JPanel {
         initializeComponents();
     }
 
-    /**
-     * Initializes the components of the screen.
-     */
     private void initializeComponents() {
-        // Background
-        ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.SELECTION_IMAGE_PATH));
+
+        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.SELECTION_IMAGE_PATH)));
         backgroundLabel = new JLabel(background);
         backgroundLabel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
 
-        // Create item selection panel
         createItemSelectionPanel();
 
-        // Start game button
-        ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
+        ImageIcon startIconNormal = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH)));
         JButton startGameButton = new AnimatedButton(startIconNormal); 
         startGameButton.setBounds(423, 600, 179, 71);
         startGameButton.addActionListener(e -> {
@@ -67,7 +86,7 @@ public class ItemSelectionScreen extends JPanel {
             }
 
             if (isPlayer1Selection) {
-                // Save player 1's selection and prepare for player 2 (if PvP)
+
                 player1Items.addAll(selectedItems);
 
                 if (selectedModality == GameModality.PLAYER_VS_PLAYER) {
@@ -78,28 +97,24 @@ public class ItemSelectionScreen extends JPanel {
                 }
             }
 
-            // Start the game with the selected Pokemon and items
             if (isPlayer1Selection) {
-                //System.out.println("ITEM SELECTION JUGADOR 1 ");
+
                 controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, selectedItems, null);
                 System.out.println("Starting game with player 1 items: " + selectedItems.size());
+
             } else {
-                //System.out.println("ITEM SELECTION JUGADOR 2 ");
+
                 controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, player1Items, selectedItems);
                 System.out.println("Starting game with player 1 items: " + player1Items.size() + " and player 2 items: " + selectedItems.size());
                 
             }
         });
 
-        // Add components
         add(startGameButton);
         add(itemSelectionPanel);
         add(backgroundLabel);
     }
 
-    /**
-     * Creates the item selection panel.
-     */
     private void createItemSelectionPanel() {
         itemSelectionPanel = new JPanel();
         itemSelectionPanel.setLayout(new BorderLayout());
@@ -107,7 +122,6 @@ public class ItemSelectionScreen extends JPanel {
         itemSelectionPanel.setBackground(new Color(0, 0, 0, 180));
         itemSelectionPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2));
 
-        // Header panel with title and instructions
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(50, 50, 150));
 
@@ -124,12 +138,10 @@ public class ItemSelectionScreen extends JPanel {
 
         itemSelectionPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // Create a panel for the item selection
         JPanel selectionArea = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        selectionArea.setBackground(new Color(0, 0, 0, 0)); // Transparent
+        selectionArea.setBackground(new Color(0, 0, 0, 0));
         itemSelectionPanel.add(selectionArea, BorderLayout.CENTER);
 
-        // Create description text area
         descriptionTextArea = new JTextArea(8, 50);
         descriptionTextArea.setEditable(false);
         descriptionTextArea.setLineWrap(true);
@@ -145,47 +157,39 @@ public class ItemSelectionScreen extends JPanel {
             new Font("Arial", Font.BOLD, 14),
             Color.WHITE
         ));
+
         descriptionTextArea.setText("Select an item to see its description");
 
         JScrollPane scrollPane = new JScrollPane(descriptionTextArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        // Create a panel for the description area
         JPanel descriptionPanel = new JPanel(new BorderLayout());
-        descriptionPanel.setBackground(new Color(0, 0, 0, 0)); // Transparent
+        descriptionPanel.setBackground(new Color(0, 0, 0, 0));
         descriptionPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Add a status label at the bottom of the selection panel
         JLabel statusLabel = new JLabel("No items selected yet", JLabel.CENTER);
         statusLabel.setForeground(Color.WHITE);
         statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
-        // Create a panel for the status label
         JPanel statusPanel = new JPanel(new BorderLayout());
         statusPanel.setBackground(new Color(30, 30, 30));
         statusPanel.add(statusLabel, BorderLayout.CENTER);
 
-        // Create a panel for the bottom section (description + status)
         JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.setBackground(new Color(0, 0, 0, 0)); // Transparent
+        bottomPanel.setBackground(new Color(0, 0, 0, 0));
         bottomPanel.add(descriptionPanel, BorderLayout.CENTER);
         bottomPanel.add(statusPanel, BorderLayout.SOUTH);
 
         itemSelectionPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Load available items
         loadAvailableItems();
     }
 
-    /**
-     * Loads the available items for selection.
-     */
     private void loadAvailableItems() {
-        // Get the selection area panel
-        JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
-        selectionArea.removeAll(); // Clear any existing components
 
-        // Define known item names (hardcoded since we can't list classpath resources directly)
+        JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
+        selectionArea.removeAll();
+
         String[] itemNames = {"potion", "super-potion", "Hiperpoción", "revive"};
         String[] itemDescriptions = {
             ItemDescription.POTION.getDescription(),
@@ -199,31 +203,21 @@ public class ItemSelectionScreen extends JPanel {
             String description = itemDescriptions[i];
             String resourcePath = UIConstants.ITEMS_SPRITES_PATH + name + ".png";
 
-            // Check if resource exists
             if (getClass().getResource(resourcePath) != null) {
                 String itemName = name.substring(0, 1).toUpperCase() + name.substring(1);
-                // Handle special cases
+
                 if (name.equals("super-potion")) {
                     itemName = "Super Potion";
                 } else if (name.equals("Hiperpoción")) {
                     itemName = "Hyper Potion";
                 }
 
-                // Create a panel for each item
                 JPanel itemPanel = createItemPanel(itemName, resourcePath, description);
                 selectionArea.add(itemPanel);
             }
         }
     }
 
-    /**
-     * Creates a panel for an item.
-     * 
-     * @param itemName The name of the item
-     * @param spritePath The path to the item's sprite
-     * @param description The description of the item
-     * @return The panel for the item
-     */
     private JPanel createItemPanel(String itemName, String spritePath, String description) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -231,34 +225,28 @@ public class ItemSelectionScreen extends JPanel {
         panel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         panel.setBackground(new Color(50, 50, 50));
 
-        // Item sprite
         ImageIcon spriteIcon = new ImageIcon(getClass().getResource(spritePath));
         Image scaledImage = spriteIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         JLabel spriteLabel = new JLabel(new ImageIcon(scaledImage));
         spriteLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        // Item name
         JLabel nameLabel = new JLabel(itemName);
         nameLabel.setForeground(Color.WHITE);
         nameLabel.setFont(new Font("Arial", Font.BOLD, 12));
         nameLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        // Panel for the name
         JPanel namePanel = new JPanel();
         namePanel.setLayout(new BorderLayout());
         namePanel.setBackground(new Color(30, 30, 30));
         namePanel.add(nameLabel, BorderLayout.CENTER);
 
-        // Selection checkbox
         JCheckBox selectBox = new JCheckBox("Add to Items");
         selectBox.setForeground(Color.WHITE);
         selectBox.setBackground(new Color(50, 50, 50));
         selectBox.setFont(new Font("Arial", Font.BOLD, 11));
 
-        // Add tooltip
         selectBox.setToolTipText("Click to add " + itemName + " to your items");
 
-        // Add mouse listener to display description when clicked
         panel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -266,7 +254,6 @@ public class ItemSelectionScreen extends JPanel {
             }
         });
 
-        // Add mouse listener to sprite label to display description when clicked
         spriteLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -275,29 +262,24 @@ public class ItemSelectionScreen extends JPanel {
         });
 
         selectBox.addActionListener(e -> {
+
             if (selectBox.isSelected()) {
-                // Create an Item object and add to selected list
                 Item item = createItemFromSprite(itemName, spritePath, description);
                 selectedItems.add(item);
 
-                // Change panel appearance when selected
                 panel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
                 panel.setBackground(new Color(30, 70, 30));
 
-                // Update status label
                 updateStatusLabel();
 
-                // Update description
                 updateItemDescription(itemName, description);
             } else {
-                // Remove from selected list
+
                 selectedItems.removeIf(p -> p.getName().equalsIgnoreCase(itemName));
 
-                // Reset panel appearance
                 panel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                 panel.setBackground(new Color(50, 50, 50));
 
-                // Update status label
                 updateStatusLabel();
             }
         });
@@ -309,25 +291,17 @@ public class ItemSelectionScreen extends JPanel {
         return panel;
     }
 
-    /**
-     * Updates the description text area with the description of the specified item.
-     * 
-     * @param itemName The name of the item
-     * @param description The description of the item
-     */
     private void updateItemDescription(String itemName, String description) {
         descriptionTextArea.setText(itemName + ": " + description);
     }
 
-    /**
-     * Updates the status label with the current selection status.
-     */
+
     private void updateStatusLabel() {
-        // Get the bottom panel (index 2)
+
         JPanel bottomPanel = (JPanel) itemSelectionPanel.getComponent(2);
-        // Get the status panel (index 1)
+
         JPanel statusPanel = (JPanel) bottomPanel.getComponent(1);
-        // Get the status label (index 0)
+
         JLabel statusLabel = (JLabel) statusPanel.getComponent(0);
 
         if (selectedItems.isEmpty()) {
@@ -347,28 +321,20 @@ public class ItemSelectionScreen extends JPanel {
         }
     }
 
-    /**
-     * Creates an Item object from a sprite.
-     * 
-     * @param itemName The name of the item
-     * @param spritePath The path to the item's sprite
-     * @param description The description of the item
-     * @return The created Item object
-     */
     private Item createItemFromSprite(String itemName, String spritePath, String description) {
-        // Create an Item with appropriate effect based on the name
-        Item.ItemEffect effect;
+
+        ItemEffect effect;
         if (itemName.equalsIgnoreCase("Potion")) {
-            effect = new Item.HealingEffect(20);
+            effect = new HealingEffect(20);
         } else if (itemName.equalsIgnoreCase("Super Potion")) {
-            effect = new Item.HealingEffect(50);
+            effect = new HealingEffect(50);
         } else if (itemName.equalsIgnoreCase("Hyper Potion")) {
-            effect = new Item.HealingEffect(200);
+            effect = new HealingEffect(200);
         } else if (itemName.equalsIgnoreCase("Revive")) {
-            effect = new Item.ReviveEffect(0.5f); // Revive with 50% HP
+            effect = new ReviveEffect(0.5f);
         } else {
-            // Default effect
-            effect = new Item.HealingEffect(10);
+
+            effect = new HealingEffect(10);
         }
 
         return new Item(itemName, description, spritePath, effect);
@@ -382,23 +348,21 @@ public class ItemSelectionScreen extends JPanel {
      * @param player1Pokemons The Pokemon selected by player 1
      * @param player2Pokemons The Pokemon selected by player 2 (can be null)
      */
+
     public void setGameOptions(GameModality modality, GameMode mode, List<Pokemon> player1Pokemons, List<Pokemon> player2Pokemons) {
         this.selectedModality = modality;
         this.selectedMode = mode;
         this.player1Pokemons = player1Pokemons;
         this.player2Pokemons = player2Pokemons;
 
-        // Reset selections when new options are set
         this.selectedItems.clear();
         this.player1Items.clear();
         this.isPlayer1Selection = true;
 
-        // Update UI to show player 1 selection
         JPanel headerPanel = (JPanel) itemSelectionPanel.getComponent(0);
         JLabel titleLabel = (JLabel) headerPanel.getComponent(0);
         titleLabel.setText("SELECT PLAYER 1 ITEMS");
 
-        // Reset all checkboxes
         JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         for (Component comp : selectionArea.getComponents()) {
             if (comp instanceof JPanel) {
@@ -413,22 +377,17 @@ public class ItemSelectionScreen extends JPanel {
             }
         }
 
-        // Reset description text area
         descriptionTextArea.setText("Select an item to see its description");
 
         updateStatusLabel();
     }
 
-    /**
-     * Updates the selection panel for player 2.
-     */
     private void updateSelectionPanelForPlayer2() {
         // Update title
         JPanel headerPanel = (JPanel) itemSelectionPanel.getComponent(0);
         JLabel titleLabel = (JLabel) headerPanel.getComponent(0);
         titleLabel.setText("SELECT PLAYER 2 ITEMS");
 
-        // Reset all checkboxes
         JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         for (Component comp : selectionArea.getComponents()) {
             if (comp instanceof JPanel) {
@@ -443,12 +402,10 @@ public class ItemSelectionScreen extends JPanel {
             }
         }
 
-        // Reset description text area
         descriptionTextArea.setText("Select an item to see its description");
 
         updateStatusLabel();
 
-        // Show a message to the user
         JOptionPane.showMessageDialog(this, "Player 1 has selected their items. Now select Player 2's items.");
     }
 }

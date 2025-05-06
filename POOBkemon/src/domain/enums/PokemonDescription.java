@@ -5,6 +5,7 @@ package domain.enums;
  * Each entry includes the Pokemon's type, origin, physical characteristics, and stats.
  */
 public enum PokemonDescription {
+
     CHARIZARD(
             "TYPE: FIRE (primary) – FLYING (secondary)\n" +
                     "Charizard belongs to the first generation of Pokémon, originally from Kanto, and is the final evolution of " +
