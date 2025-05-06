@@ -4,7 +4,6 @@ import domain.entities.Item;
 import domain.game.Game;
 import domain.moves.Move;
 import domain.player.Player;
-import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -22,8 +21,6 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.List;
@@ -58,7 +55,7 @@ public class GameScreen extends JPanel {
     private static final int HEALTH_BAR_HEIGHT = 20;
     private boolean gamePaused = false;
 
-    public GameScreen(GameController controller) {
+    public GameScreen() {
 
         setLayout(null);
         setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
@@ -87,13 +84,8 @@ public class GameScreen extends JPanel {
             public void componentResized(ComponentEvent e) {
 
                 fpsLabel.setBounds(10, 10, 100, 20);
-                System.out.println("GameScreen resized. New size: " + getWidth() + "x" + getHeight());
             }
 
-            @Override
-            public void componentShown(ComponentEvent e) {
-                System.out.println("GameScreen shown");
-            }
         });
     }
 
@@ -112,7 +104,7 @@ public class GameScreen extends JPanel {
         pauseButton.setFont(new Font("Arial", Font.BOLD, 5));
         pauseButton.setFocusPainted(false);
 
-        pauseButton.addActionListener(e -> {
+        pauseButton.addActionListener(_ -> {
             if (!gamePaused) {
                 gamePaused=true;
                 game.pauseGame();
@@ -192,7 +184,7 @@ public class GameScreen extends JPanel {
             actionButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             actionButtons[i].setFocusPainted(false);
             final int actionIndex = i;
-            actionButtons[i].addActionListener(e -> showActionPanel(actionIndex));
+            actionButtons[i].addActionListener(_ -> showActionPanel(actionIndex));
             actionMenuPanel.add(actionButtons[i]);
         }
 
@@ -213,7 +205,7 @@ public class GameScreen extends JPanel {
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             moveButtons[i].setFocusPainted(false);
             final int moveIndex = i;
-            moveButtons[i].addActionListener(e -> {
+            moveButtons[i].addActionListener(_ -> {
                 if (game != null) {
                     game.executeMove(moveIndex);
                     updateBattleUI();
@@ -239,7 +231,7 @@ public class GameScreen extends JPanel {
             itemButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
             itemButtons[i].setFocusPainted(false);
             final int itemIndex = i;
-            itemButtons[i].addActionListener(e -> {
+            itemButtons[i].addActionListener(_ -> {
                 if (game != null && game.getCurrentPlayer().getItems().size() > itemIndex) {
                     game.useItem(game.getCurrentPlayer().getItems().get(itemIndex));
                     updateBattleUI();
@@ -265,7 +257,7 @@ public class GameScreen extends JPanel {
             switchButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
             switchButtons[i].setFocusPainted(false);
             final int pokemonIndex = i;
-            switchButtons[i].addActionListener(e -> {
+            switchButtons[i].addActionListener(_ -> {
                 if (game != null) {
 
                     game.switchPokemon(pokemonIndex);
@@ -278,7 +270,6 @@ public class GameScreen extends JPanel {
         }
 
         add(battlePanel);
-        System.out.println("Added battlePanel to GameScreen");
     }
 
     private JButton getJButton() {
@@ -289,7 +280,7 @@ public class GameScreen extends JPanel {
         exitButton.setFont(new Font("Arial", Font.BOLD, 14));
         exitButton.setFocusPainted(false);
 
-        exitButton.addActionListener(e -> {
+        exitButton.addActionListener(_ -> {
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
             if (window != null) {
                 window.dispose();
@@ -312,8 +303,6 @@ public class GameScreen extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("GameScreen paintComponent called");
-
         if (fpsLabel != null) {
             g.setColor(Color.RED);
             g.drawRect(fpsLabel.getX() - 1, fpsLabel.getY() - 1, fpsLabel.getWidth() + 1, fpsLabel.getHeight() + 1);
@@ -321,16 +310,14 @@ public class GameScreen extends JPanel {
     }
 
     public void setGame(Game game) {
-        System.out.println("setGame called");
+
         this.game = game;
 
         if (game != null) {
-            System.out.println("Game is not null, setting GameScreen and updating UI");
+
             game.setGameScreen(this);
             updateBattleUI();
-        } else {
-            System.out.println("Game is null, not updating UI");
-        }
+        } else return;
     }
 
     /**
@@ -339,9 +326,7 @@ public class GameScreen extends JPanel {
      */
 
     public void updateBattleUI() {
-        System.out.println("updateBattleUI called");
         if (game == null) {
-            System.out.println("Game is null, returning");
             return;
         }
 
@@ -349,9 +334,6 @@ public class GameScreen extends JPanel {
         Player player2 = game.getPlayer2();
         Pokemon player1Pokemon = player1.getActivePokemon();
         Pokemon player2Pokemon = player2.getActivePokemon();
-
-        System.out.println("Player 1: " + player1.getName() + ", Pokemon: " + player1Pokemon.getName());
-        System.out.println("Player 2: " + player2.getName() + ", Pokemon: " + player2Pokemon.getName());
 
         updatePokemonSprite(player1PokemonLabel, player1Pokemon, true);
         updatePokemonSprite(player2PokemonLabel, player2Pokemon, false);
@@ -405,32 +387,20 @@ public class GameScreen extends JPanel {
     }
 
     private void updatePokemonSprite(JLabel label, Pokemon pokemon, boolean isPlayer1) {
-        if (pokemon == null) {
-            System.out.println("Pokemon is null, not updating sprite");
-            return;
-        }
 
         String spritePath = pokemon.getSpritePath();
-        System.out.println("Original sprite path: " + spritePath);
 
         if (isPlayer1) {
 
             String pokemonName = spritePath.substring(spritePath.lastIndexOf("/") + 1, spritePath.lastIndexOf("-front.png"));
 
             spritePath = presentation.utils.UIConstants.POKEMON_BACK_SPRITES_PATH + pokemonName + "-back.png";
-            System.out.println("Using back sprite for Player 1: " + spritePath);
 
         } else {
-            System.out.println("Using front sprite for Player 2: " + spritePath);
+           return;
         }
 
-        System.out.println("Loading sprite from: " + spritePath);
         ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(spritePath)));
-        if (icon.getIconWidth() <= 0) {
-            System.out.println("Failed to load sprite from: " + spritePath);
-        } else {
-            System.out.println("Successfully loaded sprite from: " + spritePath);
-        }
 
         Image scaledImage = icon.getImage().getScaledInstance(POKEMON_WIDTH, POKEMON_HEIGHT, Image.SCALE_SMOOTH);
         label.setIcon(new ImageIcon(scaledImage));
@@ -607,16 +577,13 @@ public class GameScreen extends JPanel {
         gifDialog.setLayout(new BorderLayout());
         
         URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
-        if (gifURL == null) {
-            System.err.println("No se encontró el archivo GIF.");
-            return;
-        }
-    
+
+        assert gifURL != null;
         JLabel gifLabel = new JLabel(new ImageIcon(gifURL));
         gifLabel.setHorizontalAlignment(JLabel.CENTER);
         gifDialog.add(gifLabel, BorderLayout.CENTER);
 
-        Timer gifTimer = new Timer(10000, e -> {
+        Timer gifTimer = new Timer(10000, _ -> {
             gifDialog.dispose();
             showResultDialog(player1Name, player2Name, player1First);
         });
@@ -648,7 +615,7 @@ public class GameScreen extends JPanel {
         contentPanel.add(resultLabel, BorderLayout.CENTER);
     
         JButton okButton = new JButton("OK");
-        okButton.addActionListener(e -> resultDialog.dispose());
+        okButton.addActionListener(_ -> resultDialog.dispose());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(okButton);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);

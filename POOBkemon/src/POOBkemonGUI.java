@@ -50,7 +50,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
         // Initialize screens
         coverScreen = new CoverScreen(gameController);
         setupScreen = new GameSetupScreen(gameController);
-        gameScreen = new GameScreen(gameController);
+        gameScreen = new GameScreen();
         pokemonSelectionScreen = new PokemonSelectionScreen(gameController);
         itemSelectionScreen = new ItemSelectionScreen(gameController);
 
