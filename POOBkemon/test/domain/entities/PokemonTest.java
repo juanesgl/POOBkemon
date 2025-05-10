@@ -1,5 +1,5 @@
-package test.domain.entities;
-import domain.entities.Pokemon;
+package domain.entities;
+//import domain.entities.Pokemon;
 import domain.enums.PokemonType;
 import domain.moves.BubbleMove;
 import domain.moves.Move;
