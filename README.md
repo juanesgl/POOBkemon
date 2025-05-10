@@ -20,11 +20,6 @@ POOBkemon is a Pokémon management project where various Pokémon attributes are
     ```bash
     javac -d ../bin POOBkemonGUI.java
     ```
-4.  If you have external libraries in a `libs` folder, include them during compilation:
-    ```bash
-    javac -d ../bin -cp "../libs/*" POOBkemonGUI.java
-    ```
-
 ## Execution
 
 From the project's **root** directory, run the application:
