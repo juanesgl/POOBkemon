@@ -1,25 +1,33 @@
 # POOBkemon
 
-## Descripción
+## Description
 
-Este es un proyecto de gestión de Pokemones, donde se gestionan atributos de diferentes tipos de Pokémon y se realizan simulaciones de batallas entre ellos.
+POOBkemon is a Pokémon management project where various Pokémon attributes are managed, and battles between them can be simulated.
 
-## Requisitos
+## Requirements
 
-- **Java JDK 17** o superior
-- **PowerShell** o terminal compatible
-- **JUnit 5** para ejecutar las pruebas
+* **Java JDK 17** or higher.
+* **PowerShell** (Windows) or a compatible terminal (macOS/Linux).
 
+## Compilation
 
-## Cómo Compilar el Proyecto
+1.  Open your **terminal** (PowerShell on Windows, Terminal on macOS/Linux) in the project's **root** directory.
+2.  Navigate to the `src` directory:
+    ```bash
+    cd src
+    ```
+3.  Compile the Java code, generating `.class` files in the `bin` folder:
+    ```bash
+    javac -d ../bin POOBkemonGUI.java
+    ```
+4.  If you have external libraries in a `libs` folder, include them during compilation:
+    ```bash
+    javac -d ../bin -cp "../libs/*" POOBkemonGUI.java
+    ```
 
-1. Abre **PowerShell** en la raíz del proyecto.
-2. Ejecuta el siguiente comando para compilar el código:
+## Execution
 
-```powershell
-javac -d bin -cp "libs/*" @(Get-ChildItem -Recurse -Filter *.java -Path src).FullName
+From the project's **root** directory, run the application:
 
-
-
-
-
+```bash
+java -cp bin POOBkemonGUI
