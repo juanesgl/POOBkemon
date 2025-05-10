@@ -100,27 +100,6 @@ public class Pokemon {
     }
 
     /**
-     * Executes the "Forcejeo" move when a Pokemon has no PP left in any of its moves.
-     * The Pokemon takes half of the damage it inflicts on the opponent.
-     *
-     * @param target The target Pokemon to attack
-     */
-
-    public void executeForcejeMove(Pokemon target) {
-        // Calculate damage as if it were a normal move with 50 power
-        Move forcejeMove = new BubbleMove();
-        int damage = calculateDamage(forcejeMove, target);
-
-        // Target takes damage
-        target.takeDamage(damage);
-
-        // Attacker takes half the damage
-        int recoilDamage = damage / 2;
-        this.takeDamage(recoilDamage);
-
-    }
-
-    /**
      * Checks if all moves of the Pokemon are out of PP.
      * 
      * @return true if all moves are out of PP, false otherwise
