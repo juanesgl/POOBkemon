@@ -44,7 +44,7 @@ public class AnimatedButton extends JButton {
     }
 
     private void setupAnimationTimer() {
-        animationTimer = new Timer(700, _ -> {
+        animationTimer = new Timer(700, e -> {
             if (!getModel().isRollover()) {
                 setIcon(normalIcon);
                 buttonState = !buttonState;

@@ -42,6 +42,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
         setSize(new Dimension(UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setResizable(false);
 
         // Initialize components
         soundManager = new SoundManager();
