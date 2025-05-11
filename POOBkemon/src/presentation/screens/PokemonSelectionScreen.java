@@ -5,7 +5,11 @@ import domain.moves.BubbleMove;
 import domain.moves.FakeOutMove;
 import domain.moves.FieryDanceMove;
 import domain.moves.InfernoMove;
-import domain.entities.Pokemon;
+import domain.pokemons.Blastoise;
+import domain.pokemons.Charizard;
+import domain.pokemons.Gengar;
+import domain.pokemons.Pokemon;
+import domain.pokemons.Raichu;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
 import presentation.components.AnimatedButton;
@@ -236,7 +240,8 @@ public class PokemonSelectionScreen extends JPanel {
 
             if (selectBox.isSelected()) {
 
-                Pokemon pokemon = createPokemonFromSprite(pokemonName, spritePath);
+                Pokemon pokemon = createPokemonByName(pokemonName);
+
                 selectedPokemons.add(pokemon);
 
                 panel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
@@ -311,31 +316,22 @@ public class PokemonSelectionScreen extends JPanel {
         }
     }
 
-    private Pokemon createPokemonFromSprite(String pokemonName, String spritePath) {
-
-        PokemonType primaryType = getPokemonTypeFromName(pokemonName);
-
-        Pokemon pokemon = new Pokemon(
-                pokemonName,
-                100,
-                70,
-                65,
-                80,
-                75,
-                85,
-                primaryType,
-                null,
-                spritePath
-                
-        );
-
-        pokemon.addMove(new BubbleMove());
-        pokemon.addMove(new FieryDanceMove());
-        pokemon.addMove(new FakeOutMove());
-        pokemon.addMove(new InfernoMove());
-
-        return pokemon;
+    private Pokemon createPokemonByName(String name) {
+    switch (name.toLowerCase()) {
+        case "charizard":
+            return new Charizard();
+        case "blastoise":
+            return new Blastoise();
+        case "gengar":
+            return new Gengar();
+        case "raichu":
+            return new Raichu();
+        // Agrega más según tus clases
+        default:
+            throw new IllegalArgumentException("Unknown Pokémon: " + name);
     }
+}
+
 
     private PokemonType getPokemonTypeFromName(String pokemonName) {
 

@@ -1,4 +1,5 @@
 package domain.entities;
+import domain.pokemons.Pokemon;
 
 /**
  * An item effect that boosts a Pokémon's attack stat by a specified amount.

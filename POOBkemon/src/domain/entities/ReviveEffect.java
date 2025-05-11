@@ -1,4 +1,5 @@
 package domain.entities;
+import domain.pokemons.Pokemon;
 
 /**
  * An item effect that revives a fainted Pokémon with a percentage of its maximum health.

@@ -1,6 +1,6 @@
 package domain.player;
 
-import domain.entities.Pokemon;
+import domain.pokemons.Pokemon;
 import domain.entities.Item;
 import java.util.List;
 import java.util.Random;

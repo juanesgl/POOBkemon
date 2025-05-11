@@ -1,6 +1,5 @@
 package presentation.controllers;
-
-import domain.entities.Pokemon;
+import domain.pokemons.Pokemon;
 import domain.game.Game;
 import domain.enums.GameMode;
 import domain.enums.GameModality;

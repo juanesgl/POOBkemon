@@ -1,4 +1,6 @@
 package domain.entities;
+import domain.pokemons.Pokemon;
+
 
 /**
  * An item effect that heals a Pokémon by a specified amount.

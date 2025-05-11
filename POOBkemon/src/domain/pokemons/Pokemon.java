@@ -1,18 +1,12 @@
-package domain.entities;
-
-import domain.enums.PokemonType;
-import domain.game.TypeEffectivenessTable;
-import domain.moves.Move;
+package domain.pokemons;
 
 import java.util.ArrayList;
 import java.util.List;
+import domain.game.TypeEffectivenessTable;
+import domain.enums.PokemonType;
+import domain.moves.Move;
 
-/**
- * Represents a Pokemon entity in the game.
- * Contains attributes like name, health, attack, defense, and types.
- * Provides methods for battle mechanics like attacking and taking damage.
- */
-public class Pokemon {
+public abstract class Pokemon {
     private final String name;
     private int health;
     private final int maxHealth;
@@ -58,7 +52,9 @@ public class Pokemon {
         this.moves = new ArrayList<>();
     }
 
-    /**
+
+
+        /**
      * Adds a move to the Pokemon's move list.
      * A Pokemon can have a maximum of 4 moves.
      * 
@@ -71,7 +67,7 @@ public class Pokemon {
             moves.add(move);
 
         } else {
-            System.out.println("El Pokémon ya tiene 4 pimientos");
+            System.out.println("Pokemon has already 4 moves");
         }
     }
 
@@ -87,7 +83,7 @@ public class Pokemon {
     public int attack(Pokemon target, Move move) {
 
         if (move.getPowerPoints() <= 0) {
-            System.out.println("No tienes PP para usar este movimiento");
+            System.out.println("You don't have PP for this move");
             return 0;
         }
 
@@ -256,4 +252,5 @@ public class Pokemon {
     public String toString() {
     return this.getName();
     }
+
 }

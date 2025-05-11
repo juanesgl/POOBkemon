@@ -6,7 +6,7 @@ import presentation.utils.SoundManager;
 import presentation.controllers.GameController;
 import presentation.controllers.GameView;
 import presentation.utils.UIConstants;
-import domain.entities.Pokemon;
+import domain.pokemons.Pokemon;
 import domain.game.Game;
 import presentation.screens.PokemonSelectionScreen;
 import domain.enums.GameMode;

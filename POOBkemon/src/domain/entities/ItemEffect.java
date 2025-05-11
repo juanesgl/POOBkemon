@@ -1,5 +1,5 @@
 package domain.entities;
-
+import domain.pokemons.Pokemon;
 /**
  * Interface for defining different effects that items can have.
  * Implementations of this interface define how an item affects a Pokémon.

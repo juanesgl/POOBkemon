@@ -1,7 +1,7 @@
 package presentation.screens;
 
 import domain.entities.Item;
-import domain.entities.Pokemon;
+import domain.pokemons.Pokemon;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
 import presentation.components.AnimatedButton;

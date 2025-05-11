@@ -1,4 +1,5 @@
 package domain.entities;
+import domain.pokemons.Pokemon;
 
 /**
  * Represents an item that can be used on Pokemon in the game.

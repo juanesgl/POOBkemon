@@ -2,18 +2,19 @@ package presentation.controllers;
 
 import domain.enums.GameMode;
 import domain.enums.GameModality;
-import domain.enums.PokemonType;
+
 import domain.game.Game;
 import domain.game.NormalMode;
-import domain.moves.BubbleMove;
-import domain.moves.FakeOutMove;
-import domain.moves.FieryDanceMove;
-import domain.moves.InfernoMove;
-//TODO: import domain.game.SurvivalMode;
+
+
 import domain.player.AIPlayer;
 import domain.player.HumanPlayer;
 import domain.player.Player;
-import domain.entities.Pokemon;
+import domain.pokemons.Blastoise;
+import domain.pokemons.Charizard;
+import domain.pokemons.Gengar;
+import domain.pokemons.Pokemon;
+import domain.pokemons.Raichu;
 import domain.entities.Item;
 import presentation.utils.UIConstants;
 import java.util.ArrayList;
@@ -107,13 +108,6 @@ public class GameController {
         List<Pokemon> team2 = (selectedPokemons2 != null && !selectedPokemons2.isEmpty())
                 ? selectedPokemons2
                 : createSamplePokemonTeam();
-        Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
-                PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
-        charizard.addMove(new BubbleMove());
-
-            charizard.addMove(new FieryDanceMove());
-            charizard.addMove(new FakeOutMove());
-            charizard.addMove(new InfernoMove());
 
         List<Item> items1 = (selectedItems != null && !selectedItems.isEmpty())
                 ? selectedItems
@@ -171,53 +165,22 @@ public class GameController {
     private List<Pokemon> createSamplePokemonTeam() {
         List<Pokemon> team = new ArrayList<>();
 
-        Pokemon charizard = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
-                PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
-        charizard.addMove(new BubbleMove());
-
-        charizard.addMove(new FieryDanceMove());
-        charizard.addMove(new FakeOutMove());
-        charizard.addMove(new InfernoMove());
+        Pokemon charizard = new Charizard();
         team.add(charizard);
 
-        Pokemon blastoise = new Pokemon("Blastoise", 150, 83, 100, 85, 105, 78,
-                PokemonType.WATER, null, "/images/PokemonSprites/Pokemons/Front/blastoise-front.png");
-        blastoise.addMove(new BubbleMove());
-        blastoise.addMove(new FieryDanceMove());
-        blastoise.addMove(new FakeOutMove());
-        blastoise.addMove(new InfernoMove());
+        Pokemon blastoise = new Blastoise();
         team.add(blastoise);
 
-        Pokemon gengar = new Pokemon("Gengar", 120, 65, 60, 130, 75, 110,
-                PokemonType.GHOST, PokemonType.POISON, "/images/PokemonSprites/Pokemons/Front/gengar-front.png");
-        gengar.addMove(new BubbleMove());
-        gengar.addMove(new FieryDanceMove());
-        gengar.addMove(new FakeOutMove());
-        gengar.addMove(new InfernoMove());
+        Pokemon gengar = new Gengar();
         team.add(gengar);
 
-        Pokemon raichu = new Pokemon("Raichu", 120, 90, 55, 90, 80, 110,
-                PokemonType.ELECTRIC, null, "/images/PokemonSprites/Pokemons/Front/raichu-front.png");
-        raichu.addMove(new BubbleMove());
-        raichu.addMove(new FieryDanceMove());
-        raichu.addMove(new FakeOutMove());
-        raichu.addMove(new InfernoMove());
+        Pokemon raichu = new Raichu();
         team.add(raichu);
 
-        Pokemon charizard2 = new Pokemon("Charizard", 150, 84, 78, 109, 85, 100,
-                PokemonType.FIRE, PokemonType.FLYING, "/images/PokemonSprites/Pokemons/Front/charizard-front.png");
-        charizard2.addMove(new BubbleMove());
-        charizard2.addMove(new FieryDanceMove());
-        charizard2.addMove(new FakeOutMove());
-        charizard2.addMove(new InfernoMove());
+        Pokemon charizard2 = new Charizard();
         team.add(charizard2);
 
-        Pokemon blastoise2 = new Pokemon("Blastoise", 150, 83, 100, 85, 105, 78,
-                PokemonType.WATER, null, "/images/PokemonSprites/Pokemons/Front/blastoise-front.png");
-        blastoise2.addMove(new BubbleMove());
-        blastoise2.addMove(new FieryDanceMove());
-        blastoise2.addMove(new FakeOutMove());
-        blastoise2.addMove(new InfernoMove());
+        Pokemon blastoise2 = new Blastoise();
         team.add(blastoise2);
 
         return team;
