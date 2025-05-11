@@ -167,7 +167,6 @@ public class Pokemon {
         return health <= 0;
     }
 
-    // Getters and setters
     /**
      * Gets the name of the Pokemon.
      * @return The Pokemon's name
@@ -210,10 +209,10 @@ public class Pokemon {
      */
     public int getDefense() { return defense; }
 
-    //**
-    // * Gets the special attack stat of the Pokemon.
-     //* @return The special attack stat
-     //*/
+    /**
+    / * Gets the special attack stat of the Pokemon.
+     /* @return The special attack stat
+     /*/
     //public int getSpecialAttack() { return specialAttack; }
 
     /**

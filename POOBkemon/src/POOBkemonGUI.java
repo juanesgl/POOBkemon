@@ -44,21 +44,21 @@ public class POOBkemonGUI extends JFrame implements GameView {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setResizable(false);
 
-        // Initialize components
+        
         soundManager = new SoundManager();
         gameController = new GameController(this);
 
-        // Initialize screens
+        
         coverScreen = new CoverScreen(gameController);
         setupScreen = new GameSetupScreen(gameController);
         gameScreen = new GameScreen();
         pokemonSelectionScreen = new PokemonSelectionScreen(gameController);
         itemSelectionScreen = new ItemSelectionScreen(gameController);
 
-        // Show initial screen
+        
         showCoverScreen();
 
-        // Setup window close event
+        
         setupWindowCloseEvent();
     }
 
@@ -105,8 +105,6 @@ public class POOBkemonGUI extends JFrame implements GameView {
         revalidate();
         repaint();
         System.out.println("Content pane revalidated and repainted");
-
-        // Ensure the GameScreen is visible
         gameScreen.setVisible(true);
         System.out.println("GameScreen visibility set to true");
     }
