@@ -163,7 +163,7 @@ public abstract class Pokemon {
         return health <= 0;
     }
 
-    // Getters and setters
+
     /**
      * Gets the name of the Pokemon.
      * @return The Pokemon's name

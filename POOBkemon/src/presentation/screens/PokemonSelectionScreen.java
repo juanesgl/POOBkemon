@@ -122,7 +122,7 @@ public class PokemonSelectionScreen extends JPanel {
         pokemonSelectionPanel.add(headerPanel, BorderLayout.NORTH);
 
         JPanel selectionArea = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        selectionArea.setBackground(new Color(0, 0, 0, 0)); // Transparent
+        selectionArea.setBackground(new Color(0, 0, 0, 0)); 
         pokemonSelectionPanel.add(selectionArea, BorderLayout.CENTER);
 
         descriptionTextArea = new JTextArea(8, 50);
@@ -326,7 +326,6 @@ public class PokemonSelectionScreen extends JPanel {
             return new Gengar();
         case "raichu":
             return new Raichu();
-        // Agrega más según tus clases
         default:
             throw new IllegalArgumentException("Unknown Pokémon: " + name);
     }

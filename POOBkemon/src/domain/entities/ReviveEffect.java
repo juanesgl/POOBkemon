@@ -26,7 +26,7 @@ public class ReviveEffect implements ItemEffect {
     public void apply(Pokemon target) {
         if (target.isFainted()) {
             int newHealth = (int)(target.getMaxHealth() * healthPercentage);
-            target.setHealth(Math.max(1, newHealth)); // Ensure at least 1 HP
+            target.setHealth(Math.max(1, newHealth)); 
         }
     }
 }

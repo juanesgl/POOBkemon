@@ -383,7 +383,6 @@ public class ItemSelectionScreen extends JPanel {
     }
 
     private void updateSelectionPanelForPlayer2() {
-        // Update title
         JPanel headerPanel = (JPanel) itemSelectionPanel.getComponent(0);
         JLabel titleLabel = (JLabel) headerPanel.getComponent(0);
         titleLabel.setText("SELECT PLAYER 2 ITEMS");

@@ -16,7 +16,6 @@ public class NormalMode implements GameMode {
      */
     @Override
     public void handleFaintedPokemon(Player player) {
-        // In normal mode, when a Pokemon faints, the player must switch to another Pokemon
         player.switchToNextAvailablePokemon();
     }
 
@@ -30,7 +29,6 @@ public class NormalMode implements GameMode {
      */
     @Override
     public boolean isGameOver(Player player1, Player player2) {
-        // Game is over when one player has no more available Pokemon
         return player1.allPokemonFainted() || player2.allPokemonFainted();
     }
 

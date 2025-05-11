@@ -251,7 +251,7 @@ public class GameController {
         if (mode == GameMode.NORMAL) {
             view.showPokemonSelectionScreen(modality, mode);
         } else {
-            // For other modes, start the game directly
+           
             //startGame(modality, mode, null, null);
              javax.swing.JOptionPane.showMessageDialog(null,
                     "Modo Survival en construcción",

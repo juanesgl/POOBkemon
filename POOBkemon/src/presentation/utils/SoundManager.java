@@ -56,8 +56,6 @@ public class SoundManager {
                 clip.open(audioStream);
                 soundEffects.put(name, clip);
             }
-
-            // Rest of the method remains the same
             Clip clip = soundEffects.get(name);
             if (clip.isRunning()) {
                 clip.stop();

@@ -112,7 +112,7 @@ public abstract class Player {
         return true;
     }
 
-    // Getters
+   
     /**
      * Gets the name of the player.
      * @return The player's name

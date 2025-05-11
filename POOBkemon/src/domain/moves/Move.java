@@ -15,7 +15,7 @@ public abstract class Move {
     private final PokemonType type;
     private final int accuracy;
     private int powerPoints;
-    private final int priority; // Higher priority moves go first
+    private final int priority; 
 
     /**
      * Constructor for creating a new Move.
@@ -114,7 +114,5 @@ public abstract class Move {
      */
     public int getPriority() { return priority; }
 
-
-   // public abstract void use(Pokemon attacker, Pokemon target);
 
 }

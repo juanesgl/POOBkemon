@@ -19,7 +19,7 @@ public class UIConstants {
      */
     public static final int WINDOW_HEIGHT = 720;
 
-    // Resource base paths
+  
     /**
      * Base path for resources like fonts and cover images.
      */
@@ -35,19 +35,18 @@ public class UIConstants {
      */
     public static final String SOUNDS_PATH = "/sounds-music/";
 
-    // Cover resources
+    
     /**
      * Path to the cover image displayed on the start screen.
      */
     public static final String COVER_IMAGE_PATH = RESOURCES_PATH + "Cover/POOBkemonCover.png";
 
-    // Cover resources
+
     /**
      * Path to the cover image displayed on the start screen.
      */
     public static final String COVER_ARENA_PATH = RESOURCES_PATH + "Cover/Arena.png";
 
-      // Cover resources
     /**
      * Path to the cover image displayed on the start screen.
      */
@@ -66,7 +65,6 @@ public class UIConstants {
      */
     public static final String BACKGROUND_MUSIC_PATH = SOUNDS_PATH + "music-cover/Pokemon-Emerald-Opening.wav";
 
-    // Pokemon sprites
     /**
      * Base path for all Pokemon sprite images.
      */
@@ -82,7 +80,7 @@ public class UIConstants {
      */
     public static final String POKEMON_BACK_SPRITES_PATH = POKEMON_SPRITES_PATH + "Pokemons/Back/";
 
-    // Items sprites
+
     /**
      * Base path for all item sprite images.
      */
@@ -98,7 +96,7 @@ public class UIConstants {
      */
     public static final String X_ATTACK_IMAGE_PATH = ITEMS_SPRITES_PATH + "x-attack.png";
 
-    // Pokemon specific sprites
+
     /**
      * Path to the front-facing Pikachu sprite image.
      */
@@ -111,7 +109,7 @@ public class UIConstants {
 
     
 
-    // Lists for dropdown menus (for backward compatibility)
+
     /**
      * List of game modality display names for dropdown menus.
      */
