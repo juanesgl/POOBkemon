@@ -25,7 +25,7 @@ public class Raichu extends Pokemon {
 
     public Raichu() {
         super("Raichu", 324, 306, 229, 306, 284, 350,
-                PokemonType.ELECTRIC, null, UIConstants.POKEMON_SPRITES_PATH +"/Pokemons/Front/Front/raichu-front.png");
+                PokemonType.ELECTRIC, null, UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/raichu-front.png");
         this.addMove(new BubbleMove());
         this.addMove(new FieryDanceMove());
         this.addMove(new FakeOutMove());

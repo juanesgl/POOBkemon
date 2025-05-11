@@ -25,7 +25,7 @@ public class Gengar extends Pokemon {
 
     public Gengar() {
         super("Gengar", 324, 251, 240, 394, 273, 350,
-                PokemonType.GHOST, PokemonType.POISON, UIConstants.POKEMON_SPRITES_PATH +"/Pokemons/Front/Front/gengar-front.png");
+                PokemonType.GHOST, PokemonType.POISON, UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/gengar-front.png");
         this.addMove(new BubbleMove());
         this.addMove(new FieryDanceMove());
         this.addMove(new FakeOutMove());

@@ -387,25 +387,19 @@ public class GameScreen extends JPanel {
     }
 
     private void updatePokemonSprite(JLabel label, Pokemon pokemon, boolean isPlayer1) {
+    String spritePath = pokemon.getSpritePath();
 
-        String spritePath = pokemon.getSpritePath();
-
-        if (isPlayer1) {
-
-            String pokemonName = spritePath.substring(spritePath.lastIndexOf("/") + 1, spritePath.lastIndexOf("-front.png"));
-
-            spritePath = presentation.utils.UIConstants.POKEMON_BACK_SPRITES_PATH + pokemonName + "-back.png";
-
-        } else {
-           return;
-        }
-
-        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(spritePath)));
-
-        Image scaledImage = icon.getImage().getScaledInstance(POKEMON_WIDTH, POKEMON_HEIGHT, Image.SCALE_SMOOTH);
-        label.setIcon(new ImageIcon(scaledImage));
-        label.setVisible(true);
+    if (isPlayer1) {
+        String pokemonName = spritePath.substring(spritePath.lastIndexOf("/") + 1, spritePath.lastIndexOf("-front.png"));
+        spritePath = presentation.utils.UIConstants.POKEMON_BACK_SPRITES_PATH + pokemonName + "-back.png";
     }
+
+
+    ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(spritePath)));
+    Image scaledImage = icon.getImage().getScaledInstance(POKEMON_WIDTH, POKEMON_HEIGHT, Image.SCALE_SMOOTH);
+    label.setIcon(new ImageIcon(scaledImage));
+    label.setVisible(true);
+}
 
     private void updateHealthBar(JProgressBar healthBar, Pokemon pokemon) {
         if (pokemon == null) return;
