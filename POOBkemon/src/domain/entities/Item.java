@@ -48,6 +48,10 @@ public class Item {
      */
     public String getDescription() { return description; }
 
+    /**
+     * Gets the effect of the item.
+     * @return The item's effect
+     */
     public String getImagePath() { return imagePath; }
 
 }

@@ -8,20 +8,20 @@ import domain.moves.InfernoMove;
 import presentation.utils.UIConstants;
 
 public class Gengar extends Pokemon {
-    /** 
- * Constructs a Gengar pokemon.
- *  
- * @param name
- * @param hp
- * @param attack
- * @param defense
- * @param specialAttack
- * @param specialDefense
- * @param speed
- * @param primaryType
- * @param secondaryType
- * @param sprite
- */
+    /**
+     * Constructs a Gengar pokemon.
+     *
+     * @param name
+     * @param hp
+     * @param attack
+     * @param defense
+     * @param specialAttack
+     * @param specialDefense
+     * @param speed
+     * @param primaryType
+     * @param secondaryType
+     * @param sprite
+     */
 
     public Gengar() {
         super("Gengar", 324, 251, 240, 394, 273, 350,
@@ -30,6 +30,6 @@ public class Gengar extends Pokemon {
         this.addMove(new FieryDanceMove());
         this.addMove(new FakeOutMove());
         this.addMove(new InfernoMove());
-            }
+    }
 
 }
