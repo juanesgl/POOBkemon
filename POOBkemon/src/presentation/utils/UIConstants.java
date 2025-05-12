@@ -97,17 +97,7 @@ public class UIConstants {
     public static final String X_ATTACK_IMAGE_PATH = ITEMS_SPRITES_PATH + "x-attack.png";
 
 
-    /**
-     * Path to the front-facing Pikachu sprite image.
-     */
-    public static final String PIKACHU_FRONT_SPRITE = POKEMON_FRONT_SPRITES_PATH + "pikachu-front.png";
-
-    /**
-     * Path to the front-facing Charizard sprite image.
-     */
-    public static final String CHARIZARD_FRONT_SPRITE = POKEMON_FRONT_SPRITES_PATH + "charizard-front.png";
-
-    
+    public static final String CSV_RELATIVE_PATH = "src/resources/csv/effectiveness.csv";
 
 
     /**

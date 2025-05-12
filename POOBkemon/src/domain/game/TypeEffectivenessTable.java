@@ -7,9 +7,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import presentation.utils.UIConstants;
 
 public final class TypeEffectivenessTable {
-    private static final String CSV_RELATIVE_PATH = "src/resources/csv/effectiveness.csv";
+    
     private static final Map<PokemonType, Map<PokemonType, Double>> effectivenessMap = new HashMap<>();
 
     static {
@@ -17,7 +18,7 @@ public final class TypeEffectivenessTable {
     }
 
     private static void loadEffectivenessTable() {
-        Path csvPath = Paths.get(CSV_RELATIVE_PATH).toAbsolutePath();
+        Path csvPath = Paths.get(UIConstants.CSV_RELATIVE_PATH).toAbsolutePath();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvPath.toFile()))) {
             String line;
