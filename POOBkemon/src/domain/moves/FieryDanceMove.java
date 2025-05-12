@@ -5,7 +5,11 @@ public class FieryDanceMove extends Move {
     public FieryDanceMove() {
         super("Fiery Dance", 80, MoveCategory.SPECIAL, PokemonType.FIRE, 100, 10, 0);
            
-    }     
+    }  
+    @Override
+    public boolean isDefensive() {return false; }
+    @Override
+    public boolean isOffensive(){ return true; }
 }
 
 

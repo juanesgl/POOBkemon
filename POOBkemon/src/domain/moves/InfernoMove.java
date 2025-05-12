@@ -6,4 +6,10 @@ public class InfernoMove extends Move {
         super("Inferno", 100, MoveCategory.PHYSICAL, PokemonType.FIRE, 50, 5, 0);
            
     }     
+
+@Override
+    public boolean isDefensive() {return false; }
+@Override
+public boolean isOffensive(){ return true; }
+
 }

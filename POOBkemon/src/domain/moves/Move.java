@@ -114,5 +114,8 @@ public abstract class Move {
      */
     public int getPriority() { return priority; }
 
+    public boolean isDefensive(){ return false; }
+    public boolean isOffensive(){ return false; }
+
 
 }
