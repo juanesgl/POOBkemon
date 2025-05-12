@@ -154,7 +154,6 @@ public class GameController {
             gameMode = new NormalMode();
 
         } else {
-            //TODO: Future: Implement SurvivalMode
             assert true;
         }
 
@@ -251,8 +250,6 @@ public class GameController {
         if (mode == GameMode.NORMAL) {
             view.showPokemonSelectionScreen(modality, mode);
         } else {
-           
-            //startGame(modality, mode, null, null);
              javax.swing.JOptionPane.showMessageDialog(null,
                     "Modo Survival en construcción",
                     "Información",
