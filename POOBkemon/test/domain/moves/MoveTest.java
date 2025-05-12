@@ -1,39 +1,80 @@
-package test.domain.moves;
 
-import domain.entities.Pokemon;
-import domain.enums.PokemonType;
-import domain.moves.*;
+
+import domain.moves.Move;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import domain.enums.MoveCategory;
+import domain.enums.PokemonType;
 
-public class MoveTest {
+class MoveTest {
 
-    @Test
-    void allMovesOutOfPP_shouldReturnTrueWhenAllMovesHaveZeroPP() {
-    
-        Pokemon pokemon = new Pokemon("Snorlax", 160, 110, 65, 65, 110, 30, PokemonType.NORMAL, null, "");
-        pokemon.addMove(new BubbleMove());
-        pokemon.addMove(new InfernoMove());
-        pokemon.getMoves().forEach(move -> move.setPowerPoints(0));
+    static class TestMove extends Move {
+        TestMove(String name, int power, MoveCategory category, PokemonType type, int accuracy, int pp) {
+            super(name, power, category, type, accuracy, pp);
+        }
 
-        boolean allOut = pokemon.allMovesOutOfPP();
-
-        assertTrue(allOut);
+        TestMove(String name, int power, MoveCategory category, PokemonType type, int accuracy, int pp, int priority) {
+            super(name, power, category, type, accuracy, pp, priority);
+        }
     }
 
     @Test
-    void allMovesOutOfPP_shouldReturnFalseWhenAtLeastOneMoveHasPP() {
-   
-        Pokemon pokemon = new Pokemon("Snorlax", 160, 110, 65, 65, 110, 30, PokemonType.NORMAL, null, "");
-        pokemon.addMove(new BubbleMove());
-        pokemon.addMove(new InfernoMove());
-        pokemon.getMoves().get(0).setPowerPoints(1);
-        pokemon.getMoves().get(1).setPowerPoints(0);
+    void constructorWithDefaultPriority_initializesFieldsCorrectly() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 35);
 
- 
-        boolean allOut = pokemon.allMovesOutOfPP();
+        assertEquals("Tackle", move.getName());
+        assertEquals(40, move.getPower());
+        assertEquals(MoveCategory.PHYSICAL, move.getCategory());
+        assertEquals(PokemonType.NORMAL, move.getType());
+        assertEquals(100, move.getAccuracy());
+        assertEquals(35, move.getPowerPoints());
+        assertEquals(0, move.getPriority());
+    }
 
-     
-        assertFalse(allOut);
+    @Test
+    void constructorWithExplicitPriority_initializesFieldsCorrectly() {
+        TestMove move = new TestMove("Quick Attack", 40, MoveCategory.PHYSICAL,
+                PokemonType.NORMAL, 100, 30, 1);
+
+        assertEquals("Quick Attack", move.getName());
+        assertEquals(40, move.getPower());
+        assertEquals(MoveCategory.PHYSICAL, move.getCategory());
+        assertEquals(PokemonType.NORMAL, move.getType());
+        assertEquals(100, move.getAccuracy());
+        assertEquals(30, move.getPowerPoints());
+        assertEquals(1, move.getPriority());
+    }
+
+    @Test
+    void setPowerPoints_changesValue() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL,
+                PokemonType.NORMAL, 100, 35);
+
+        move.setPowerPoints(20);
+        assertEquals(20, move.getPowerPoints());
+
+        move.setPowerPoints(0);
+        assertEquals(0, move.getPowerPoints());
+    }
+
+    @Test
+    void reducePP_decreasesValueCorrectly() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL,
+                PokemonType.NORMAL, 100, 35);
+
+        move.reducePP(1);
+        assertEquals(34, move.getPowerPoints());
+
+        move.reducePP(10);
+        assertEquals(24, move.getPowerPoints());
+    }
+
+    @Test
+    void reducePP_doesNotGoBelowZero() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL,
+                PokemonType.NORMAL, 100, 5);
+
+        move.reducePP(10);
+        assertEquals(0, move.getPowerPoints());
     }
 }

@@ -1,81 +1,91 @@
-package domain.entities;
 
+
+import domain.entities.Item;
+import domain.entities.ItemEffect;
+import domain.pokemons.Pokemon;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+class ItemTest {
 
-public class ItemTest {
+    static class TestEffect implements ItemEffect {
+        private boolean applied = false;
+        private Pokemon lastTarget = null;
 
-    @Test
-    void use_healingEffect_shouldHealPokemon() {
+        @Override
+        public void apply(Pokemon target) {
+            this.applied = true;
+            this.lastTarget = target;
+        }
 
-        Pokemon pokemon = new Pokemon("Charizard", 100, 55, 40, 50, 50, 90, null, null, "");
-        pokemon.setHealth(30);
-        int initialHealth = pokemon.getHealth();
-        int healAmount = 20;
-        HealingEffect healingEffect = new HealingEffect(healAmount);
-        Item potion = new Item("Potion", "Heals a Pokemon by 20 HP.", "", healingEffect);
+        public boolean isApplied() {
+            return applied;
+        }
 
-        potion.use(pokemon);
+        public Pokemon getLastTarget() {
+            return lastTarget;
+        }
+    }
 
-        assertEquals(initialHealth + healAmount, pokemon.getHealth());
-        assertTrue(pokemon.getHealth() <= pokemon.getMaxHealth());
+    static class TestPokemon extends Pokemon {
+        TestPokemon() {
+            super("TestPokemon", 100, 50, 50, 50, 50, 50, null, null, "");
+        }
     }
 
     @Test
-    void use_healingEffect_shouldNotExceedMaxHealth() {
+    void constructor_initializesFieldsCorrectly() {
+        TestEffect effect = new TestEffect();
+        Item item = new Item("Potion", "Heals 20 HP", "potion.png", effect);
 
-        Pokemon pokemon = new Pokemon("Pikachu", 50, 55, 40, 50, 50, 90, null, null, "");
-        pokemon.setHealth(pokemon.getMaxHealth() - 5);
-        int healAmount = 10;
-        HealingEffect healingEffect = new HealingEffect(healAmount);
-        Item superPotion = new Item("Super Potion", "Heals a Pokemon by 50 HP.", "", healingEffect);
-
-        superPotion.use(pokemon);
-
-        assertEquals(pokemon.getMaxHealth(), pokemon.getHealth());
+        assertEquals("Potion", item.getName());
+        assertEquals("Heals 20 HP", item.getDescription());
+        assertEquals("potion.png", item.getImagePath());
+        assertFalse(effect.isApplied());
     }
 
     @Test
-    void use_attackBoostEffect_shouldBoostAttack() {
+    void use_appliesEffectToTarget() {
+        TestEffect effect = new TestEffect();
+        Item item = new Item("Potion", "Heals 20 HP", "potion.png", effect);
+        TestPokemon pokemon = new TestPokemon();
 
-        Pokemon pokemon = new Pokemon("Charmander", 39, 52, 43, 60, 50, 65, null, null, "");
-        int initialAttack = pokemon.getAttack();
-        int boostAmount = 10;
-        AttackBoostEffect attackBoostEffect = new AttackBoostEffect(boostAmount);
-        Item protein = new Item("Protein", "Increases a Pokemon's Attack stat.", "", attackBoostEffect);
+        item.use(pokemon);
 
-        protein.use(pokemon);
-
-        assertEquals(initialAttack + boostAmount, pokemon.getAttack());
+        assertTrue(effect.isApplied());
+        assertSame(pokemon, effect.getLastTarget());
     }
 
     @Test
-    void use_reviveEffect_shouldReviveFaintedPokemon() {
+    void getters_returnCorrectValues() {
+        TestEffect effect = new TestEffect();
+        Item item = new Item("Super Potion", "Heals 50 HP", "super_potion.png", effect);
 
-        Pokemon pokemon = new Pokemon("Squirtle", 44, 48, 65, 50, 64, 43, null, null, "");
-        pokemon.setHealth(0);
-        float revivePercentage = 0.5f;
-        ReviveEffect reviveEffect = new ReviveEffect(revivePercentage);
-        Item revive = new Item("Revive", "Revives a fainted Pokemon with half its HP.", "", reviveEffect);
-
-        revive.use(pokemon);
-
-        assertTrue(pokemon.getHealth() > 0);
-        assertEquals((int)(pokemon.getMaxHealth() * revivePercentage), pokemon.getHealth());
+        assertEquals("Super Potion", item.getName());
+        assertEquals("Heals 50 HP", item.getDescription());
+        assertEquals("super_potion.png", item.getImagePath());
     }
 
     @Test
-    void use_reviveEffect_shouldNotReviveHealthyPokemon() {
+    void differentItems_haveIndependentEffects() {
+        TestEffect effect1 = new TestEffect();
+        TestEffect effect2 = new TestEffect();
 
-        Pokemon pokemon = new Pokemon("Bulbasaur", 45, 49, 49, 65, 65, 45, null, null, "");
-        int initialHealth = pokemon.getHealth();
-        float revivePercentage = 0.5f;
-        ReviveEffect reviveEffect = new ReviveEffect(revivePercentage);
-        Item revive = new Item("Revive", "Revives a fainted Pokemon with half its HP.", "", reviveEffect);
+        Item item1 = new Item("Potion", "Heals 20 HP", "potion.png", effect1);
+        Item item2 = new Item("Super Potion", "Heals 50 HP", "super_potion.png", effect2);
 
-        revive.use(pokemon);
+        TestPokemon pokemon = new TestPokemon();
 
-        assertEquals(initialHealth, pokemon.getHealth());
+        item1.use(pokemon);
+
+        assertTrue(effect1.isApplied());
+        assertFalse(effect2.isApplied());
+
+        effect1 = new TestEffect();
+
+        item2.use(pokemon);
+
+        assertFalse(effect1.isApplied());
+        assertTrue(effect2.isApplied());
     }
 }
