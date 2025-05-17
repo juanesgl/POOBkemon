@@ -9,4 +9,9 @@ public class HumanPlayer extends Player {
     public HumanPlayer(String name, Color color, List<Pokemon> team, List<Item> items) {
         super(name,color, team, items);
     }
+
+    @Override
+    public boolean isAI() {
+        return false;
+    }
 }

@@ -23,4 +23,24 @@ public class AIPlayer extends Player {
     public int selectSwitch() {
         return strategy.selectSwitch(getActivePokemon(), getTeam(), getActivePokemon());
     }
+
+     @Override
+    public boolean isAI() {
+        return true;
+    }
+
+    public void setStrategy(AIStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public AIStrategy getStrategy() {
+        return strategy;
+    }
+
+    public void makeDecision() {
+        int moveIndex = selectMove();
+        System.out.println("AI selected move: " + moveIndex);
+        int switchIndex = selectSwitch();
+        System.out.println("AI selected switch: " + switchIndex);
+    }
 }

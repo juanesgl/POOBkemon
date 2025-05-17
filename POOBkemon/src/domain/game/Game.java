@@ -1,6 +1,7 @@
 package domain.game;
 
 import domain.pokemons.Pokemon;import domain.entities.Item;
+import domain.player.AIPlayer;
 import domain.player.Player;
 import domain.enums.GameState;
 import domain.moves.Move;
@@ -88,6 +89,11 @@ public class Game {
     
         turnTimedOut = false;
         turnActionTaken = false;
+
+
+        if (getCurrentPlayer().isAI()) {
+            performAIMove();}
+
 
         turnTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -325,4 +331,20 @@ This is for future animations :D!
         startTurnTimer();
         secondsRemaining=secondsInPause;
     }
+
+    private void performAIMove() {
+    AIPlayer aiPlayer = (AIPlayer) getCurrentPlayer();
+
+    new Timer().schedule(new TimerTask() {
+        @Override
+        public void run() {
+            
+            aiPlayer.makeDecision(); 
+            turnActionTaken = true;
+            endTurn(); 
+        }
+    }, 1500); 
+}
+
+
 }

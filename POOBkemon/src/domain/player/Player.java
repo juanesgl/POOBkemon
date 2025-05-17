@@ -145,4 +145,6 @@ public abstract class Player {
             activePokemonIndex = index;
         }
     }
+
+    public abstract boolean isAI();
 }

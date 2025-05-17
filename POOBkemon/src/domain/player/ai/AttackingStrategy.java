@@ -38,12 +38,20 @@ public class AttackingStrategy implements AIStrategy {
         do {
             randomIndex = random.nextInt(moves.size());
         } while (moves.get(randomIndex).getPowerPoints() <= 0);
-        
+        System.err.println("Entre a move ataque");
         return randomIndex;
     }
 
+    /**
+     * Always returns 0, meaning the AI does not switch out its current Pokemon.
+     * @param activePokemon The AI's current Pokemon.
+     * @param team The AI's available Pokemon.
+     * @param opponentPokemon The opponent's current Pokemon.
+     * @return 0
+     */
       @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
+        System.err.println("Entre a switch ataque");
         return 0;
     }
     
