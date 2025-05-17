@@ -20,7 +20,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.MediaTracker;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -120,7 +119,11 @@ public class GameScreen extends JPanel {
         GameScreen.this.revalidate();
         GameScreen.this.repaint();
 
-        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.COVER_ARENA_PATH)));
+        String backgroundPath = game != null && game.getGameMode().getClass().getSimpleName().equals("SurvivalMode") 
+            ? UIConstants.SURVIVAL_IMAGE_PATH 
+            : UIConstants.COVER_ARENA_PATH;
+
+        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource(backgroundPath)));
         battlePanel = new JLabel(background);
         battlePanel.setLayout(null);
         battlePanel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
@@ -311,12 +314,19 @@ public class GameScreen extends JPanel {
     }
 
     public void setGame(Game game) {
-
         this.game = game;
 
         if (game != null) {
-
             game.setGameScreen(this);
+            
+            // Update background based on game mode
+            String backgroundPath = game.getGameMode().getClass().getSimpleName().equals("SurvivalMode") 
+                ? UIConstants.SURVIVAL_IMAGE_PATH 
+                : UIConstants.COVER_ARENA_PATH;
+            
+            ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource(backgroundPath)));
+            battlePanel.setIcon(background);
+            
             updateBattleUI();
         } else return;
     }
@@ -343,15 +353,17 @@ public class GameScreen extends JPanel {
         updateHealthBar(player2HealthBar, player2Pokemon);
 
         player1NameLabel.setText(player1.getName() + "'s " + player1Pokemon.getName());
+        player1NameLabel.setForeground(player1.getColor());
         player2NameLabel.setText(player2.getName() + "'s " + player2Pokemon.getName());
+        player2NameLabel.setForeground(player2.getColor());
 
         Player currentPlayer = game.getCurrentPlayer();
         turnLabel.setText(currentPlayer.getName() + "'s Turn");
+        turnLabel.setForeground(currentPlayer.getColor());
+        turnLabel.setOpaque(false);
 
         updateMoveButtons(currentPlayer.getActivePokemon());
-
         updateItemButtons(currentPlayer);
-
         updateSwitchButtons(currentPlayer);
         
         actionMenuPanel.setVisible(true);
@@ -384,7 +396,6 @@ public class GameScreen extends JPanel {
         battlePanel.repaint();
         revalidate();
         repaint();
-
     }
 
     private void updatePokemonSprite(JLabel label, Pokemon pokemon, boolean isPlayer1) {
@@ -428,13 +439,38 @@ public class GameScreen extends JPanel {
         for (int i = 0; i < moveButtons.length; i++) {
             if (i < moves.size()) {
                 Move move = moves.get(i);
-                moveButtons[i].setText(move.getName());
-                moveButtons[i].setToolTipText("Power: " + move.getPower() + ", Accuracy: " + move.getAccuracy() + "%");
-                moveButtons[i].setEnabled(true);
+                int pp = move.getPowerPoints();
+                
+                // Set button text to include PP
+                moveButtons[i].setText(String.format("%s (%d PP)", move.getName(), pp));
+                
+                // Set tooltip with detailed information
+                moveButtons[i].setToolTipText(String.format("Power: %d, Accuracy: %d%%", 
+                    move.getPower(), 
+                    move.getAccuracy()));
+                
+                // Color coding based on PP
+                if (pp <= 0) {
+                    moveButtons[i].setBackground(new Color(100, 100, 100)); // Gray when out of PP
+                    moveButtons[i].setEnabled(false);
+                } else if (pp <= 2) {
+                    moveButtons[i].setBackground(new Color(200, 50, 50)); // Red when low PP
+                    moveButtons[i].setEnabled(true);
+                } else if (pp <= 5) {
+                    moveButtons[i].setBackground(new Color(200, 150, 50)); // Orange when medium PP
+                    moveButtons[i].setEnabled(true);
+                } else {
+                    moveButtons[i].setBackground(new Color(100, 100, 200)); // Blue when plenty of PP
+                    moveButtons[i].setEnabled(true);
+                }
+                
+                moveButtons[i].setForeground(Color.WHITE);
+                moveButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             } else {
-                moveButtons[i].setText("me jodi");
+                moveButtons[i].setText("---");
                 moveButtons[i].setToolTipText(null);
                 moveButtons[i].setEnabled(false);
+                moveButtons[i].setBackground(new Color(100, 100, 200));
             }
         }
     }
@@ -571,38 +607,14 @@ public class GameScreen extends JPanel {
         gifDialog.setLayout(new BorderLayout());
         
         URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
-        if (gifURL == null) {
-            System.err.println("Could not find GIF resource");
-            return;
-        }
-
-        ImageIcon icon = new ImageIcon(gifURL);
-        // Ensure the GIF is loaded and animated
-        if (icon.getImageLoadStatus() != MediaTracker.COMPLETE) {
-            System.err.println("Failed to load GIF");
-            return;
-        }
-
-        JLabel gifLabel = new JLabel(icon);
+        assert gifURL != null;
+        JLabel gifLabel = new JLabel(new ImageIcon(gifURL));
         gifLabel.setHorizontalAlignment(JLabel.CENTER);
         gifDialog.add(gifLabel, BorderLayout.CENTER);
 
-        // Create a timer to dispose the dialog after the animation
-        Timer gifTimer = new Timer(10000, e -> {
-            gifDialog.dispose();
-            showResultDialog(player1Name, player2Name, player1First);
-        });
-        gifTimer.setRepeats(false);
-        gifTimer.start();
-        
-        gifDialog.setVisible(true);
-    }
-    
-    private void showResultDialog(String player1Name, String player2Name, boolean player1First) {
-
         JDialog resultDialog = new JDialog();
         resultDialog.setTitle("Coin Toss Result");
-        resultDialog.setSize(300, 200);
+        resultDialog.setSize(300, 150);
         resultDialog.setLocationRelativeTo(this);
         resultDialog.setModal(true);
         resultDialog.setLayout(new BorderLayout());
@@ -627,7 +639,6 @@ public class GameScreen extends JPanel {
     
         resultDialog.add(contentPanel);
         resultDialog.setVisible(true);
-        
     }
             
 }

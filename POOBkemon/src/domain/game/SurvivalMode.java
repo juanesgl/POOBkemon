@@ -1,9 +1,7 @@
 package domain.game;
 
 import domain.player.Player;
-import domain.pokemons.Pokemon;
-import java.util.List;
-import java.util.Random;
+
 
 /**
  * Implementation of the GameMode interface for the Survival game mode.

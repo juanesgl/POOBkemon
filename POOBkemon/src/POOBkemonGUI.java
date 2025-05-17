@@ -208,16 +208,6 @@ public class POOBkemonGUI extends JFrame implements GameView {
         });
     }
 
-    /**
-     * Switches to a new screen by removing all current components and adding the new screen.
-     * @param newScreen The screen to switch to
-     */
-    private void switchScreen(JPanel newScreen) {
-        getContentPane().removeAll();
-        getContentPane().add(newScreen);
-        revalidate();
-        repaint();
-    }
 
     @Override
     public void showMessage(String message, String title, int messageType) {

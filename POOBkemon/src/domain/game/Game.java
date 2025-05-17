@@ -323,6 +323,12 @@ This is for future animations :D!
 
     public GameState getState() { return state; }
 
+    /**
+     * Gets the current game mode.
+     * @return The game mode
+     */
+    public GameMode getGameMode() { return gameMode; }
+
     public void pauseGame(){
         secondsInPause=secondsRemaining;
         stopTurnTimer();

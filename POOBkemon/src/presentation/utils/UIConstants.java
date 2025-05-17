@@ -47,7 +47,15 @@ public class UIConstants {
      */
     public static final String COVER_ARENA_PATH = RESOURCES_PATH + "Cover/Arena.png";
 
+    /**
+     * Path to the selection screen background image.
+     */
     public static final String SELECTION_IMAGE_PATH = RESOURCES_PATH + "SelectionScreen/POOBkemonSelectionCover.png";
+
+    /**
+     * Path to the survival mode background image.
+     */
+    public static final String SURVIVAL_IMAGE_PATH = RESOURCES_PATH + "Cover/entrada1.png";
 
     /**
      * Path to the start button image displayed on the cover screen.

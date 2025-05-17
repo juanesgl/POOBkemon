@@ -135,6 +135,12 @@ public abstract class Player {
     public List<Item> getItems() { return items; }
 
     /**
+     * Gets the player's color.
+     * @return The player's color
+     */
+    public Color getColor() { return color; }
+
+    /**
      * Sets the active Pokemon index.
      * 
      * @param index The index of the Pokemon to set as active
