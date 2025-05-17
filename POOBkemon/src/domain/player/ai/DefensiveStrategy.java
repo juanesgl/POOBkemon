@@ -24,7 +24,7 @@ public class DefensiveStrategy implements AIStrategy {
 
     @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
-        return 0;
+        return 50;
     }
     
    
