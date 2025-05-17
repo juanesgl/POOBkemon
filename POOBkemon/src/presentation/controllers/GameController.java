@@ -290,4 +290,12 @@ public class GameController {
     public void showItemSelectionScreen(GameModality modality, GameMode mode, List<Pokemon> player1Pokemons, List<Pokemon> player2Pokemons) {
         view.showItemSelectionScreen(modality, mode, player1Pokemons, player2Pokemons);
     }
+
+    public void loadGame() {
+        return;
+    }
+
+    public void saveGame() {
+        return;
+    }
 }

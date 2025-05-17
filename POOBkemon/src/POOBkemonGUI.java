@@ -32,6 +32,11 @@ public class POOBkemonGUI extends JFrame implements GameView {
     private SoundManager soundManager;
     private GameController gameController;
 
+
+    private JMenuBar menuBar;
+    private JMenuItem Save;
+    private JMenuItem Load;
+
     /**
      * Constructor for the POOBkemonGUI.
      * Initializes the main window, components, screens, and sets up event handlers.
@@ -54,6 +59,8 @@ public class POOBkemonGUI extends JFrame implements GameView {
         gameScreen = new GameScreen();
         pokemonSelectionScreen = new PokemonSelectionScreen(gameController);
         itemSelectionScreen = new ItemSelectionScreen(gameController);
+
+        menu();
 
         
         showCoverScreen();
@@ -154,6 +161,23 @@ public class POOBkemonGUI extends JFrame implements GameView {
                 exit();
             }
         });
+    }
+
+
+
+    private void menu(){
+        menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        Save = new JMenuItem("Save");
+        Load = new JMenuItem("Load");
+
+        fileMenu.add(Save);
+        fileMenu.add(Load);
+        menuBar.add(fileMenu);
+        setJMenuBar(menuBar);
+
+        Save.addActionListener(e -> gameController.saveGame());
+        Load.addActionListener(e -> gameController.loadGame());
     }
 
     /**
