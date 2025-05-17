@@ -19,6 +19,8 @@ public abstract class Player {
     protected List<Pokemon> team;
     protected List<Item> items;
     protected int activePokemonIndex;
+    private int defeatedPokemonCount = 0;
+    private int usedItemsCount = 0;
 
     /**
      * Constructor for creating a new Human Player.
@@ -153,4 +155,34 @@ public abstract class Player {
     }
 
     public abstract boolean isAI();
+
+    /**
+     * Increments the count of defeated Pokémon.
+     */
+    public void incrementDefeatedPokemonCount() {
+        defeatedPokemonCount++;
+    }
+
+    /**
+     * Gets the number of Pokémon defeated by this player.
+     * @return The number of defeated Pokémon
+     */
+    public int getDefeatedPokemonCount() {
+        return defeatedPokemonCount;
+    }
+
+    /**
+     * Increments the count of items used.
+     */
+    public void incrementUsedItemsCount() {
+        usedItemsCount++;
+    }
+
+    /**
+     * Gets the number of items used by this player.
+     * @return The number of items used
+     */
+    public int getUsedItemsCount() {
+        return usedItemsCount;
+    }
 }

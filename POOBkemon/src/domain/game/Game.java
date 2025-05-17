@@ -74,12 +74,13 @@ public class Game {
     }
 
     private void startTurnTimer() {
-
+        // Cancel existing timer if any
         if (turnTimer != null) {
             turnTimer.cancel();
+            turnTimer = null;
         }
 
-
+        // Create new timer
         turnTimer = new Timer();
         secondsRemaining = TURN_TIME_LIMIT;
         if (!gif) {
@@ -90,20 +91,30 @@ public class Game {
         turnTimedOut = false;
         turnActionTaken = false;
 
-
+        // Only start AI move if it's AI's turn
         if (getCurrentPlayer().isAI()) {
-            performAIMove();}
+            // Delay AI move to prevent timer conflicts
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (!isGameOver && !turnActionTaken) {
+                        performAIMove();
+                    }
+                }
+            }, 1000); // Wait 1 second before AI makes its move
+        }
 
-
+        // Start the turn timer
         turnTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                secondsRemaining--;
-
-                if (gameScreen != null) {
-                    gameScreen.updateTimer(secondsRemaining);
+                if (secondsRemaining > 0) {
+                    secondsRemaining--;
+                    if (gameScreen != null) {
+                        gameScreen.updateTimer(secondsRemaining);
+                    }
                 }
-
+                
                 if (secondsRemaining <= 0) {
                     turnTimedOut = true;
                     endTurn();
@@ -120,8 +131,12 @@ public class Game {
         }
     }
 
-
     private void endTurn() {
+        // Stop the current timer
+        if (turnTimer != null) {
+            turnTimer.cancel();
+            turnTimer = null;
+        }
 
         if (turnTimedOut) {
             Pokemon activePokemon = currentPlayer.getActivePokemon();
@@ -130,10 +145,13 @@ public class Game {
             }
         }
 
+        // Switch players
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
 
+        // Start new turn timer
         startTurnTimer();
 
+        // Update UI
         if (gameScreen != null) {
             gameScreen.updateBattleUI();
         }
@@ -234,20 +252,35 @@ This is for future animations :D!
     }
 
     private void executeMove(Pokemon attacker, Pokemon defender, Move move) {
-
         attacker.attack(defender, move);
 
         if (defender.isFainted()) {
-
             Player defenderPlayer = (attacker == currentPlayer.getActivePokemon()) ? 
                                     ((currentPlayer == player1) ? player2 : player1) : currentPlayer;
             gameMode.handleFaintedPokemon(defenderPlayer);
 
+            // Check if the game is over after a Pokémon faints
             if (gameMode.isGameOver(player1, player2)) {
                 isGameOver = true;
                 stopTurnTimer();
+                // Determine the winner
+                Player winner = determineWinner();
+                if (winner != null && gameScreen != null) {
+                    gameScreen.showWinnerDialog(winner);
+                }
             }
         }
+    }
+
+    private Player determineWinner() {
+        // Check if either player has no Pokémon left
+        if (player1.getTeam().isEmpty() || player1.getTeam().stream().allMatch(Pokemon::isFainted)) {
+            return player2;
+        }
+        if (player2.getTeam().isEmpty() || player2.getTeam().stream().allMatch(Pokemon::isFainted)) {
+            return player1;
+        }
+        return null;
     }
 
     /**
@@ -278,15 +311,21 @@ This is for future animations :D!
         if (isGameOver || turnActionTaken) return;
 
         if (pokemonIndex >= 0 && pokemonIndex < currentPlayer.getTeam().size()) {
-
             Pokemon pokemon = currentPlayer.getTeam().get(pokemonIndex);
             if (!pokemon.isFainted() && pokemon != currentPlayer.getActivePokemon()) {
-
                 currentPlayer.setActivePokemonIndex(pokemonIndex);
-
                 turnActionTaken = true;
-
                 endTurn();
+            }
+        } else {
+            // If no valid Pokémon to switch to, check if game is over
+            if (currentPlayer.getTeam().isEmpty() || currentPlayer.getTeam().stream().allMatch(Pokemon::isFainted)) {
+                isGameOver = true;
+                stopTurnTimer();
+                Player winner = determineWinner();
+                if (winner != null && gameScreen != null) {
+                    gameScreen.showWinnerDialog(winner);
+                }
             }
         }
     }
@@ -339,18 +378,24 @@ This is for future animations :D!
     }
 
     private void performAIMove() {
-    AIPlayer aiPlayer = (AIPlayer) getCurrentPlayer();
-
-    new Timer().schedule(new TimerTask() {
-        @Override
-        public void run() {
-            
-            aiPlayer.makeDecision(Game.this); 
-            turnActionTaken = true;
-            endTurn(); 
+        if (isGameOver || turnActionTaken) return;
+        
+        AIPlayer aiPlayer = (AIPlayer) getCurrentPlayer();
+        // Check if AI has any valid moves or Pokémon to switch to
+        if (aiPlayer.getTeam().isEmpty() || aiPlayer.getTeam().stream().allMatch(Pokemon::isFainted)) {
+            isGameOver = true;
+            stopTurnTimer();
+            Player winner = determineWinner();
+            if (winner != null && gameScreen != null) {
+                gameScreen.showWinnerDialog(winner);
+            }
+            return;
         }
-    }, 1500); 
-}
+        
+        aiPlayer.makeDecision(this);
+        turnActionTaken = true;
+        endTurn();
+    }
 
 
 }

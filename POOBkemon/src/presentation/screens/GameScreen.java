@@ -26,6 +26,10 @@ import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.net.URL;
 import java.util.Objects;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
+import java.awt.Component;
 
 
 public class GameScreen extends JPanel {
@@ -639,6 +643,120 @@ public class GameScreen extends JPanel {
     
         resultDialog.add(contentPanel);
         resultDialog.setVisible(true);
+    }
+
+    /**
+     * Shows a victory dialog when a player wins the game.
+     * 
+     * @param winner The winning player
+     */
+    public void showWinnerDialog(Player winner) {
+        JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+        dialog.setTitle("Victory!");
+        dialog.setSize(500, 400);
+        dialog.setLocationRelativeTo(this);
+        dialog.setModal(true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(new Color(25, 25, 112));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Title
+        JLabel titleLabel = new JLabel("VICTORY!", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setForeground(Color.YELLOW);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createVerticalStrut(20));
+
+        // Winner announcement
+        JLabel winnerLabel = new JLabel(winner.getName() + " wins!", SwingConstants.CENTER);
+        winnerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        winnerLabel.setForeground(winner.getColor());
+        winnerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainPanel.add(winnerLabel);
+        mainPanel.add(Box.createVerticalStrut(30));
+
+        // Battle statistics
+        JPanel statsPanel = new JPanel();
+        statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+        statsPanel.setBackground(new Color(25, 25, 112));
+        statsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        addStatLabel(statsPanel, "Pokémon Defeated: " + winner.getDefeatedPokemonCount());
+        addStatLabel(statsPanel, "Remaining Team Members: " + winner.getTeam().size());
+        if (!winner.getTeam().isEmpty()) {
+            Pokemon activePokemon = winner.getActivePokemon();
+            addStatLabel(statsPanel, "Active Pokémon HP: " + activePokemon.getHealth() + "/" + activePokemon.getMaxHealth());
+        }
+        addStatLabel(statsPanel, "Items Used: " + winner.getUsedItemsCount());
+
+        mainPanel.add(statsPanel);
+        mainPanel.add(Box.createVerticalStrut(30));
+
+        // Buttons panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setBackground(new Color(25, 25, 112));
+
+        // Replay button
+        JButton replayButton = new JButton("Play Again");
+        replayButton.setFont(new Font("Arial", Font.BOLD, 16));
+        replayButton.setBackground(new Color(50, 205, 50));
+        replayButton.setForeground(Color.WHITE);
+        replayButton.setFocusPainted(false);
+        replayButton.addActionListener(e -> {
+            dialog.dispose();
+            Window window = SwingUtilities.getWindowAncestor(this);
+            window.dispose();
+            try {
+                Class<?> guiClass = Class.forName("POOBkemonGUI");
+                Object guiObject = guiClass.getDeclaredConstructor().newInstance();
+                guiClass.getMethod("showGameScreen").invoke(guiObject);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        // Menu button
+        JButton menuButton = new JButton("Return to Menu");
+        menuButton.setFont(new Font("Arial", Font.BOLD, 16));
+        menuButton.setBackground(new Color(220, 20, 60));
+        menuButton.setForeground(Color.WHITE);
+        menuButton.setFocusPainted(false);
+        menuButton.addActionListener(e -> {
+            dialog.dispose();
+            Window window = SwingUtilities.getWindowAncestor(this);
+            window.dispose();
+            try {
+                Class<?> guiClass = Class.forName("POOBkemonGUI");
+                Object guiObject = guiClass.getDeclaredConstructor().newInstance();
+                guiClass.getMethod("showMainMenu").invoke(guiObject);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        buttonPanel.add(Box.createHorizontalStrut(20));
+        buttonPanel.add(replayButton);
+        buttonPanel.add(Box.createHorizontalStrut(20));
+        buttonPanel.add(menuButton);
+        buttonPanel.add(Box.createHorizontalStrut(20));
+        mainPanel.add(buttonPanel);
+
+        dialog.add(mainPanel);
+        dialog.setVisible(true);
+    }
+
+    private void addStatLabel(JPanel panel, String text) {
+        JLabel label = new JLabel(text, SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.PLAIN, 16));
+        label.setForeground(Color.WHITE);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(label);
+        panel.add(Box.createVerticalStrut(10));
     }
             
 }
