@@ -20,6 +20,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -562,7 +563,6 @@ public class GameScreen extends JPanel {
      */
 
     public void showCoinTossDialog(String player1Name, String player2Name, boolean player1First) {
-
         JDialog gifDialog = new JDialog();
         gifDialog.setTitle("Coin Toss");
         gifDialog.setSize(640, 272);
@@ -571,12 +571,23 @@ public class GameScreen extends JPanel {
         gifDialog.setLayout(new BorderLayout());
         
         URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
+        if (gifURL == null) {
+            System.err.println("Could not find GIF resource");
+            return;
+        }
 
-        assert gifURL != null;
-        JLabel gifLabel = new JLabel(new ImageIcon(gifURL));
+        ImageIcon icon = new ImageIcon(gifURL);
+        // Ensure the GIF is loaded and animated
+        if (icon.getImageLoadStatus() != MediaTracker.COMPLETE) {
+            System.err.println("Failed to load GIF");
+            return;
+        }
+
+        JLabel gifLabel = new JLabel(icon);
         gifLabel.setHorizontalAlignment(JLabel.CENTER);
         gifDialog.add(gifLabel, BorderLayout.CENTER);
 
+        // Create a timer to dispose the dialog after the animation
         Timer gifTimer = new Timer(10000, e -> {
             gifDialog.dispose();
             showResultDialog(player1Name, player2Name, player1First);

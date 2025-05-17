@@ -1,10 +1,9 @@
 package domain.game;
 import domain.enums.PokemonType;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import presentation.utils.UIConstants;
@@ -18,23 +17,25 @@ public final class TypeEffectivenessTable {
     }
 
     private static void loadEffectivenessTable() {
-        Path csvPath = Paths.get(UIConstants.CSV_RELATIVE_PATH).toAbsolutePath();
+        try (
+            InputStream is = TypeEffectivenessTable.class.getClassLoader().getResourceAsStream(UIConstants.CSV_RELATIVE_PATH)
+        ) {
+            if (is == null) {
+                throw new RuntimeException("Resource not found: " + UIConstants.CSV_RELATIVE_PATH);
+            }
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String line;
+                boolean isFirstLine = true;
+                PokemonType[] defendingTypes = null;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(csvPath.toFile()))) {
-            String line;
-            boolean isFirstLine = true;
-            PokemonType[] defendingTypes = null;
-
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                
-                if (isFirstLine) {
-                    
-                    defendingTypes = parseDefendingTypes(values);
-                    isFirstLine = false;
-                } else {
-                   
-                    parseAttackingType(values, defendingTypes);
+                while ((line = br.readLine()) != null) {
+                    String[] values = line.split(",");
+                    if (isFirstLine) {
+                        defendingTypes = parseDefendingTypes(values);
+                        isFirstLine = false;
+                    } else {
+                        parseAttackingType(values, defendingTypes);
+                    }
                 }
             }
         } catch (IOException e) {
