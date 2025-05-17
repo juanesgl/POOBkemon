@@ -38,7 +38,7 @@ public class AttackingStrategy implements AIStrategy {
         do {
             randomIndex = random.nextInt(moves.size());
         } while (moves.get(randomIndex).getPowerPoints() <= 0);
-        System.err.println("Entre a move ataque");
+        
         return randomIndex;
     }
 
@@ -51,8 +51,8 @@ public class AttackingStrategy implements AIStrategy {
      */
       @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
-        System.err.println("Entre a switch ataque");
-        return 0;
+        
+        return 50;
     }
     
 }

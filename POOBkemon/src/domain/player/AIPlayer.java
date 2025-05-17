@@ -40,9 +40,14 @@ public class AIPlayer extends Player {
 
     public void makeDecision(Game game) {
         int moveIndex = selectMove();
-        game.executeMove(moveIndex); 
-        System.out.println("AI selected move: " + moveIndex);
         int switchIndex = selectSwitch();
-        System.out.println("AI selected switch: " + switchIndex);
-    }
+        if (switchIndex <= 10) {
+            game.switchPokemon(switchIndex); 
+        } else if (moveIndex <= 10) {
+            game.executeMove(moveIndex); 
+        } else {
+            return; 
+        }
+
+            }
 }

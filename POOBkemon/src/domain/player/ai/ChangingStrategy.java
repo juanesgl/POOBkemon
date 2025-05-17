@@ -13,7 +13,7 @@ public class ChangingStrategy implements AIStrategy {
     @Override
     public int selectMove(Pokemon activePokemon) {
   
-        return 0; 
+        return 50; 
     }
 
     @Override
@@ -70,6 +70,6 @@ public class ChangingStrategy implements AIStrategy {
                 return i;
             }
         }
-        return 0; 
+        return 50; 
     }
 }
