@@ -6,6 +6,7 @@ import java.util.List;
 import domain.enums.MachineType;
 import domain.player.ai.AIStrategy;
 import domain.player.ai.AIStrategyFactory;
+import domain.game.*;
 
 
 public class AIPlayer extends Player {
@@ -37,8 +38,9 @@ public class AIPlayer extends Player {
         return strategy;
     }
 
-    public void makeDecision() {
+    public void makeDecision(Game game) {
         int moveIndex = selectMove();
+        game.executeMove(moveIndex); 
         System.out.println("AI selected move: " + moveIndex);
         int switchIndex = selectSwitch();
         System.out.println("AI selected switch: " + switchIndex);

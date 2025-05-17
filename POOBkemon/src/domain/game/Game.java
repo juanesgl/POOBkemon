@@ -345,7 +345,7 @@ This is for future animations :D!
         @Override
         public void run() {
             
-            aiPlayer.makeDecision(); 
+            aiPlayer.makeDecision(Game.this); 
             turnActionTaken = true;
             endTurn(); 
         }
