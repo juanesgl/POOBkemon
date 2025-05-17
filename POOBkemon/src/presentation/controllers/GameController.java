@@ -5,7 +5,7 @@ import domain.enums.GameModality;
 
 import domain.game.Game;
 import domain.game.NormalMode;
-
+import domain.game.SurvivalMode;
 
 import domain.player.AIPlayer;
 import domain.player.HumanPlayer;
@@ -25,6 +25,7 @@ import java.awt.Color;
 import domain.enums.MachineType;
 import domain.entities.HealingEffect;
 import domain.entities.AttackBoostEffect;
+import java.util.Random;
 
 
 /**
@@ -152,9 +153,8 @@ public class GameController {
         domain.game.GameMode gameMode = null;
         if (mode == GameMode.NORMAL) {
             gameMode = new NormalMode();
-
-        } else {
-            assert true;
+        } else if (mode == GameMode.SURVIVAL) {
+            gameMode = new SurvivalMode();
         }
 
         Game game = new Game(gameMode, player1, player2);
@@ -247,14 +247,39 @@ public class GameController {
      */
 
     public void startGameSetup(GameModality modality, GameMode mode) {
-        if (mode == GameMode.NORMAL) {
-            view.showPokemonSelectionScreen(modality, mode);
+        if (mode == GameMode.SURVIVAL) {
+            if (modality != GameModality.PLAYER_VS_PLAYER) {
+                view.showMessage("Survival Mode is only available in Player vs Player mode!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            // Get random Pokemon for both players and start the game directly
+            List<Pokemon> player1Pokemons = getRandomPokemonTeam();
+            List<Pokemon> player2Pokemons = getRandomPokemonTeam();
+            startGame(modality, mode, player1Pokemons, player2Pokemons, null, null);
         } else {
-             javax.swing.JOptionPane.showMessageDialog(null,
-                    "Modo Survival en construcción",
-                    "Información",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            view.showPokemonSelectionScreen(modality, mode);
         }
+    }
+
+    private List<Pokemon> getRandomPokemonTeam() {
+        List<Pokemon> availablePokemon = new ArrayList<>();
+        availablePokemon.add(new Charizard());
+        availablePokemon.add(new Blastoise());
+        availablePokemon.add(new Gengar());
+        availablePokemon.add(new Raichu());
+
+        List<Pokemon> selectedTeam = new ArrayList<>();
+        Random random = new Random();
+
+        // Select 6 random Pokemon
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(availablePokemon.size());
+            Pokemon selected = availablePokemon.get(index);
+            selected.setLevel(100); // Set level to 100 for Survival Mode
+            selectedTeam.add(selected);
+        }
+
+        return selectedTeam;
     }
 
     /**

@@ -32,4 +32,12 @@ public interface GameView {
      * @param game The game to display
      */
     void showGameScreen(Game game);
+
+    /**
+     * Show a message dialog to the user
+     * @param message The message to display
+     * @param title The title of the dialog
+     * @param messageType The type of message (e.g., JOptionPane.WARNING_MESSAGE)
+     */
+    void showMessage(String message, String title, int messageType);
 }

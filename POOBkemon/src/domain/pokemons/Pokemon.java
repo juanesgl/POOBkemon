@@ -11,10 +11,10 @@ public abstract class Pokemon {
     private int health;
     private final int maxHealth;
     private int attack;
-    private final int defense;
-    private final int specialAttack;
-    private final int specialDefense;
-    private final int speed;
+    private int defense;
+    private int specialAttack;
+    private int specialDefense;
+    private int speed;
     private final List<Move> moves;
     private final String spritePath;
     private final PokemonType primaryType;
@@ -248,9 +248,28 @@ public abstract class Pokemon {
      */
     public PokemonType getSecondaryType() { return secondaryType; }
 
+    /**
+     * Sets the level of the Pokemon and scales its stats accordingly.
+     * In survival mode, all Pokemon are set to level 100.
+     * 
+     * @param level The new level of the Pokemon
+     */
+    public void setLevel(int level) {
+        // For survival mode, we'll scale the stats based on level 100
+        double scaleFactor = (double) level / 50.0; // Assuming base stats are for level 50
+        
+        // Scale all stats
+        this.health = (int) (this.maxHealth * scaleFactor);
+        this.attack = (int) (this.attack * scaleFactor);
+        this.defense = (int) (this.defense * scaleFactor);
+        this.specialAttack = (int) (this.specialAttack * scaleFactor);
+        this.specialDefense = (int) (this.specialDefense * scaleFactor);
+        this.speed = (int) (this.speed * scaleFactor);
+    }
+
     @Override
     public String toString() {
-    return this.getName();
+        return this.getName();
     }
 
 }
