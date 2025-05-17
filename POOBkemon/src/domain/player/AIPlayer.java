@@ -42,9 +42,11 @@ public class AIPlayer extends Player {
         int moveIndex = selectMove();
         int switchIndex = selectSwitch();
         if (switchIndex <= 10) {
-            game.switchPokemon(switchIndex); 
+            game.switchPokemon(switchIndex);
+            return; 
         } else if (moveIndex <= 10) {
             game.executeMove(moveIndex); 
+            return;
         } else {
             return; 
         }
