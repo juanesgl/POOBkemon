@@ -133,10 +133,7 @@ public class Game {
 
     private void endTurn() {
         // Stop the current timer
-        if (turnTimer != null) {
-            turnTimer.cancel();
-            turnTimer = null;
-        }
+        stopTurnTimer();
 
         if (turnTimedOut) {
             Pokemon activePokemon = currentPlayer.getActivePokemon();
