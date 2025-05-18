@@ -1,10 +1,6 @@
 package presentation.screens;
 
 import domain.enums.PokemonType;
-import domain.moves.BubbleMove;
-import domain.moves.FakeOutMove;
-import domain.moves.FieryDanceMove;
-import domain.moves.InfernoMove;
 import domain.pokemons.Blastoise;
 import domain.pokemons.Charizard;
 import domain.pokemons.Gengar;

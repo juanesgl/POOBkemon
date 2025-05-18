@@ -9,6 +9,9 @@ import presentation.screens.GameScreen;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.SwingUtilities;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,6 +42,7 @@ public class Game implements Serializable{
     private static boolean gif = false;
     private static final int TURN_TIME_LIMIT = 20;
     private transient Timer turnTimer;
+    private final transient Object timerLock = new Object();
     private int secondsRemaining;
     private int secondsInPause;
     private boolean turnTimedOut;
@@ -84,6 +88,7 @@ public class Game implements Serializable{
        
         if (turnTimer != null) {
             turnTimer.cancel();
+            turnTimer.purge();
             turnTimer = null;
         }
 
@@ -104,65 +109,77 @@ public class Game implements Serializable{
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (!isGameOver && !turnActionTaken) {
-                        performAIMove();
-                    }
+                     synchronized (timerLock) {
+                        if (!isGameOver && !turnActionTaken && getCurrentPlayer().isAI()) {
+                            performAIMove();
+                        }
                 }
-            }, 1000); 
+            }
+            }, 1500); 
         }
 
   
         turnTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (secondsRemaining > 0) {
-                    secondsRemaining--;
-                    if (gameScreen != null) {
-                        gameScreen.updateTimer(secondsRemaining);
+                synchronized (timerLock) {
+                    if (secondsRemaining > 0) {
+                        secondsRemaining--;
+                        if (gameScreen != null) {
+                            gameScreen.updateTimer(secondsRemaining);
+                        }
                     }
-                }
-                
-                if (secondsRemaining <= 0) {
-                    turnTimedOut = true;
-                    endTurn();
-                    cancel();
+                    
+                    if (secondsRemaining <= 0) {
+                        turnTimedOut = true;
+                        endTurn();
+                        cancel();
+                    }
                 }
             }
         }, 1000, 1000);
     }
 
     private void stopTurnTimer() {
+        synchronized (timerLock) {
         if (turnTimer != null) {
             turnTimer.cancel();
+            turnTimer.purge();
             turnTimer = null;
         }
+    }
     }
 
     private void endTurn() {
-        // Stop the current timer
-        if (turnTimer != null) {
-            turnTimer.cancel();
-            turnTimer = null;
-        }
+    synchronized (timerLock) {
+        stopTurnTimer();
 
         if (turnTimedOut) {
             Pokemon activePokemon = currentPlayer.getActivePokemon();
-            for (Move move : activePokemon.getMoves()) {
-                move.reducePP(1);
+            if (activePokemon != null) {
+                for (Move move : activePokemon.getMoves()) {
+                    move.reducePP(1);
+                }
             }
         }
 
-        // Switch players
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
 
-        // Start new turn timer
+        state = currentPlayer.isAI() ? GameState.OPPONENT_TURN : GameState.PLAYER_TURN;
+
+        turnTimedOut = false;
+        turnActionTaken = false;
+
         startTurnTimer();
 
-        // Update UI
         if (gameScreen != null) {
-            gameScreen.updateBattleUI();
+            SwingUtilities.invokeLater(() -> {
+                gameScreen.updateBattleUI();
+                
+            });
         }
     }
+}
 
     /**
      * Sets the game screen reference.
@@ -235,10 +252,11 @@ This is for future animations :D!
      */
 
     public void executeMove(int moveIndex) {
-        if (isGameOver || turnActionTaken) return;
-
-        Player opponent;
-        opponent = (currentPlayer == player1) ? player2 : player1;
+        System.out.println("executeMove called");
+        if (isGameOver || turnActionTaken ) {
+        return;
+    }
+        Player opponent = (currentPlayer == player1) ? player2 : player1;
         Pokemon activePokemon = currentPlayer.getActivePokemon();
 
 
@@ -246,16 +264,21 @@ This is for future animations :D!
             return;
         }
 
-        Pokemon targetPokemon = opponent.getActivePokemon();
+        
         Move move = activePokemon.getMoves().get(moveIndex);
 
         if (move.getPowerPoints() <= 0) return;
 
         turnActionTaken = true;
 
-        executeMove(activePokemon, targetPokemon, move);
+        executeMove(activePokemon, opponent.getActivePokemon(), move);
 
-        endTurn();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                endTurn();
+            }
+        }, 2000);
     }
 
     private void executeMove(Pokemon attacker, Pokemon defender, Move move) {
@@ -266,11 +289,10 @@ This is for future animations :D!
                                     ((currentPlayer == player1) ? player2 : player1) : currentPlayer;
             gameMode.handleFaintedPokemon(defenderPlayer);
 
-            // Check if the game is over after a Pokémon faints
+            
             if (gameMode.isGameOver(player1, player2)) {
                 isGameOver = true;
                 stopTurnTimer();
-                // Determine the winner
                 Player winner = determineWinner();
                 if (winner != null && gameScreen != null) {
                     gameScreen.showWinnerDialog(winner);
@@ -280,7 +302,7 @@ This is for future animations :D!
     }
 
     private Player determineWinner() {
-        // Check if either player has no Pokémon left
+        
         if (player1.getTeam().isEmpty() || player1.getTeam().stream().allMatch(Pokemon::isFainted)) {
             return player2;
         }
@@ -315,6 +337,7 @@ This is for future animations :D!
      */
 
     public void switchPokemon(int pokemonIndex) {
+        System.out.println("switchPokemon called");
         if (isGameOver || turnActionTaken) return;
 
         if (pokemonIndex >= 0 && pokemonIndex < currentPlayer.getTeam().size()) {
@@ -325,7 +348,7 @@ This is for future animations :D!
                 endTurn();
             }
         } else {
-            // If no valid Pokémon to switch to, check if game is over
+            
             if (currentPlayer.getTeam().isEmpty() || currentPlayer.getTeam().stream().allMatch(Pokemon::isFainted)) {
                 isGameOver = true;
                 stopTurnTimer();
@@ -387,24 +410,27 @@ This is for future animations :D!
     }
 
     private void performAIMove() {
-        if (isGameOver || turnActionTaken) return;
+    synchronized (timerLock) {
+        if (isGameOver || turnActionTaken || !getCurrentPlayer().isAI()) return;
         
         AIPlayer aiPlayer = (AIPlayer) getCurrentPlayer();
-        // Check if AI has any valid moves or Pokémon to switch to
+        
         if (aiPlayer.getTeam().isEmpty() || aiPlayer.getTeam().stream().allMatch(Pokemon::isFainted)) {
             isGameOver = true;
             stopTurnTimer();
             Player winner = determineWinner();
             if (winner != null && gameScreen != null) {
-                gameScreen.showWinnerDialog(winner);
+                SwingUtilities.invokeLater(() -> gameScreen.showWinnerDialog(winner));
             }
             return;
         }
         
         aiPlayer.makeDecision(this);
         turnActionTaken = true;
-        endTurn();
+        endTurn(); 
     }
+    
+}
 
     public void save(File file) throws IOException {
     try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
@@ -425,11 +451,11 @@ public static Game load(File file) throws IOException, ClassNotFoundException {
     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
         Game loadedGame = (Game) ois.readObject();
         
-        // Reconstruir componentes no serializables
-        loadedGame.turnTimer = new Timer();
-        loadedGame.startTurnTimer();  // Reiniciar el timer con el tiempo restante
         
-        // Reiniciar el game loop si es necesario
+        loadedGame.turnTimer = new Timer();
+        loadedGame.startTurnTimer(); 
+        
+        
         if (loadedGame.state == GameState.SETUP) {
             GameLoop gameLoop = new GameLoop(loadedGame);
             gameLoop.start();

@@ -39,6 +39,7 @@ public class AIPlayer extends Player {
     }
 
     public void makeDecision(Game game) {
+        System.out.println("AI Player making decision...");
         int moveIndex = selectMove();
         int switchIndex = selectSwitch();
         if (switchIndex <= 10) {

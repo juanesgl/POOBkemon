@@ -15,6 +15,8 @@ public class AttackingStrategy implements AIStrategy {
 
     @Override
     public int selectMove(Pokemon activePokemon) {
+
+        
         List<Move> moves = activePokemon.getMoves();
         
     
