@@ -1,43 +1,44 @@
 package presentation.controllers;
-import domain.pokemons.Pokemon;
+
 import domain.game.Game;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
+import domain.pokemons.Pokemon;
+import domain.entities.Item;
 import java.util.List;
 
+/**
+ * Interface for game view communication.
+ * Defines the contract between the controller and screens.
+ */
 public interface GameView {
     /**
-     * Show the setup screen
+     * Shows the game setup screen.
      */
     void showSetupScreen();
 
     /**
-     * Show the Pokémon selection screen
-     * @param modality The selected game modality
-     * @param mode The selected game mode
-     */
-    void showPokemonSelectionScreen(GameModality modality, GameMode mode);
-
-    /**
-     * Show the item selection screen
-     * @param modality The selected game modality
-     * @param mode The selected game mode
-     * @param player1Pokemons The Pokémon selected by player 1
-     * @param player2Pokemons The Pokemon selected by player 2 (can be null)
-     */
-    void showItemSelectionScreen(GameModality modality, GameMode mode, List<Pokemon> player1Pokemons, List<Pokemon> player2Pokemons);
-
-    /**
-     * Show the game screen with the given game
-     * @param game The game to display
+     * Shows the game screen with the specified game instance.
+     * @param game The game instance to display
      */
     void showGameScreen(Game game);
 
     /**
-     * Show a message dialog to the user
-     * @param message The message to display
-     * @param title The title of the dialog
-     * @param messageType The type of message (e.g., JOptionPane.WARNING_MESSAGE)
+     * Shows the Pokémon selection screen.
+     * @param modality The game modality
+     * @param mode The game mode
      */
-    void showMessage(String message, String title, int messageType);
+    void showPokemonSelectionScreen(GameModality modality, GameMode mode);
+
+    /**
+     * Shows the item selection screen.
+     * @param modality The game modality
+     * @param mode The game mode
+     * @param player1Pokemons Selected Pokémon for player 1
+     * @param player2Pokemons Selected Pokémon for player 2
+     */
+    void showItemSelectionScreen(GameModality modality, GameMode mode, 
+                               List<Pokemon> player1Pokemons, List<Pokemon> player2Pokemons);
+
+    void showMessage(String s, String warning, int warningMessage);
 }
