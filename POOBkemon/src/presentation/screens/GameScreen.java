@@ -604,19 +604,19 @@ public class GameScreen extends JPanel {
      */
 
     public void showCoinTossDialog(String player1Name, String player2Name, boolean player1First) {
-    // Diálogo del GIF
+    
     JDialog gifDialog = new JDialog();
     gifDialog.setTitle("Coin Toss");
     gifDialog.setSize(640, 272);
     gifDialog.setLocationRelativeTo(this);
-    gifDialog.setModal(false);  // Cambiado a no modal
+    gifDialog.setModal(false);  
     gifDialog.setLayout(new BorderLayout());
     
-    // Carga el GIF con verificación de errores
+    
     URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
     if (gifURL == null) {
         JOptionPane.showMessageDialog(this, 
-            "No se encontró la animación", 
+            "No gif found", 
             "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
@@ -627,7 +627,7 @@ public class GameScreen extends JPanel {
     gifDialog.add(gifLabel, BorderLayout.CENTER);
     gifDialog.setVisible(true);
 
-    // Diálogo de resultado (se mostrará después)
+    
     JDialog resultDialog = new JDialog();
     resultDialog.setTitle("Coin Toss Result");
     resultDialog.setSize(300, 150);
@@ -649,7 +649,7 @@ public class GameScreen extends JPanel {
     JButton okButton = new JButton("OK");
     okButton.addActionListener(e -> {
         resultDialog.dispose();
-        gifDialog.dispose();  // Cierra también el diálogo del GIF
+        gifDialog.dispose();  
     });
     
     JPanel buttonPanel = new JPanel();
@@ -657,7 +657,7 @@ public class GameScreen extends JPanel {
     contentPanel.add(buttonPanel, BorderLayout.SOUTH);
     resultDialog.add(contentPanel);
 
-    // Temporizador para mostrar el resultado después de 3 segundos
+    
     Timer timer = new Timer(10000, e -> {
         gifDialog.dispose();
         resultDialog.setVisible(true);

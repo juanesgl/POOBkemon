@@ -1,13 +1,13 @@
 package domain.game;
 
 import domain.player.Player;
-
+import java.io.Serializable;
 /**
  * Interface defining different game modes for the POOBkemon game.
  * Each game mode implements its own rules for handling fainted Pokemon,
  * determining when the game is over, and selecting the winner.
  */
-public interface GameMode {
+public interface GameMode extends Serializable {
     /**
      * Handles what happens when a player's active Pokemon faints.
      * Different game modes may handle this differently (e.g., switching to next Pokemon,
