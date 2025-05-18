@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
@@ -603,47 +604,67 @@ public class GameScreen extends JPanel {
      */
 
     public void showCoinTossDialog(String player1Name, String player2Name, boolean player1First) {
-        JDialog gifDialog = new JDialog();
-        gifDialog.setTitle("Coin Toss");
-        gifDialog.setSize(640, 272);
-        gifDialog.setLocationRelativeTo(this);
-        gifDialog.setModal(true);
-        gifDialog.setLayout(new BorderLayout());
-        
-        URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
-        assert gifURL != null;
-        JLabel gifLabel = new JLabel(new ImageIcon(gifURL));
-        gifLabel.setHorizontalAlignment(JLabel.CENTER);
-        gifDialog.add(gifLabel, BorderLayout.CENTER);
-
-        JDialog resultDialog = new JDialog();
-        resultDialog.setTitle("Coin Toss Result");
-        resultDialog.setSize(300, 150);
-        resultDialog.setLocationRelativeTo(this);
-        resultDialog.setModal(true);
-        resultDialog.setLayout(new BorderLayout());
+    // Diálogo del GIF
+    JDialog gifDialog = new JDialog();
+    gifDialog.setTitle("Coin Toss");
+    gifDialog.setSize(640, 272);
+    gifDialog.setLocationRelativeTo(this);
+    gifDialog.setModal(false);  // Cambiado a no modal
+    gifDialog.setLayout(new BorderLayout());
     
-        JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    
-        JLabel titleLabel = new JLabel("Coin Toss Result", JLabel.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        contentPanel.add(titleLabel, BorderLayout.NORTH);
-    
-        String winner = player1First ? player1Name : player2Name;
-        JLabel resultLabel = new JLabel(winner + " goes first!", JLabel.CENTER);
-        resultLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        contentPanel.add(resultLabel, BorderLayout.CENTER);
-    
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(e -> resultDialog.dispose());
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(okButton);
-        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-    
-        resultDialog.add(contentPanel);
-        resultDialog.setVisible(true);
+    // Carga el GIF con verificación de errores
+    URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
+    if (gifURL == null) {
+        JOptionPane.showMessageDialog(this, 
+            "No se encontró la animación", 
+            "Error", JOptionPane.ERROR_MESSAGE);
+        return;
     }
+    
+    ImageIcon gifIcon = new ImageIcon(gifURL);
+    JLabel gifLabel = new JLabel(gifIcon);
+    gifLabel.setHorizontalAlignment(JLabel.CENTER);
+    gifDialog.add(gifLabel, BorderLayout.CENTER);
+    gifDialog.setVisible(true);
+
+    // Diálogo de resultado (se mostrará después)
+    JDialog resultDialog = new JDialog();
+    resultDialog.setTitle("Coin Toss Result");
+    resultDialog.setSize(300, 150);
+    resultDialog.setLocationRelativeTo(this);
+    resultDialog.setModal(true);
+    
+    JPanel contentPanel = new JPanel(new BorderLayout());
+    contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    
+    JLabel titleLabel = new JLabel("Coin Toss Result", JLabel.CENTER);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    contentPanel.add(titleLabel, BorderLayout.NORTH);
+    
+    String winner = player1First ? player1Name : player2Name;
+    JLabel resultLabel = new JLabel(winner + " goes first!", JLabel.CENTER);
+    resultLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+    contentPanel.add(resultLabel, BorderLayout.CENTER);
+    
+    JButton okButton = new JButton("OK");
+    okButton.addActionListener(e -> {
+        resultDialog.dispose();
+        gifDialog.dispose();  // Cierra también el diálogo del GIF
+    });
+    
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.add(okButton);
+    contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+    resultDialog.add(contentPanel);
+
+    // Temporizador para mostrar el resultado después de 3 segundos
+    Timer timer = new Timer(10000, e -> {
+        gifDialog.dispose();
+        resultDialog.setVisible(true);
+    });
+    timer.setRepeats(false);
+    timer.start();
+}
 
     /**
      * Shows a victory dialog when a player wins the game.

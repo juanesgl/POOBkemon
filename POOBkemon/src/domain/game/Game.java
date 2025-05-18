@@ -380,8 +380,9 @@ This is for future animations :D!
         stopTurnTimer();
     }
     public void resumeGame(){
-        secondsRemaining=secondsInPause;
         startTurnTimer();
+        secondsRemaining=secondsInPause;
+        
         
     }
 
