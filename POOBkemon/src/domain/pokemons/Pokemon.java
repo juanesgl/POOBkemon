@@ -11,7 +11,7 @@ public abstract class Pokemon implements Serializable{
     private static final long serialVersionUID = 1L;
     private final String name;
     private int health;
-    private final int maxHealth;
+    private int maxHealth;
     private int attack;
     private int defense;
     private int specialAttack;
@@ -258,10 +258,11 @@ public abstract class Pokemon implements Serializable{
      */
     public void setLevel(int level) {
         // For survival mode, we'll scale the stats based on level 100
-        double scaleFactor = (double) level / 50.0; // Assuming base stats are for level 50
+        double scaleFactor = 1.0 + ((double) level - 50) / 100.0; // This will give a more reasonable scaling
         
         // Scale all stats
-        this.health = (int) (this.maxHealth * scaleFactor);
+        this.maxHealth = (int) (this.maxHealth * scaleFactor);
+        this.health = this.maxHealth;
         this.attack = (int) (this.attack * scaleFactor);
         this.defense = (int) (this.defense * scaleFactor);
         this.specialAttack = (int) (this.specialAttack * scaleFactor);

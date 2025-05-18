@@ -145,14 +145,20 @@ public class GameScreen extends JPanel {
 
         player1HealthBar = new JProgressBar(0, 100);
         player1HealthBar.setBounds(100, UIConstants.WINDOW_HEIGHT - 220, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
-        player1HealthBar.setForeground(Color.GREEN);
+        player1HealthBar.setForeground(new Color(46, 204, 113)); // Modern green
+        player1HealthBar.setBackground(new Color(44, 62, 80)); // Dark background
         player1HealthBar.setStringPainted(true);
+        player1HealthBar.setFont(new Font("Arial", Font.BOLD, 12));
+        player1HealthBar.setBorder(BorderFactory.createLineBorder(new Color(52, 73, 94), 2));
         battlePanel.add(player1HealthBar);
 
         player2HealthBar = new JProgressBar(0, 100);
         player2HealthBar.setBounds(UIConstants.WINDOW_WIDTH - 300, 80, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
-        player2HealthBar.setForeground(Color.GREEN);
+        player2HealthBar.setForeground(new Color(46, 204, 113)); // Modern green
+        player2HealthBar.setBackground(new Color(44, 62, 80)); // Dark background
         player2HealthBar.setStringPainted(true);
+        player2HealthBar.setFont(new Font("Arial", Font.BOLD, 12));
+        player2HealthBar.setBorder(BorderFactory.createLineBorder(new Color(52, 73, 94), 2));
         battlePanel.add(player2HealthBar);
 
         player1NameLabel = new JLabel("Player 1");
@@ -426,15 +432,23 @@ public class GameScreen extends JPanel {
         int healthPercentage = (int)((double)currentHealth / maxHealth * 100);
 
         healthBar.setValue(healthPercentage);
-        healthBar.setString(currentHealth + " / " + maxHealth);
+        
+        // Format the health text with a more modern look
+        String healthText = String.format("HP: %d/%d", currentHealth, maxHealth);
+        healthBar.setString(healthText);
 
+        // Update colors based on health percentage
         if (healthPercentage < 20) {
-            healthBar.setForeground(Color.RED);
+            healthBar.setForeground(new Color(231, 76, 60)); // Modern red
         } else if (healthPercentage < 50) {
-            healthBar.setForeground(Color.ORANGE);
+            healthBar.setForeground(new Color(230, 126, 34)); // Modern orange
         } else {
-            healthBar.setForeground(Color.GREEN);
+            healthBar.setForeground(new Color(46, 204, 113)); // Modern green
         }
+
+        // Add a subtle animation effect
+        healthBar.setStringPainted(true);
+        healthBar.setFont(new Font("Arial", Font.BOLD, 12));
     }
 
     private void updateMoveButtons(Pokemon pokemon) {
