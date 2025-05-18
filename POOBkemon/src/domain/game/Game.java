@@ -9,7 +9,13 @@ import presentation.screens.GameScreen;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Represents a game session in the POOBkemon game.
@@ -17,7 +23,8 @@ import java.util.TimerTask;
  * Implements different game modes through the GameMode interface.
  */
 
-public class Game {
+public class Game implements Serializable{
+    private static final long serialVersionUID = 1L; 
     private final GameMode gameMode;
     private final Player player1;
     private final Player player2;
@@ -31,7 +38,7 @@ public class Game {
     private final boolean player1First;
     private static boolean gif = false;
     private static final int TURN_TIME_LIMIT = 20;
-    private Timer turnTimer;
+    private transient Timer turnTimer;
     private int secondsRemaining;
     private int secondsInPause;
     private boolean turnTimedOut;
@@ -74,13 +81,13 @@ public class Game {
     }
 
     private void startTurnTimer() {
-        // Cancel existing timer if any
+       
         if (turnTimer != null) {
             turnTimer.cancel();
             turnTimer = null;
         }
 
-        // Create new timer
+      
         turnTimer = new Timer();
         secondsRemaining = TURN_TIME_LIMIT;
         if (!gif) {
@@ -91,9 +98,9 @@ public class Game {
         turnTimedOut = false;
         turnActionTaken = false;
 
-        // Only start AI move if it's AI's turn
+       
         if (getCurrentPlayer().isAI()) {
-            // Delay AI move to prevent timer conflicts
+        
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -101,10 +108,10 @@ public class Game {
                         performAIMove();
                     }
                 }
-            }, 1000); // Wait 1 second before AI makes its move
+            }, 1000); 
         }
 
-        // Start the turn timer
+  
         turnTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -373,8 +380,9 @@ This is for future animations :D!
         stopTurnTimer();
     }
     public void resumeGame(){
-        startTurnTimer();
         secondsRemaining=secondsInPause;
+        startTurnTimer();
+        
     }
 
     private void performAIMove() {
@@ -396,6 +404,39 @@ This is for future animations :D!
         turnActionTaken = true;
         endTurn();
     }
+
+    public void save(File file) throws IOException {
+    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+        oos.writeObject(this); 
+    }
+
+    
+    }
+
+    /**
+ * Loads a game state from a file.
+ * @param file The file to load from
+ * @return The loaded Game instance
+ * @throws IOException If an I/O error occurs
+ * @throws ClassNotFoundException If the class of a serialized object can't be found
+ */
+public static Game load(File file) throws IOException, ClassNotFoundException {
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+        Game loadedGame = (Game) ois.readObject();
+        
+        // Reconstruir componentes no serializables
+        loadedGame.turnTimer = new Timer();
+        loadedGame.startTurnTimer();  // Reiniciar el timer con el tiempo restante
+        
+        // Reiniciar el game loop si es necesario
+        if (loadedGame.state == GameState.SETUP) {
+            GameLoop gameLoop = new GameLoop(loadedGame);
+            gameLoop.start();
+        }
+        
+        return loadedGame;
+    }
+}
 
 
 }

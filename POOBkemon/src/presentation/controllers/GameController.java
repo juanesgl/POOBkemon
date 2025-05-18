@@ -20,8 +20,12 @@ import presentation.utils.UIConstants;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+
 import domain.enums.MachineType;
 import domain.entities.HealingEffect;
 import domain.entities.AttackBoostEffect;
@@ -37,6 +41,7 @@ import java.util.Random;
 public class GameController {
 
     private final GameView view;
+    private Game game; 
 
     /**
      * Constructor for the GameController.
@@ -158,6 +163,7 @@ public class GameController {
         }
 
         Game game = new Game(gameMode, player1, player2);
+        setGame(game);
         view.showGameScreen(game);
     }
 
@@ -316,11 +322,45 @@ public class GameController {
         view.showItemSelectionScreen(modality, mode, player1Pokemons, player2Pokemons);
     }
 
-    public void loadGame() {
-        return;
+    public void setGame(Game game) {
+        this.game = game;
     }
 
-    public void saveGame() {
+
+public void saveGame() {
+     if (game == null) {
+        JOptionPane.showMessageDialog(null, "No hay partida activa para guardar.", 
+            "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
+    JFileChooser fileChooser = new JFileChooser();
+    int returnVal = fileChooser.showSaveDialog(null);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File file = fileChooser.getSelectedFile();
+        try {
+            game.save(file); 
+            JOptionPane.showMessageDialog(null, "Partida guardada en: " + file.getAbsolutePath());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error al guardar: " + ex.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
+
+public void loadGame() {
+    JFileChooser fileChooser = new JFileChooser();
+    int returnVal = fileChooser.showOpenDialog(null);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File file = fileChooser.getSelectedFile();
+        try {
+            this.game=Game.load(file);
+            view.showGameScreen(game); 
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null, "Error al cargar: " + ex.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
+
+
 }

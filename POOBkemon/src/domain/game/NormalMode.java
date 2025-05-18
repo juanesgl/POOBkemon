@@ -1,13 +1,14 @@
 package domain.game;
 
 import domain.player.Player;
-
+import java.io.Serializable;
 /**
  * Implementation of the GameMode interface for the Normal game mode.
  * In Normal mode, players battle until all Pokemon of one player have fainted.
  * When a Pokemon faints, the player must switch to another Pokemon if available.
  */
-public class NormalMode implements GameMode {
+public class NormalMode implements GameMode, Serializable{
+     private static final long serialVersionUID = 1L;
     /**
      * Handles what happens when a player's active Pokemon faints in Normal mode.
      * Switches to the next available Pokemon in the player's team.

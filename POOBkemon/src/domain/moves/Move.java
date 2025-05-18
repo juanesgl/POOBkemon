@@ -2,13 +2,15 @@ package domain.moves;
 
 import domain.enums.MoveCategory;
 import domain.enums.PokemonType;
+import java.io.Serializable;
 
 /**
  * Represents a move that a Pokemon can use in battle.
  * Contains attributes like name, power, category, type, accuracy, power points, and priority.
  */
 
-public abstract class Move {
+public abstract class Move implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final String name;
     private final int power;
     private final MoveCategory category;

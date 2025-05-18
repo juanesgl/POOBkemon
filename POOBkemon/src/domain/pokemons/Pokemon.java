@@ -5,8 +5,10 @@ import java.util.List;
 import domain.game.TypeEffectivenessTable;
 import domain.enums.PokemonType;
 import domain.moves.Move;
+import java.io.Serializable;
 
-public abstract class Pokemon {
+public abstract class Pokemon implements Serializable{
+    private static final long serialVersionUID = 1L;
     private final String name;
     private int health;
     private final int maxHealth;

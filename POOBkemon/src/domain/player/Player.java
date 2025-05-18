@@ -6,13 +6,15 @@ import domain.enums.MachineType;
 import java.util.List;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * Abstract base class for all player types in the game.
  * Manages a team of Pokemon and a collection of items.
  * Provides methods for Pokemon management and battle actions.
  */
-public abstract class Player {
+public abstract class Player implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String name;
     protected MachineType machineType;
     protected Color color;
@@ -21,6 +23,10 @@ public abstract class Player {
     protected int activePokemonIndex;
     private int defeatedPokemonCount = 0;
     private int usedItemsCount = 0;
+
+    public Player() {
+        this("DefaultName", Color.BLACK, new ArrayList<>(), new ArrayList<>());
+    }
 
     /**
      * Constructor for creating a new Human Player.

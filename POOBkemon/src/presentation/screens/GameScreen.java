@@ -282,7 +282,7 @@ public class GameScreen extends JPanel {
 
     private JButton getJButton() {
         JButton exitButton = new JButton("Exit");
-        exitButton.setBounds(900, 630, 80, 30);
+        exitButton.setBounds(900, 600, 80, 30);
         exitButton.setBackground(Color.RED);
         exitButton.setForeground(Color.WHITE);
         exitButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -758,5 +758,7 @@ public class GameScreen extends JPanel {
         panel.add(label);
         panel.add(Box.createVerticalStrut(10));
     }
+
+    
             
 }
