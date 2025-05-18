@@ -1,5 +1,8 @@
 package domain.exceptions;
 
+/*
+ * Class POOBkemonException
+ */
 public class POOBkemonException extends Exception {
     public static final String INVALID_POKEMON_COUNT = "Invalid number of Pokémon selected. Please select exactly 3 Pokémon.";
     public static final String INVALID_ITEM_COUNT = "Invalid number of items selected. Please select exactly 3 items.";

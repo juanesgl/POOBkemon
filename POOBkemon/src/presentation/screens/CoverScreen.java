@@ -9,7 +9,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.util.Objects;
 
-
+/*  
+ * CoverScreen is the initial screen of the game. It displays the main menu and the start button.
+ * 
+ */
 public class CoverScreen extends JPanel {
     private final GameController controller;
 
@@ -20,7 +23,10 @@ public class CoverScreen extends JPanel {
 
         initializeComponents();
     }
-
+    /*
+     * Initialize the components of the cover screen.
+     * 
+     */
     private void initializeComponents() {
 
         ImageIcon cover = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.COVER_IMAGE_PATH)));
