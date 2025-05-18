@@ -9,9 +9,7 @@ import presentation.screens.GameScreen;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.SwingUtilities;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,7 +31,6 @@ public class Game implements Serializable{
     private final Player player2;
     private boolean isGameOver;
     private Player currentPlayer;
-
     private GameState state;
     private GameScreen gameScreen;
     private int fps;
@@ -214,23 +211,6 @@ public class Game implements Serializable{
         this.fps = fps;
     }
 
-
-
-/*
-This is for future animations :D!
-    public void update(double delta) {
-        // Update game state based on delta time
-        // This ensures animations and movements are time-based, not frame-based
-
-        // Example: update animations, AI decisions, etc.
-        if (!isGameOver) {
-            // Update player animations
-            // Update Pokemon positions
-            // Process AI decisions if it's an AI player's turn
-        }
-    }
-*/
-
     /**
      * Notifies the presentation layer to update the display.
      * Updates the game screen with the current game state and FPS.
@@ -272,7 +252,6 @@ This is for future animations :D!
         Move move = activePokemon.getMoves().get(moveIndex);
 
         if (move.getPowerPoints() <= 0) return;
-
         turnActionTaken = true;
 
         executeMove(activePokemon, opponent.getActivePokemon(), move);
