@@ -329,7 +329,7 @@ public class GameController {
 
 public void saveGame() {
      if (game == null) {
-        JOptionPane.showMessageDialog(null, "No hay partida activa para guardar.", 
+        JOptionPane.showMessageDialog(null, "There is no game to save.", 
             "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
@@ -339,9 +339,9 @@ public void saveGame() {
         File file = fileChooser.getSelectedFile();
         try {
             game.save(file); 
-            JOptionPane.showMessageDialog(null, "Partida guardada en: " + file.getAbsolutePath());
+            JOptionPane.showMessageDialog(null, "Game saved successfully: " + file.getAbsolutePath());
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Error al guardar: " + ex.getMessage(), 
+            JOptionPane.showMessageDialog(null, "Error saving: " + ex.getMessage(), 
                 "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
