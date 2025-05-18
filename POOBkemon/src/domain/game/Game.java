@@ -140,7 +140,10 @@ public class Game implements Serializable{
 
     private void endTurn() {
         // Stop the current timer
-        stopTurnTimer();
+        if (turnTimer != null) {
+            turnTimer.cancel();
+            turnTimer = null;
+        }
 
         if (turnTimedOut) {
             Pokemon activePokemon = currentPlayer.getActivePokemon();
