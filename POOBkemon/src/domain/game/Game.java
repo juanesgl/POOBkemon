@@ -252,7 +252,11 @@ This is for future animations :D!
      */
 
     public void executeMove(int moveIndex) {
-        System.out.println("executeMove called");
+        /*System.out.println("executeMove called");
+
+        if (isGameOver || turnActionTaken || !(state == GameState.PLAYER_TURN && !currentPlayer.isAI())) {
+        return;
+    }*/
         if (isGameOver || turnActionTaken ) {
         return;
     }
