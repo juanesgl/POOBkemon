@@ -145,8 +145,8 @@ public class GameScreen extends JPanel {
 
         player1HealthBar = new JProgressBar(0, 100);
         player1HealthBar.setBounds(100, UIConstants.WINDOW_HEIGHT - 220, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
-        player1HealthBar.setForeground(new Color(46, 204, 113)); // Modern green
-        player1HealthBar.setBackground(new Color(44, 62, 80)); // Dark background
+        player1HealthBar.setForeground(new Color(46, 204, 113));
+        player1HealthBar.setBackground(new Color(44, 62, 80)); 
         player1HealthBar.setStringPainted(true);
         player1HealthBar.setFont(new Font("Arial", Font.BOLD, 12));
         player1HealthBar.setBorder(BorderFactory.createLineBorder(new Color(52, 73, 94), 2));
@@ -154,8 +154,8 @@ public class GameScreen extends JPanel {
 
         player2HealthBar = new JProgressBar(0, 100);
         player2HealthBar.setBounds(UIConstants.WINDOW_WIDTH - 300, 80, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
-        player2HealthBar.setForeground(new Color(46, 204, 113)); // Modern green
-        player2HealthBar.setBackground(new Color(44, 62, 80)); // Dark background
+        player2HealthBar.setForeground(new Color(46, 204, 113)); 
+        player2HealthBar.setBackground(new Color(44, 62, 80));
         player2HealthBar.setStringPainted(true);
         player2HealthBar.setFont(new Font("Arial", Font.BOLD, 12));
         player2HealthBar.setBorder(BorderFactory.createLineBorder(new Color(52, 73, 94), 2));
@@ -330,7 +330,7 @@ public class GameScreen extends JPanel {
         if (game != null) {
             game.setGameScreen(this);
             
-            // Update background based on game mode
+            
             String backgroundPath = game.getGameMode().getClass().getSimpleName().equals("SurvivalMode") 
                 ? UIConstants.SURVIVAL_IMAGE_PATH 
                 : UIConstants.COVER_ARENA_PATH;
@@ -433,20 +433,20 @@ public class GameScreen extends JPanel {
 
         healthBar.setValue(healthPercentage);
         
-        // Format the health text with a more modern look
+      
         String healthText = String.format("HP: %d/%d", currentHealth, maxHealth);
         healthBar.setString(healthText);
 
-        // Update colors based on health percentage
+       
         if (healthPercentage < 20) {
-            healthBar.setForeground(new Color(231, 76, 60)); // Modern red
+            healthBar.setForeground(new Color(231, 76, 60)); 
         } else if (healthPercentage < 50) {
-            healthBar.setForeground(new Color(230, 126, 34)); // Modern orange
+            healthBar.setForeground(new Color(230, 126, 34)); 
         } else {
-            healthBar.setForeground(new Color(46, 204, 113)); // Modern green
+            healthBar.setForeground(new Color(46, 204, 113)); 
         }
 
-        // Add a subtle animation effect
+       
         healthBar.setStringPainted(true);
         healthBar.setFont(new Font("Arial", Font.BOLD, 12));
     }
@@ -460,26 +460,26 @@ public class GameScreen extends JPanel {
                 Move move = moves.get(i);
                 int pp = move.getPowerPoints();
                 
-                // Set button text to include PP
+               
                 moveButtons[i].setText(String.format("%s (%d PP)", move.getName(), pp));
                 
-                // Set tooltip with detailed information
+                
                 moveButtons[i].setToolTipText(String.format("Power: %d, Accuracy: %d%%", 
                     move.getPower(), 
                     move.getAccuracy()));
                 
-                // Color coding based on PP
+                
                 if (pp <= 0) {
-                    moveButtons[i].setBackground(new Color(100, 100, 100)); // Gray when out of PP
+                    moveButtons[i].setBackground(new Color(100, 100, 100)); 
                     moveButtons[i].setEnabled(false);
                 } else if (pp <= 2) {
-                    moveButtons[i].setBackground(new Color(200, 50, 50)); // Red when low PP
+                    moveButtons[i].setBackground(new Color(200, 50, 50)); 
                     moveButtons[i].setEnabled(true);
                 } else if (pp <= 5) {
-                    moveButtons[i].setBackground(new Color(200, 150, 50)); // Orange when medium PP
+                    moveButtons[i].setBackground(new Color(200, 150, 50)); 
                     moveButtons[i].setEnabled(true);
                 } else {
-                    moveButtons[i].setBackground(new Color(100, 100, 200)); // Blue when plenty of PP
+                    moveButtons[i].setBackground(new Color(100, 100, 200)); 
                     moveButtons[i].setEnabled(true);
                 }
                 
@@ -698,7 +698,7 @@ public class GameScreen extends JPanel {
         mainPanel.setBackground(new Color(25, 25, 112));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Title
+       
         JLabel titleLabel = new JLabel("VICTORY!", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
         titleLabel.setForeground(Color.YELLOW);
@@ -706,7 +706,7 @@ public class GameScreen extends JPanel {
         mainPanel.add(titleLabel);
         mainPanel.add(Box.createVerticalStrut(20));
 
-        // Winner announcement
+        
         JLabel winnerLabel = new JLabel(winner.getName() + " wins!", SwingConstants.CENTER);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         winnerLabel.setForeground(winner.getColor());
@@ -714,7 +714,7 @@ public class GameScreen extends JPanel {
         mainPanel.add(winnerLabel);
         mainPanel.add(Box.createVerticalStrut(30));
 
-        // Battle statistics
+        
         JPanel statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
         statsPanel.setBackground(new Color(25, 25, 112));
@@ -731,12 +731,12 @@ public class GameScreen extends JPanel {
         mainPanel.add(statsPanel);
         mainPanel.add(Box.createVerticalStrut(30));
 
-        // Buttons panel
+        
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setBackground(new Color(25, 25, 112));
 
-        // Replay button
+       
         JButton replayButton = new JButton("Play Again");
         replayButton.setFont(new Font("Arial", Font.BOLD, 16));
         replayButton.setBackground(new Color(50, 205, 50));
@@ -755,7 +755,7 @@ public class GameScreen extends JPanel {
             }
         });
 
-        // Menu button
+       
         JButton menuButton = new JButton("Return to Menu");
         menuButton.setFont(new Font("Arial", Font.BOLD, 16));
         menuButton.setBackground(new Color(220, 20, 60));

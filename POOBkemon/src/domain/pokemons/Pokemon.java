@@ -208,13 +208,7 @@ public abstract class Pokemon implements Serializable{
      */
     public int getDefense() { return defense; }
 
-    //**
-    // * Gets the special attack stat of the Pokemon.
-     //* @return The special attack stat
-     //*/
-    //public int getSpecialAttack() { return specialAttack; }
-
-    /**
+     /**
      * Gets the special defense stat of the Pokemon.
      * @return The special defense stat
      */
@@ -257,10 +251,9 @@ public abstract class Pokemon implements Serializable{
      * @param level The new level of the Pokemon
      */
     public void setLevel(int level) {
-        // For survival mode, we'll scale the stats based on level 100
-        double scaleFactor = 1.0 + ((double) level - 50) / 100.0; // This will give a more reasonable scaling
-        
-        // Scale all stats
+       
+        double scaleFactor = 1.0 + ((double) level - 50) / 100.0; 
+     
         this.maxHealth = (int) (this.maxHealth * scaleFactor);
         this.health = this.maxHealth;
         this.attack = (int) (this.attack * scaleFactor);
