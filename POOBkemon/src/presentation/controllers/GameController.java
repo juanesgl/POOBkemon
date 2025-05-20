@@ -32,7 +32,7 @@ public class GameController {
     private JFrame mainFrame;
     private GameMode selectedMode;
     private GameModality selectedModality;
-    private Game game;
+    private Game game; 
 
     public GameController(JFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -109,40 +109,40 @@ public class GameController {
         return selectedModality;
     }
 
-    public void saveGame() {
-        if (game == null) {
-            JOptionPane.showMessageDialog(null, "There is no game to save.", 
+public void saveGame() {
+     if (game == null) {
+        JOptionPane.showMessageDialog(null, "There is no game to save.", 
+            "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    JFileChooser fileChooser = new JFileChooser();
+    int returnVal = fileChooser.showSaveDialog(null);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File file = fileChooser.getSelectedFile();
+        try {
+            game.save(file); 
+            JOptionPane.showMessageDialog(null, "Game saved successfully: " + file.getAbsolutePath());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error saving: " + ex.getMessage(), 
                 "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        JFileChooser fileChooser = new JFileChooser();
-        int returnVal = fileChooser.showSaveDialog(null);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            try {
-                game.save(file); 
-                JOptionPane.showMessageDialog(null, "Game saved successfully: " + file.getAbsolutePath());
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Error saving: " + ex.getMessage(), 
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            }
         }
     }
+}
 
-    public void loadGame() {
-        JFileChooser fileChooser = new JFileChooser();
-        int returnVal = fileChooser.showOpenDialog(null);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            try {
+public void loadGame() {
+    JFileChooser fileChooser = new JFileChooser();
+    int returnVal = fileChooser.showOpenDialog(null);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File file = fileChooser.getSelectedFile();
+        try {
                 this.game = Game.load(file);
                 showGameScreen(game);
-            } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(null, "Error loading: " + ex.getMessage(), 
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            }
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+}
 
     public void startGame(GameModality modality, GameMode mode, List<Pokemon> player1Team, List<Pokemon> player2Team, 
                          List<Item> player1Items, List<Item> player2Items) {

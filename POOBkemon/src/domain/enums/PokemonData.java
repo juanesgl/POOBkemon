@@ -19,9 +19,24 @@ public enum PokemonData {
             PokemonType.ELECTRIC, null,
             UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/raichu-front.png"),
 
-    RACHU("Rachu", 34, 306, 229, 306, 284, 350,
-            PokemonType.ELECTRIC, null,
-            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/raichu-front.png");
+    VENUSAUR("Venusaur", 364, 289, 291, 328, 328, 284,
+            PokemonType.GRASS, PokemonType.POISON,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/venusaur-front.png"),
+
+    DRAGONITE("Dragonite", 386, 403, 317, 328, 328, 284,
+            PokemonType.DRAGON, PokemonType.FLYING,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/dragonite-front.png"),
+
+    TOGETIC("Togetic", 314, 196, 295, 284, 339, 196,
+            PokemonType.FAIRY, PokemonType.FLYING,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/togetic-front.png"),
+    TYRANITAR("Tyranitar", 404, 403, 350, 317, 328, 243,
+            PokemonType.ROCK, PokemonType.DARK,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/tyranitar-front.png"),
+
+    SNORLAX("Snorlax", 540, 350, 251, 251, 328, 174,
+            PokemonType.NORMAL, null,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/snorlax-front.png");
 
     private final String name;
     private final int health;

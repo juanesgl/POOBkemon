@@ -41,13 +41,64 @@ public enum PokemonDescription {
     RAICHU(
             "TYPE: ELECTRIC\n" +
                     "Raichu belongs to the first generation of Pokémon, originally from Kanto, and is the evolution of " +
-                    "Pikachu. Raichu’s ability to store electric currents is impressive; its electric attacks commonly reach 10,000 volts, " +
-                    "but there have been cases recorded up to 100,000. Even when not fighting, Raichu’s body emits a faint electric charge " +
+                    "Pikachu. Raichu's ability to store electric currents is impressive; its electric attacks commonly reach 10,000 volts, " +
+                    "but there have been cases recorded up to 100,000. Even when not fighting, Raichu's body emits a faint electric charge " +
                     "that makes it glow in the dark and can shock anyone who tries to scare or touch it without warning.\n" +
                     "STATS:\n"+
                     "HP: 324 Attack: 306 Defense: 229 Speed: 350\n" +
                     "Special Attack: 306 Special Defense: 284"
+    ),
+
+    VENUSAUR(
+            "TYPE: GRASS (primary) – POISON (secondary)\n" +
+                    "Venusaur belongs to the first generation of Pokémon, originally from Kanto, and is the final evolution of " +
+                    "Bulbasaur. It is a large bipedal Pokémon with a massive flower on its back that can absorb sunlight to produce energy. " +
+                    "Venusaur is known for its ability to release toxic spores and pheromones to attract prey or repel threats.\n" +
+                    "STATS:\n"+
+                    "HP: 364 Attack: 289 Defense: 291 Speed: 284\n" +
+                    "Special Attack: 328 Special Defense: 328"
+    ),
+
+    DRAGONITE(
+            "TYPE: DRAGON (primary) – FLYING (secondary)\n" +
+                    "Dragonite belongs to the first generation of Pokémon, originally from Kanto, and is the final evolution of " +
+                    "Dratini. It is a large, orange dragon-like Pokémon with powerful wings and a gentle personality. Dragonite is known " +
+                    "for its incredible speed and strength, capable of flying at high altitudes and covering vast distances in a short time.\n" +
+                    "STATS:\n"+
+                    "HP: 386 Attack: 403 Defense: 317 Speed: 284\n" +
+                    "Special Attack: 328 Special Defense: 328"
+    ),
+
+    TOGETIC(
+            "TYPE: FAIRY (primary) – FLYING (secondary)\n" +
+                    "Togetic belongs to the second generation of Pokémon, originally from Johto, and is the evolution of Togepi. " +
+                    "It is a small, fairy-like Pokémon with wings and a cheerful personality. Togetic is known for its ability to bring " +
+                    "happiness and good fortune to those around it.\n" +
+                    "STATS:\n"+
+                    "HP: 314 Attack: 196 Defense: 295 Speed: 196\n" +
+                    "Special Attack: 284 Special Defense: 339"
+    ),
+
+    TYRANITAR(
+            "TYPE: ROCK (primary) – DARK (secondary)\n" +
+                    "Tyranitar belongs to the second generation of Pokémon, originally from Johto, and is the final evolution of Larvitar. " +
+                    "It is a massive, dinosaur-like Pokémon with a tough exterior and a fierce personality. Tyranitar is known for its " +
+                    "incredible strength and ability to create storms by unleashing its power.\n" +
+                    "STATS:\n"+
+                    "HP: 404 Attack: 403 Defense: 350 Speed: 243\n" +
+                    "Special Attack: 317 Special Defense: 328"
+    ),
+
+    SNORLAX(
+            "TYPE: NORMAL\n" +
+                    "Snorlax belongs to the first generation of Pokémon, originally from Kanto, and is known for its massive size and " +
+                    "insatiable appetite. It spends most of its time sleeping and can consume large amounts of food in a single sitting. " +
+                    "Snorlax is known for its incredible strength and ability to withstand attacks while it sleeps.\n" +
+                    "STATS:\n"+
+                    "HP: 524 Attack: 350 Defense: 251 Speed: 174\n" +
+                    "Special Attack: 251 Special Defense: 350"
     );
+
 
 
     private final String description;

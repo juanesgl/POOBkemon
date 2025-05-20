@@ -217,7 +217,7 @@ public class PokemonSelectionScreen extends JPanel {
         JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
         selectionArea.removeAll();
 
-        String[] pokemonNames = {"charizard", "blastoise", "gengar", "raichu"};
+        String[] pokemonNames = {"charizard", "blastoise", "gengar", "raichu", "venusaur", "dragonite", "togetic", "tyranitar", "snorlax"};
 
         for (String name : pokemonNames) {
             String fileName = name + "-front.png";
@@ -364,12 +364,16 @@ public class PokemonSelectionScreen extends JPanel {
     }
 
     private PokemonType getPokemonTypeFromName(String pokemonName) {
-
         switch (pokemonName.toLowerCase()) {
             case "charizard": return PokemonType.FIRE;
             case "blastoise": return PokemonType.WATER;
             case "gengar": return PokemonType.GHOST;
             case "raichu": return PokemonType.ELECTRIC;
+            case "venusaur": return PokemonType.GRASS;
+            case "dragonite": return PokemonType.DRAGON;
+            case "togetic": return PokemonType.FAIRY;
+            case "tyranitar": return PokemonType.ROCK;
+            case "snorlax": return PokemonType.NORMAL;
             default: return PokemonType.NORMAL;
         }
     }
