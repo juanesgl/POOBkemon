@@ -7,7 +7,6 @@ import domain.enums.GameModality;
 import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,7 +26,6 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import domain.enums.ItemDescription;
 import domain.entities.HealingEffect;
 import domain.entities.ItemEffect;
@@ -67,6 +65,10 @@ public class ItemSelectionScreen extends JPanel {
         initializeComponents();
     }
 
+    /**
+     * Initializes the components of the screen.
+     */
+
     private void initializeComponents() {
 
         ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.SELECTION_IMAGE_PATH)));
@@ -78,7 +80,7 @@ public class ItemSelectionScreen extends JPanel {
         ImageIcon startIconNormal = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH)));
         JButton startGameButton = new AnimatedButton(startIconNormal); 
         startGameButton.setBounds(423, 600, 179, 71);
-        startGameButton.addActionListener(e -> {
+        startGameButton.addActionListener(_ -> {
             if (selectedItems.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please select at least one item!",
                         "Item Selection", JOptionPane.WARNING_MESSAGE);
@@ -110,10 +112,8 @@ public class ItemSelectionScreen extends JPanel {
 
             if (isPlayer1Selection) {
                 controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, selectedItems, null);
-                System.out.println("Starting game with player 1 items: " + selectedItems.size());
             } else {
                 controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, player1Items, selectedItems);
-                System.out.println("Starting game with player 1 items: " + player1Items.size() + " and player 2 items: " + selectedItems.size());
             }
         });
 
@@ -121,6 +121,10 @@ public class ItemSelectionScreen extends JPanel {
         add(itemSelectionPanel);
         add(backgroundLabel);
     }
+
+    /**
+     * Creates the item selection panel.
+     */
 
     private void createItemSelectionPanel() {
         itemSelectionPanel = new JPanel();
@@ -192,6 +196,10 @@ public class ItemSelectionScreen extends JPanel {
         loadAvailableItems();
     }
 
+    /**
+     * Loads the available items into the selection panel.
+     */
+
     private void loadAvailableItems() {
 
         JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
@@ -225,6 +233,15 @@ public class ItemSelectionScreen extends JPanel {
         }
     }
 
+    /**
+     * Creates a panel for each item with its sprite, name, and checkbox.
+     *
+     * @param itemName The name of the item
+     * @param spritePath The path to the item's sprite
+     * @param description The description of the item
+     * @return The created item panel
+     */
+
     private JPanel createItemPanel(String itemName, String spritePath, String description) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -232,7 +249,7 @@ public class ItemSelectionScreen extends JPanel {
         panel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         panel.setBackground(new Color(50, 50, 50));
 
-        ImageIcon spriteIcon = new ImageIcon(getClass().getResource(spritePath));
+        ImageIcon spriteIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource(spritePath)));
         Image scaledImage = spriteIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         JLabel spriteLabel = new JLabel(new ImageIcon(scaledImage));
         spriteLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -268,7 +285,7 @@ public class ItemSelectionScreen extends JPanel {
             }
         });
 
-        selectBox.addActionListener(e -> {
+        selectBox.addActionListener(_ -> {
 
             if (selectBox.isSelected()) {
                 Item item = createItemFromSprite(itemName, spritePath, description);
@@ -298,10 +315,20 @@ public class ItemSelectionScreen extends JPanel {
         return panel;
     }
 
+    /**
+     * Updates the item description text area with the selected item's details.
+     *
+     * @param itemName The name of the item
+     * @param description The description of the item
+     */
+
     private void updateItemDescription(String itemName, String description) {
         descriptionTextArea.setText(itemName + ": " + description);
     }
 
+    /**
+     * Updates the status label to show the number of selected items.
+     */
 
     private void updateStatusLabel() {
 
@@ -327,6 +354,15 @@ public class ItemSelectionScreen extends JPanel {
             statusLabel.setForeground(Color.GREEN);
         }
     }
+
+    /**
+     * Creates an item from the sprite path and description.
+     *
+     * @param itemName The name of the item
+     * @param spritePath The path to the item's sprite
+     * @param description The description of the item
+     * @return The created item
+     */
 
     private Item createItemFromSprite(String itemName, String spritePath, String description) {
 
@@ -388,6 +424,10 @@ public class ItemSelectionScreen extends JPanel {
 
         updateStatusLabel();
     }
+
+    /**
+     * Updates the selection panel for player 2.
+     */
 
     private void updateSelectionPanelForPlayer2() {
         JPanel headerPanel = (JPanel) itemSelectionPanel.getComponent(0);

@@ -18,9 +18,10 @@ import presentation.screens.GameSetupScreen;
 import presentation.screens.PokemonSelectionScreen;
 import presentation.screens.ItemSelectionScreen;
 import presentation.screens.GameScreen;
-import presentation.utils.UIConstants;
-
-import javax.swing.*;
+import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -28,15 +29,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * GameController is responsible for managing the game flow and user interactions.
+ * It handles the display of different screens, game setup, and game state management.
+ */
+
 public class GameController {
     private JFrame mainFrame;
     private GameMode selectedMode;
     private GameModality selectedModality;
-    private Game game; 
+    private Game game;
+
+    /**
+     * Constructor for GameController.
+     * @param mainFrame The main JFrame of the application.
+     */
 
     public GameController(JFrame mainFrame) {
         this.mainFrame = mainFrame;
     }
+
+    /**
+     * Displays the main menu screen.
+     */
 
     public void showMainMenu() {
         CoverScreen coverScreen = new CoverScreen(this);
@@ -45,12 +60,21 @@ public class GameController {
         mainFrame.repaint();
     }
 
+    /**
+     * Displays the game mode selection screen.
+     */
+
     public void showGameModeSelection() {
         GameSetupScreen setupScreen = new GameSetupScreen(this);
         mainFrame.setContentPane(setupScreen);
         mainFrame.revalidate();
         mainFrame.repaint();
     }
+
+    /**
+     * Displays the game modality selection screen.
+     * @param mode The selected game mode.
+     */
 
     public void showModalitySelection(GameMode mode) {
         this.selectedMode = mode;
@@ -59,6 +83,11 @@ public class GameController {
         mainFrame.revalidate();
         mainFrame.repaint();
     }
+
+    /**
+     * Displays the Pokémon selection screen.
+     * @param modality The selected game modality.
+     */
 
     public void showPokemonSelection(GameModality modality) {
         this.selectedModality = modality;
@@ -69,6 +98,14 @@ public class GameController {
         mainFrame.repaint();
     }
 
+    /**
+     * Displays the item selection screen.
+     * @param modality The selected game modality.
+     * @param mode The selected game mode.
+     * @param player1Team The Pokémon team of player 1.
+     * @param player2Team The Pokémon team of player 2.
+     */
+
     public void showItemSelectionScreen(GameModality modality, GameMode mode, List<Pokemon> player1Team, List<Pokemon> player2Team) {
         ItemSelectionScreen itemScreen = new ItemSelectionScreen(this);
         itemScreen.setGameOptions(modality, mode, player1Team, player2Team);
@@ -76,6 +113,11 @@ public class GameController {
         mainFrame.revalidate();
         mainFrame.repaint();
     }
+
+    /**
+     * Displays the game screen.
+     * @param game The current game instance.
+     */
 
     public void showGameScreen(Game game) {
         this.game = game;
@@ -86,13 +128,15 @@ public class GameController {
         mainFrame.repaint();
     }
 
+
+
     public List<Pokemon> generateRandomTeam() {
         List<Pokemon> team = new ArrayList<>();
         PokemonData[] allPokemon = PokemonData.values();
         Random random = new Random();
 
-        // Asegurarnos de que el equipo tenga exactamente 4 Pokémon
-        while (team.size() < 4) {
+       
+        while (team.size() < 6) {
             int randomIndex = random.nextInt(allPokemon.length);
             Pokemon pokemon = new ConcretePokemon(allPokemon[randomIndex]);
             team.add(pokemon);
@@ -101,48 +145,58 @@ public class GameController {
         return team;
     }
 
-    public GameMode getSelectedMode() {
-        return selectedMode;
-    }
+    /**
+     * Save the current game to a file.
+     */
 
-    public GameModality getSelectedModality() {
-        return selectedModality;
-    }
-
-public void saveGame() {
-     if (game == null) {
-        JOptionPane.showMessageDialog(null, "There is no game to save.", 
-            "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    JFileChooser fileChooser = new JFileChooser();
-    int returnVal = fileChooser.showSaveDialog(null);
-    if (returnVal == JFileChooser.APPROVE_OPTION) {
-        File file = fileChooser.getSelectedFile();
-        try {
-            game.save(file); 
-            JOptionPane.showMessageDialog(null, "Game saved successfully: " + file.getAbsolutePath());
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Error saving: " + ex.getMessage(), 
+    public void saveGame() {
+         if (game == null) {
+            JOptionPane.showMessageDialog(null, "There is no game to save.",
                 "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        JFileChooser fileChooser = new JFileChooser();
+        int returnVal = fileChooser.showSaveDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                game.save(file);
+                JOptionPane.showMessageDialog(null, "Game saved successfully: " + file.getAbsolutePath());
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Error saving: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
-}
 
-public void loadGame() {
-    JFileChooser fileChooser = new JFileChooser();
-    int returnVal = fileChooser.showOpenDialog(null);
-    if (returnVal == JFileChooser.APPROVE_OPTION) {
-        File file = fileChooser.getSelectedFile();
-        try {
-                this.game = Game.load(file);
-                showGameScreen(game);
-        } catch (IOException | ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, "Error loading: " + ex.getMessage(), 
-                "Error", JOptionPane.ERROR_MESSAGE);
+    /**
+     * Loads a game from a file.
+     */
+
+    public void loadGame() {
+        JFileChooser fileChooser = new JFileChooser();
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                    this.game = Game.load(file);
+                    showGameScreen(game);
+            } catch (IOException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(null, "Error loading: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
-}
+
+    /**
+     * Starts a new game with the specified parameters.
+     * @param modality The game modality (e.g., PLAYER_VS_PLAYER, PLAYER_VS_AI, AI_VS_AI).
+     * @param mode The game mode (e.g., NORMAL, SURVIVAL).
+     * @param player1Team The Pokémon team of player 1.
+     * @param player2Team The Pokémon team of player 2.
+     * @param player1Items The items of player 1.
+     * @param player2Items The items of player 2.
+     */
 
     public void startGame(GameModality modality, GameMode mode, List<Pokemon> player1Team, List<Pokemon> player2Team, 
                          List<Item> player1Items, List<Item> player2Items) {
@@ -151,7 +205,7 @@ public void loadGame() {
         Color playerColor;
         MachineType machineType;
 
-        // Asegurarnos de que los equipos no sean nulos
+      
         if (player1Team == null || player1Team.isEmpty()) {
             player1Team = generateRandomTeam();
         }
@@ -159,15 +213,15 @@ public void loadGame() {
             player2Team = generateRandomTeam();
         }
 
-        // Asegurarnos de que los equipos tengan al menos 4 Pokémon
-        if (player1Team.size() < 4) {
+       
+        if (player1Team.size() < 6) {
             player1Team = generateRandomTeam();
         }
-        if (player2Team.size() < 4) {
+        if (player2Team.size() < 6) {
             player2Team = generateRandomTeam();
         }
 
-        // Asegurarnos de que las listas de items no sean nulas
+       
         if (player1Items == null) {
             player1Items = new ArrayList<>();
         }
@@ -192,7 +246,7 @@ public void loadGame() {
                 player1 = new HumanPlayer(playerName, playerColor, player1Team, player1Items);
                 machineType = askMachineType();
                 if (machineType == null) {
-                    machineType = MachineType.defensiveTrainer; // Valor por defecto
+                    machineType = MachineType.defensiveTrainer; 
                 }
                 player2 = new AIPlayer("CPU", machineType, player2Team, player2Items);
                 break;
@@ -200,12 +254,12 @@ public void loadGame() {
             case AI_VS_AI:
                 machineType = askMachineType();
                 if (machineType == null) {
-                    machineType = MachineType.defensiveTrainer; // Valor por defecto
+                    machineType = MachineType.defensiveTrainer; 
                 }
                 player1 = new AIPlayer("CPU 1", machineType, player1Team, player1Items);
                 machineType = askMachineType();
                 if (machineType == null) {
-                    machineType = MachineType.defensiveTrainer; // Valor por defecto
+                    machineType = MachineType.defensiveTrainer;
                 }
                 player2 = new AIPlayer("CPU 2", machineType, player2Team, player2Items);
                 break;
@@ -224,6 +278,12 @@ public void loadGame() {
         showGameScreen(game);
     }
 
+    /**
+     * Displays a message dialog with the given title and message.
+     * @param title The title of the dialog.
+     * @param message The message to display.
+     */
+
     private String askName() {
         String playerName = JOptionPane.showInputDialog(null, "Insert Player Name:");
         showInfoMessage("Welcome", playerName);
@@ -234,6 +294,12 @@ public void loadGame() {
         Color playerColor = JColorChooser.showDialog(null, "Select a color", Color.WHITE);
         return playerColor != null ? playerColor : Color.WHITE;
     }
+
+    /**
+     * Displays a message dialog with the given title and message.
+     * @param title The title of the dialog.
+     * @param message The message to display.
+     */
 
     private MachineType askMachineType() {
         MachineType machineType = (MachineType) JOptionPane.showInputDialog(
@@ -249,6 +315,12 @@ public void loadGame() {
         showInfoMessage("Machine Type", machineType.toString());
         return machineType;
     }
+
+    /**
+     * Displays a message dialog with the given title and message.
+     * @param title The title of the dialog.
+     * @param message The message to display.
+     */
 
     private void showInfoMessage(String title, String message) {
         JOptionPane.showMessageDialog(

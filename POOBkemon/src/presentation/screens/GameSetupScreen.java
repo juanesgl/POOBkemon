@@ -15,6 +15,12 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.util.Objects;
+
+/**
+ * GameSetupScreen is a JPanel that represents the game setup screen.
+ * It allows the user to select the game modality and mode before starting the game.
+ */
 
 public class GameSetupScreen extends JPanel {
     private JLabel backgroundLabel;
@@ -25,6 +31,12 @@ public class GameSetupScreen extends JPanel {
     private AnimatedButton startGameButton;
     private GameController controller;
 
+    /**
+     * Constructor for GameSetupScreen.
+     *
+     * @param controller The GameController instance to handle game logic.
+     */
+
     public GameSetupScreen(GameController controller) {
         this.controller = controller;
         setLayout(null);
@@ -33,10 +45,15 @@ public class GameSetupScreen extends JPanel {
         initializeComponents();
     }
 
+    /**
+     * Initializes the components of the game setup screen.
+     * This includes labels, combo boxes, and the start game button.
+     */
+
     private void initializeComponents() {
 
         ImageIcon background;
-        background = new ImageIcon(getClass().getResource(UIConstants.COVER_IMAGE_PATH));
+        background = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.COVER_IMAGE_PATH)));
         backgroundLabel = new JLabel(background);
         backgroundLabel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
 
@@ -85,7 +102,7 @@ public class GameSetupScreen extends JPanel {
         startGameButton = new AnimatedButton(startIconNormal);
         startGameButton.setBounds(423, 550, 179, 71);
 
-        startGameButton.addActionListener(e -> {
+        startGameButton.addActionListener(_ -> {
             GameModality modality = (GameModality) modalitiesCombo.getSelectedItem();
             GameMode mode = (GameMode) modesCombo.getSelectedItem();
             controller.showModalitySelection(mode);

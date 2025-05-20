@@ -4,6 +4,7 @@ package domain.enums;
  * Enum representing the different elemental types of Pokemon and moves.
  * These types determine type effectiveness in battle and influence damage calculations.
  */
+
 public enum PokemonType {
     /**
      * Normal type Pokemon and moves.

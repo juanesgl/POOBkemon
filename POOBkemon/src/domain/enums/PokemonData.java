@@ -2,6 +2,13 @@ package domain.enums;
 
 import presentation.utils.UIConstants;
 
+/*
+ * Class PokemonData
+ *
+ * This enum represents the data of various Pokémon, including their stats, types, and sprite paths.
+ * It provides methods to retrieve Pokémon data based on their names.
+ */
+
 public enum PokemonData {
     CHARIZARD("Charizard", 360, 293, 280, 348, 295, 328,
             PokemonType.FIRE, PokemonType.FLYING, 

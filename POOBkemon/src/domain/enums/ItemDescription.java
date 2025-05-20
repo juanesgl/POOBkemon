@@ -24,7 +24,10 @@ public enum ItemDescription {
                     "They restore the Pokémon's HP to half of its original maximum."
     );
 
-    
+    /*
+     * The detailed description of the item.
+     */
+
     private final String description;
 
     ItemDescription(String description) {

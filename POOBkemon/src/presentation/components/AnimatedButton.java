@@ -6,8 +6,9 @@ import javax.swing.Timer;
 import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-/*  
- * AnimatedButton.java
+/*
+ * This class creates a button with an animated icon that changes when the mouse hovers over it.
+ * The button uses a Timer to control the animation speed and state.
  */
 public class AnimatedButton extends JButton {
     private final ImageIcon normalIcon;
@@ -50,10 +51,9 @@ public class AnimatedButton extends JButton {
             }
         });
     }
-/*  
- * setupAnimationTimer
- * 
- */
+    /*
+     * setupAnimationTimer
+     */
     private void setupAnimationTimer() {
         animationTimer = new Timer(700, e -> {
             if (!getModel().isRollover()) {

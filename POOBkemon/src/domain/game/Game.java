@@ -7,19 +7,12 @@ import domain.enums.GameState;
 import domain.moves.Move;
 import domain.moves.StruggleMove;
 import presentation.screens.GameScreen;
+
+import java.io.*;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import javax.swing.JDialog;
-import presentation.screens.MovesSelectionScreen;
 
 /**
  * Represents a game session in the POOBkemon game.
@@ -28,7 +21,8 @@ import presentation.screens.MovesSelectionScreen;
  */
 
 public class Game implements Serializable{
-    private static final long serialVersionUID = 1L; 
+    @Serial
+    private static final long serialVersionUID = 1L;
     private final GameMode gameMode;
     private final Player player1;
     private final Player player2;
@@ -182,10 +176,7 @@ public class Game implements Serializable{
         startTurnTimer();
 
         if (gameScreen != null) {
-            SwingUtilities.invokeLater(() -> {
-                gameScreen.updateBattleUI();
-                
-            });
+            SwingUtilities.invokeLater(() -> gameScreen.updateBattleUI());
         }
     }
 }
@@ -252,7 +243,6 @@ public class Game implements Serializable{
         Pokemon activePokemon = currentPlayer.getActivePokemon();
         Move move = activePokemon.getMoves().get(moveIndex);
 
-        // Si el movimiento seleccionado no tiene PP, usamos Struggle
         if (move.getPowerPoints() <= 0) {
             move = new StruggleMove();
         }
@@ -280,6 +270,7 @@ public class Game implements Serializable{
      * @param defender The Pokemon that is being attacked
      * @param move The move that is being used
      */
+
     private void executeMove(Pokemon attacker, Pokemon defender, Move move) {
         attacker.attack(defender, move);
 
@@ -342,7 +333,6 @@ public class Game implements Serializable{
      */
 
     public void switchPokemon(int pokemonIndex) {
-        System.out.println("switchPokemon called");
         if (isGameOver || turnActionTaken) return;
 
         if (pokemonIndex >= 0 && pokemonIndex < currentPlayer.getTeam().size()) {
@@ -481,14 +471,5 @@ public static Game load(File file) throws IOException, ClassNotFoundException {
         return loadedGame;
     }
 }
-
-    /**
-     * Gets the opponent player of the current player.
-     * 
-     * @return The opponent player
-     */
-    public Player getOpponentPlayer() {
-        return (currentPlayer == player1) ? player2 : player1;
-    }
 
 }

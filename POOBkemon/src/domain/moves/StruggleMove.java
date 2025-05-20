@@ -12,11 +12,21 @@ public class StruggleMove extends Move {
         super("Struggle", 50, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 1, 0);
     }
 
+    /**
+     * The Struggle move has a unique effect where it causes the user to take damage equal to half of the damage dealt to the target.
+     * This method overrides the useMove method in the Move class to implement this behavior.
+     */
+
     @Override
     public boolean isDefensive() {
         return false;
     }
 
+    /*
+     * The Struggle move is considered an offensive move, as it deals damage to the opponent.
+     * This method overrides the isOffensive method in the Move class to indicate
+     * that the move is offensive.
+     */
     @Override
     public boolean isOffensive() {
         return true;

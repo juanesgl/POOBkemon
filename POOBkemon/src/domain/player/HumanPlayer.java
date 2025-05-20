@@ -3,6 +3,7 @@ package domain.player;
 import domain.pokemons.Pokemon;
 import domain.entities.Item;
 
+import java.io.Serial;
 import java.util.List;
 import java.awt.Color;
 /*
@@ -11,6 +12,7 @@ import java.awt.Color;
  */
 
 public class HumanPlayer extends Player {
+     @Serial
      private static final long serialVersionUID = 1L;
      /*
       * Default constructor for the HumanPlayer class.

@@ -5,14 +5,29 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * SoundManager.java
+ * This class manages background music and sound effects for the game.
+ * It allows playing, stopping, and looping sounds.
+ */
 
 public class SoundManager {
     private Clip backgroundMusic;
     private Map<String, Clip> soundEffects;
 
+
+    /*
+     * Constructor initializes the sound effects map.
+     */
+
     public SoundManager() {
         soundEffects = new HashMap<>();
     }
+
+    /*
+     * Plays background music from the specified resource path.
+     * If music is already playing, it stops it before starting the new one.
+     */
 
     public void playBackgroundMusic(String resourcePath) {
         stopBackgroundMusic();
@@ -34,12 +49,21 @@ public class SoundManager {
         }
     }
 
+    /*
+     * Stops the background music if it is currently playing.
+     */
+
     public void stopBackgroundMusic() {
         if (backgroundMusic != null && backgroundMusic.isRunning()) {
             backgroundMusic.stop();
             backgroundMusic.close();
         }
     }
+
+    /*
+     * Plays a sound effect from the specified resource path.
+     * If the sound effect is already loaded, it reuses the existing clip.
+     */
 
     public void playSoundEffect(String name, String resourcePath) {
         try {

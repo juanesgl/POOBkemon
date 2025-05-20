@@ -130,9 +130,22 @@ public abstract class Move implements Serializable {
      * @return The move's priority
      */
     public int getPriority() { return priority; }
+    /**
+     * Checks if the move is a status move.
+     * @return true if the move is a status move, false otherwise
+     */
 
     public boolean isDefensive(){ return false; }
+    /**
+     * Checks if the move is an offensive move.
+     * @return true if the move is an offensive move, false otherwise
+     */
     public boolean isOffensive(){ return false; }
+
+    /**
+     * Checks if the move is a healing move.
+     * @return true if the move is a healing move, false otherwise
+     */
 
     @Override
     public String toString() {

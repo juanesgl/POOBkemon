@@ -4,7 +4,6 @@ import domain.game.Game;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
 import domain.pokemons.Pokemon;
-import domain.entities.Item;
 import java.util.List;
 
 /**

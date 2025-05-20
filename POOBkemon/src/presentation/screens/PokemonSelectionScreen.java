@@ -9,7 +9,6 @@ import domain.enums.GameModality;
 import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -28,9 +27,14 @@ import java.awt.Font;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 import javax.swing.SwingUtilities;
 import javax.swing.JDialog;
+
+/**
+ * PokemonSelectionScreen is a JPanel that allows players to select their Pokémon team.
+ * It displays available Pokémon, allows selection via checkboxes, and shows descriptions.
+ */
 
 public class PokemonSelectionScreen extends JPanel {
 
@@ -45,6 +49,11 @@ public class PokemonSelectionScreen extends JPanel {
     private GameController controller;
     private JTextArea descriptionTextArea;
 
+    /**
+     * Constructor for the PokemonSelectionScreen.
+     * @param controller The GameController instance to handle game logic.
+     */
+
     public PokemonSelectionScreen(GameController controller) {
         this.controller = controller;
         setLayout(null);
@@ -53,20 +62,25 @@ public class PokemonSelectionScreen extends JPanel {
         initializeComponents();
     }
 
+    /**
+     * Initializes the components of the PokemonSelectionScreen.
+     */
+
     private void initializeComponents() {
 
-        ImageIcon background = new ImageIcon(getClass().getResource(UIConstants.SELECTION_IMAGE_PATH));
+        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.SELECTION_IMAGE_PATH)));
         backgroundLabel = new JLabel(background);
         backgroundLabel.setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
 
         createPokemonSelectionPanel();
 
-        ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
+        ImageIcon startIconNormal = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH)));
         JButton startGameButton = new AnimatedButton(startIconNormal); 
         startGameButton.setBounds(423, 600, 179, 71);
         startGameButton.addActionListener(_ -> {
-            if (selectedPokemons.size() < 4) {
-                JOptionPane.showMessageDialog(this, "Please select at least 4 Pokemon for a team!",
+
+            if (selectedPokemons.size() < 6) {
+                JOptionPane.showMessageDialog(this, "Please select at least 6 Pokemon for a team!",
                         "Team Selection", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -78,13 +92,13 @@ public class PokemonSelectionScreen extends JPanel {
                 if (selectedMode != GameMode.SURVIVAL) {
                     for (Pokemon pokemon : player1Pokemons) {
                         JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
-                        moveDialog.setTitle("Seleccionar movimientos para " + pokemon.getName() + " - Jugador 1");
+                        moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 1");
                         moveDialog.setModal(true);
                         moveDialog.setLocationRelativeTo(this);
                         moveDialog.setSize(800, 600);
                         moveDialog.setLocation(
-                            (int)(getLocationOnScreen().getX() + (getWidth() - 800) / 2),
-                            (int)(getLocationOnScreen().getY() + (getHeight() - 600) / 2)
+                            (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
+                            (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
                         );
                         
                         MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
@@ -117,13 +131,13 @@ public class PokemonSelectionScreen extends JPanel {
                 if (selectedMode != GameMode.SURVIVAL) {
                     for (Pokemon pokemon : selectedPokemons) {
                         JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
-                        moveDialog.setTitle("Seleccionar movimientos para " + pokemon.getName() + " - Jugador 2");
+                        moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 2");
                         moveDialog.setModal(true);
                         moveDialog.setLocationRelativeTo(this);
                         moveDialog.setSize(800, 600);
                         moveDialog.setLocation(
-                            (int)(getLocationOnScreen().getX() + (getWidth() - 800) / 2),
-                            (int)(getLocationOnScreen().getY() + (getHeight() - 600) / 2)
+                            (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
+                            (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
                         );
                         
                         MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
@@ -140,6 +154,10 @@ public class PokemonSelectionScreen extends JPanel {
         add(pokemonSelectionPanel);
         add(backgroundLabel);
     }
+
+    /**
+     * Creates the Pokémon selection panel.
+     */
 
     private void createPokemonSelectionPanel() {
         pokemonSelectionPanel = new JPanel();
@@ -212,6 +230,10 @@ public class PokemonSelectionScreen extends JPanel {
         loadAvailablePokemon();
     }
 
+    /**
+     * Loads available Pokémon into the selection panel.
+     */
+
     private void loadAvailablePokemon() {
 
         JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
@@ -232,6 +254,13 @@ public class PokemonSelectionScreen extends JPanel {
         }
 
     }
+
+    /**
+     * Creates a panel for each Pokémon with its sprite, name, and selection checkbox.
+     * @param pokemonName The name of the Pokémon.
+     * @param spritePath The path to the Pokémon's sprite image.
+     * @return A JPanel containing the Pokémon's sprite, name, and selection checkbox.
+     */
 
     private JPanel createPokemonPanel(String pokemonName, String spritePath) {
         JPanel panel = new JPanel();
@@ -312,6 +341,11 @@ public class PokemonSelectionScreen extends JPanel {
         return panel;
     }
 
+    /**
+     * Updates the Pokémon description text area based on the selected Pokémon.
+     * @param pokemonName The name of the selected Pokémon.
+     */
+
     private void updatePokemonDescription(String pokemonName) {
 
         domain.enums.PokemonDescription description = domain.enums.PokemonDescription.fromPokemonName(pokemonName);
@@ -323,6 +357,12 @@ public class PokemonSelectionScreen extends JPanel {
         }
     }
 
+    /**
+     * Returns the color associated with a Pokémon type.
+     * @param type The Pokémon type.
+     * @return The color associated with the Pokémon type.
+     */
+
     private Color getPokemonTypeColor(PokemonType type) {
         switch (type) {
             case FIRE: return new Color(255, 100, 0);
@@ -333,6 +373,10 @@ public class PokemonSelectionScreen extends JPanel {
             default: return Color.WHITE;
         }
     }
+
+    /**
+     * Updates the status label to show the current selection status.
+     */
 
     private void updateStatusLabel() {
 
@@ -359,24 +403,42 @@ public class PokemonSelectionScreen extends JPanel {
         }
     }
 
+    /**
+     * Creates a Pokémon instance based on its name.
+     * @param name The name of the Pokémon.
+     * @return A new Pokémon instance.
+     */
+
     private Pokemon createPokemonByName(String name) {
         return new ConcretePokemon(PokemonData.fromName(name));
     }
 
+    /**
+     * Returns the Pokémon type based on its name.
+     * @param pokemonName The name of the Pokémon.
+     * @return The Pokémon type.
+     */
+
     private PokemonType getPokemonTypeFromName(String pokemonName) {
-        switch (pokemonName.toLowerCase()) {
-            case "charizard": return PokemonType.FIRE;
-            case "blastoise": return PokemonType.WATER;
-            case "gengar": return PokemonType.GHOST;
-            case "raichu": return PokemonType.ELECTRIC;
-            case "venusaur": return PokemonType.GRASS;
-            case "dragonite": return PokemonType.DRAGON;
-            case "togetic": return PokemonType.FAIRY;
-            case "tyranitar": return PokemonType.ROCK;
-            case "snorlax": return PokemonType.NORMAL;
-            default: return PokemonType.NORMAL;
-        }
+        return switch (pokemonName.toLowerCase()) {
+            case "charizard" -> PokemonType.FIRE;
+            case "blastoise" -> PokemonType.WATER;
+            case "gengar" -> PokemonType.GHOST;
+            case "raichu" -> PokemonType.ELECTRIC;
+            case "venusaur" -> PokemonType.GRASS;
+            case "dragonite" -> PokemonType.DRAGON;
+            case "togetic" -> PokemonType.FAIRY;
+            case "tyranitar" -> PokemonType.ROCK;
+            case "snorlax" -> PokemonType.NORMAL;
+            default -> PokemonType.NORMAL;
+        };
     }
+
+    /**
+     * Sets the game options for the Pokémon selection screen.
+     * @param modality The game modality (e.g., PLAYER_VS_PLAYER, PLAYER_VS_AI).
+     * @param mode The game mode (e.g., NORMAL, SURVIVAL).
+     */
 
     public void setGameOptions(GameModality modality, GameMode mode) {
 
@@ -409,6 +471,10 @@ public class PokemonSelectionScreen extends JPanel {
 
         updateStatusLabel();
     }
+
+    /**
+     * Updates the selection panel for Player 2.
+     */
 
     private void updateSelectionPanelForPlayer2() {
 

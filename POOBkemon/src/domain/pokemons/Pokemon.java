@@ -1,5 +1,6 @@
 package domain.pokemons;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import domain.game.TypeEffectivenessTable;
@@ -8,7 +9,14 @@ import domain.moves.Move;
 import domain.moves.StruggleMove;
 import java.io.Serializable;
 
+/*
+ * Pokemon is an abstract class representing a Pokemon in the game.
+ * It contains attributes and methods common to all Pokemon.
+ * This class is designed to be extended by specific Pokemon classes.
+ */
+
 public abstract class Pokemon implements Serializable{
+    @Serial
     private static final long serialVersionUID = 1L;
     private final String name;
     private int health;
@@ -68,9 +76,6 @@ public abstract class Pokemon implements Serializable{
 
         if (moves.size() < 4) {
             moves.add(move);
-
-        } else {
-            System.out.println("Pokemon has already 4 moves");
         }
     }
 
@@ -117,7 +122,6 @@ public abstract class Pokemon implements Serializable{
         if (allMovesOutOfPP()) {
             move = getStruggleMove();
         } else if (move.getPowerPoints() <= 0) {
-            System.out.println("You don't have PP for this move");
             return 0;
         }
 
@@ -159,9 +163,7 @@ public abstract class Pokemon implements Serializable{
     }
 
     private double getTypeEffectiveness(PokemonType moveType, PokemonType targetType) {
-        double effectiveness = TypeEffectivenessTable.getEffectiveness(moveType,targetType);        
-        System.out.println("Effectiveness: " + effectiveness);
-        return effectiveness;
+        return TypeEffectivenessTable.getEffectiveness(moveType,targetType);
     }
 
     /**
@@ -285,10 +287,20 @@ public abstract class Pokemon implements Serializable{
         this.speed = (int) (this.speed * scaleFactor);
     }
 
+    /**
+     * Sets the moves of the Pokemon.
+     * @param moves The new list of moves
+     */
+
     public void setMoves(List<Move> moves) {
         this.moves.clear();
         this.moves.addAll(moves);
     }
+
+    /**
+     * Gets the string representation of the Pokemon.
+     * @return The name of the Pokemon
+     */
 
     @Override
     public String toString() {

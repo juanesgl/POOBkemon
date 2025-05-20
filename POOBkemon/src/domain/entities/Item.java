@@ -1,11 +1,14 @@
 package domain.entities;
 import domain.pokemons.Pokemon;
 
+import java.io.Serial;
+
 /**
  * Represents an item that can be used on Pokemon in the game.
  * Items have effects that can be applied to Pokemon, such as healing or stat boosts.
  */
 public class Item implements java.io.Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final String name;

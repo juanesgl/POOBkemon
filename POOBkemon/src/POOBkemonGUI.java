@@ -11,10 +11,14 @@ import domain.game.Game;
 import presentation.screens.PokemonSelectionScreen;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
+import java.awt.Dimension;
 import java.util.List;
-
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -102,18 +106,12 @@ public class POOBkemonGUI extends JFrame implements GameView {
      * @param game The game to be displayed
      */
     public void showGameScreen(Game game) {
-        System.out.println("POOBkemonGUI.showGameScreen called");
         getContentPane().removeAll();
-        System.out.println("Content pane cleared");
         gameScreen.setGame(game);
-        System.out.println("Game set in GameScreen");
         getContentPane().add(gameScreen);
-        System.out.println("GameScreen added to content pane");
         revalidate();
         repaint();
-        System.out.println("Content pane revalidated and repainted");
         gameScreen.setVisible(true);
-        System.out.println("GameScreen visibility set to true");
     }
 
     /**

@@ -16,6 +16,11 @@ import java.util.Objects;
 public class CoverScreen extends JPanel {
     private final GameController controller;
 
+    /*
+     * Constructor for the CoverScreen class.
+     *
+     * @param controller The GameController instance that handles the game logic.
+     */
     public CoverScreen(GameController controller) {
         this.controller = controller;
         setLayout(null);
@@ -38,7 +43,7 @@ public class CoverScreen extends JPanel {
 
         AnimatedButton startButton = new AnimatedButton(startIconNormal);
         startButton.setBounds(423, 550, 179, 71);
-        startButton.addActionListener(e -> controller.showGameModeSelection());
+        startButton.addActionListener(_ -> controller.showGameModeSelection());
         add(startButton);
 
         setComponentZOrder(startButton, 0);

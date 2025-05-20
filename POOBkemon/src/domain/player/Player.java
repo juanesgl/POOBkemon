@@ -1,8 +1,8 @@
 package domain.player;
-
 import domain.pokemons.Pokemon;
 import domain.entities.Item;
 import domain.enums.MachineType;
+import java.io.Serial;
 import java.util.List;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -13,7 +13,9 @@ import java.io.Serializable;
  * Manages a team of Pokemon and a collection of items.
  * Provides methods for Pokemon management and battle actions.
  */
+
 public abstract class Player implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     protected String name;
     protected MachineType machineType;
@@ -21,8 +23,11 @@ public abstract class Player implements Serializable {
     protected List<Pokemon> team;
     protected List<Item> items;
     protected int activePokemonIndex;
-    private int defeatedPokemonCount = 0;
-    private int usedItemsCount = 0;
+
+    /**
+     * Default constructor for creating a new Player.
+     * Initializes the player with default values.
+     */
 
     public Player() {
         this("DefaultName", Color.BLACK, new ArrayList<>(), new ArrayList<>());
@@ -172,33 +177,4 @@ public abstract class Player implements Serializable {
      */
     public abstract boolean isAI();
 
-    /**
-     * Increments the count of defeated Pokémon.
-     */
-    public void incrementDefeatedPokemonCount() {
-        defeatedPokemonCount++;
-    }
-
-    /**
-     * Gets the number of Pokémon defeated by this player.
-     * @return The number of defeated Pokémon
-     */
-    public int getDefeatedPokemonCount() {
-        return defeatedPokemonCount;
-    }
-
-    /**
-     * Increments the count of items used.
-     */
-    public void incrementUsedItemsCount() {
-        usedItemsCount++;
-    }
-
-    /**
-     * Gets the number of items used by this player.
-     * @return The number of items used
-     */
-    public int getUsedItemsCount() {
-        return usedItemsCount;
-    }
 }
