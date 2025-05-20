@@ -10,9 +10,6 @@ import domain.player.Player;
  * This mode is only available in Player vs Player modality.
  */
 public class SurvivalMode implements GameMode {
-    private static final int REQUIRED_POKEMON_COUNT = 6;
-    private static final int POKEMON_LEVEL = 100;
-
     /**
      * Handles what happens when a player's active Pokemon faints in Survival mode.
      * Switches to the next available Pokemon in the player's team.
@@ -55,21 +52,4 @@ public class SurvivalMode implements GameMode {
         return null;
     }
 
-    /**
-     * Gets the required number of Pokemon for Survival mode.
-     * 
-     * @return The number of Pokemon required (6)
-     */
-    public int getRequiredPokemonCount() {
-        return REQUIRED_POKEMON_COUNT;
-    }
-
-    /**
-     * Gets the Pokemon level for Survival mode.
-     * 
-     * @return The Pokemon level (100)
-     */
-    public int getPokemonLevel() {
-        return POKEMON_LEVEL;
-    }
 } 
