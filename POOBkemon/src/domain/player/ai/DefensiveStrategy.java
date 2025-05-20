@@ -21,7 +21,10 @@ public class DefensiveStrategy implements AIStrategy {
         }
         return new Random().nextInt(moves.size());
     }
-
+    /*  
+     * selectSwitch method returns the index of the Pokemon to switch to.
+     * @return The index of the Pokemon to switch to.
+     */
     @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
         return 50;

@@ -1,5 +1,8 @@
 package domain.enums;
-
+/*      
+ * Class ItemDescription
+ * 
+ */
 public enum ItemDescription {
     POTION(
             "Potions restore 20 HP (Health Points) of a Pokémon. They can only be used in battle. " +
@@ -21,12 +24,17 @@ public enum ItemDescription {
                     "They restore the Pokémon's HP to half of its original maximum."
     );
 
+    
     private final String description;
 
     ItemDescription(String description) {
         this.description = description;
     }
-
+    /*
+     * Method getDescription
+     * 
+     * @return The detailed description of the item
+     */
     public String getDescription() {
         return description;
     }

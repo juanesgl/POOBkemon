@@ -15,7 +15,10 @@ public class ChangingStrategy implements AIStrategy {
   
         return 50; 
     }
-
+    /*  
+     * selectSwitch method returns the index of the Pokemon to switch to.
+     * @return The index of the Pokemon to switch to.
+     */
     @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
         int bestSwitchIndex = -1;
@@ -36,7 +39,12 @@ public class ChangingStrategy implements AIStrategy {
         
         return bestSwitchIndex != -1 ? bestSwitchIndex : findFirstAvailable(activePokemon, team);
     }
-    
+    /*
+     * calculateTotalEffectiveness method calculates the total effectiveness of a move against a target Pokemon.
+     * @param attacker The attacking Pokemon.
+     * @param defender The defending Pokemon.
+     * @return The total effectiveness of the move.
+     */
     private double calculateTotalEffectiveness(Pokemon attacker, Pokemon defender) {
         double total = 1.0;
         
@@ -59,11 +67,21 @@ public class ChangingStrategy implements AIStrategy {
         
         return total;
     }
-    
+    /*  
+     * getTypeEffectiveness method calculates the effectiveness of a move based on the attacking and defending types.
+     * @param moveType The type of the move.
+     * @param targetType The type of the target Pokemon.
+     * @return The effectiveness of the move.
+     */
     private double getTypeEffectiveness(PokemonType moveType, PokemonType targetType) {
         return TypeEffectivenessTable.getEffectiveness(moveType, targetType);
     }
-    
+    /*  
+     * findFirstAvailable method finds the index of the first available Pokemon in the team.
+     * @param current The current Pokemon.
+     * @param team The team of Pokemon.
+     * @return The index of the first available Pokemon.
+     */
     private int findFirstAvailable(Pokemon current, List<Pokemon> team) {
         for (int i = 0; i < team.size(); i++) {
             if (!team.get(i).isFainted() && team.get(i) != current) {

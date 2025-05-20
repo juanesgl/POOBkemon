@@ -1,3 +1,7 @@
+/*
+ * Class domain.player.ai.AIStrategyFactory
+
+ */
 package domain.player.ai;
 import domain.enums.MachineType;
 

@@ -6,12 +6,18 @@ import javax.swing.Timer;
 import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+/*  
+ * AnimatedButton.java
+ */
 public class AnimatedButton extends JButton {
     private final ImageIcon normalIcon;
     private Timer animationTimer;
     private boolean buttonState = false;
-
+    /*  
+     * AnimatedButton constructor
+     * @param normalIcon
+     * @see ImageIcon
+     */
     public AnimatedButton(ImageIcon normalIcon) {
         this.normalIcon = normalIcon;
         setIcon(normalIcon);
@@ -24,7 +30,9 @@ public class AnimatedButton extends JButton {
         setupMouseListeners();
         setupAnimationTimer();
     }
-
+    /*  
+     * setupMouseListeners
+     */
     private void setupMouseListeners() {
         addMouseListener(new MouseAdapter() {
             @Override
@@ -42,7 +50,10 @@ public class AnimatedButton extends JButton {
             }
         });
     }
-
+/*  
+ * setupAnimationTimer
+ * 
+ */
     private void setupAnimationTimer() {
         animationTimer = new Timer(700, e -> {
             if (!getModel().isRollover()) {

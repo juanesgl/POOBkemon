@@ -48,7 +48,11 @@ public abstract class Player implements Serializable {
         this.items = new ArrayList<>(items);
         this.activePokemonIndex = 0;
     }
-
+    /*  
+     * Validates the team to ensure it has at least 4 Pokemon.
+     * 
+     * @param team The list of Pokemon in the player's team
+     */
     private void validateTeam(List<Pokemon> team) {
 
         if (team.size() < 4) {
@@ -160,6 +164,12 @@ public abstract class Player implements Serializable {
         }
     }
 
+
+    /*
+     * Checks if the player is an AI player.
+     * 
+     * @return true if the player is an AI player, false otherwise
+     */
     public abstract boolean isAI();
 
     /**

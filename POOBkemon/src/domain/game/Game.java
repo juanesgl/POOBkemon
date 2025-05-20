@@ -80,7 +80,9 @@ public class Game implements Serializable{
         Random random = new Random();
         return random.nextBoolean();
     }
-
+    /*
+     * Starts the turn timer for the current player.
+     */
     private void startTurnTimer() {
        
         if (turnTimer != null) {
@@ -136,7 +138,10 @@ public class Game implements Serializable{
             }
         }, 1000, 1000);
     }
-
+    /* 
+     * Stops the current turn timer.
+     * 
+      */
     private void stopTurnTimer() {
         synchronized (timerLock) {
         if (turnTimer != null) {
@@ -146,7 +151,11 @@ public class Game implements Serializable{
         }
     }
     }
-
+    /*  
+     * Ends the current player's turn and starts the next player's turn.
+     * Updates the game state to indicate the next player's turn.
+     * 
+     */
     private void endTurn() {
     synchronized (timerLock) {
         stopTurnTimer();
@@ -264,6 +273,18 @@ public class Game implements Serializable{
         }, 2000);
     }
 
+
+    /*  
+     * Executes a move in the battle.
+     * The attacker attacks the defender with the specified move.
+     * Handles Pokemon fainting and checks if the game is over after the move.
+     * Switches turns to the opponent after the move is executed.
+     * Move priority is taken into account to determine which Pokemon attacks first.
+     * 
+     * @param attacker The Pokemon that is attacking
+     * @param defender The Pokemon that is being attacked
+     * @param move The move that is being used
+     */
     private void executeMove(Pokemon attacker, Pokemon defender, Move move) {
         attacker.attack(defender, move);
 
@@ -284,6 +305,12 @@ public class Game implements Serializable{
         }
     }
 
+    /*  
+     * Determines the winner of the game.
+     * Different game modes may have different criteria for determining the winner.
+     * 
+     * @return The winning player, or null if there is no winner yet
+     */
     private Player determineWinner() {
         
         if (player1.getTeam().isEmpty() || player1.getTeam().stream().allMatch(Pokemon::isFainted)) {
@@ -381,17 +408,26 @@ public class Game implements Serializable{
      */
     public GameMode getGameMode() { return gameMode; }
 
+    /*  
+     * Pauses the game timer.
+     */
     public void pauseGame(){
         secondsInPause=secondsRemaining;
         stopTurnTimer();
     }
+    /*  
+     * Resumes the game timer.
+     */
     public void resumeGame(){
         startTurnTimer();
         secondsRemaining=secondsInPause;
         
         
     }
-
+    /*  
+     * Performs an AI move.
+     * 
+     */
     private void performAIMove() {
     synchronized (timerLock) {
         if (isGameOver || turnActionTaken || !getCurrentPlayer().isAI()) return;
@@ -415,6 +451,9 @@ public class Game implements Serializable{
     
 }
 
+/*  
+ * Saves the game state to a file.
+ */
     public void save(File file) throws IOException {
     try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
         oos.writeObject(this); 
