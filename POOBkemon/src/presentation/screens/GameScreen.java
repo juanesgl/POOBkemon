@@ -348,8 +348,37 @@ public class GameScreen extends JPanel {
      */
 
     public void updateBattleUI() {
-        if (game == null) {
-            return;
+        if (game == null) return;
+
+        Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
+        Pokemon opponentPokemon = game.getOpponentPlayer().getActivePokemon();
+
+        // Actualizar información del Pokémon activo
+        if (activePokemon != null) {
+            // Actualizar movimientos
+            List<Move> moves = activePokemon.getMoves();
+            
+            for (int i = 0; i < moveButtons.length; i++) {
+                if (i < moves.size()) {
+                    Move move = moves.get(i);
+                    if (move.getPowerPoints() <= 0) {
+                        moveButtons[i].setText("Struggle");
+                        moveButtons[i].setEnabled(true);
+                        moveButtons[i].setVisible(true);
+                    } else {
+                        moveButtons[i].setText(move.getName() + " (" + move.getPowerPoints() + " PP)");
+                        moveButtons[i].setEnabled(true);
+                        moveButtons[i].setVisible(true);
+                    }
+                } else {
+                    moveButtons[i].setText("---");
+                    moveButtons[i].setEnabled(false);
+                    moveButtons[i].setVisible(false);
+                }
+            }
+            
+            // Asegurarse de que el panel de movimientos sea visible
+            movesPanel.setVisible(true);
         }
 
         Player player1 = game.getPlayer1();
@@ -373,7 +402,6 @@ public class GameScreen extends JPanel {
         turnLabel.setForeground(currentPlayer.getColor());
         turnLabel.setOpaque(false);
 
-        updateMoveButtons(currentPlayer.getActivePokemon());
         updateItemButtons(currentPlayer);
         updateSwitchButtons(currentPlayer);
         
@@ -449,49 +477,6 @@ public class GameScreen extends JPanel {
        
         healthBar.setStringPainted(true);
         healthBar.setFont(new Font("Arial", Font.BOLD, 12));
-    }
-
-    private void updateMoveButtons(Pokemon pokemon) {
-        if (pokemon == null) return;
-
-        List<Move> moves = pokemon.getMoves();
-        for (int i = 0; i < moveButtons.length; i++) {
-            if (i < moves.size()) {
-                Move move = moves.get(i);
-                int pp = move.getPowerPoints();
-                
-               
-                moveButtons[i].setText(String.format("%s (%d PP)", move.getName(), pp));
-                
-                
-                moveButtons[i].setToolTipText(String.format("Power: %d, Accuracy: %d%%", 
-                    move.getPower(), 
-                    move.getAccuracy()));
-                
-                
-                if (pp <= 0) {
-                    moveButtons[i].setBackground(new Color(100, 100, 100)); 
-                    moveButtons[i].setEnabled(false);
-                } else if (pp <= 2) {
-                    moveButtons[i].setBackground(new Color(200, 50, 50)); 
-                    moveButtons[i].setEnabled(true);
-                } else if (pp <= 5) {
-                    moveButtons[i].setBackground(new Color(200, 150, 50)); 
-                    moveButtons[i].setEnabled(true);
-                } else {
-                    moveButtons[i].setBackground(new Color(100, 100, 200)); 
-                    moveButtons[i].setEnabled(true);
-                }
-                
-                moveButtons[i].setForeground(Color.WHITE);
-                moveButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
-            } else {
-                moveButtons[i].setText("---");
-                moveButtons[i].setToolTipText(null);
-                moveButtons[i].setEnabled(false);
-                moveButtons[i].setBackground(new Color(100, 100, 200));
-            }
-        }
     }
 
     private void updateItemButtons(Player player) {
@@ -587,12 +572,34 @@ public class GameScreen extends JPanel {
     }
 
     private void showActionPanel(int actionIndex) {
-
         hideAllActionPanels();
 
         switch (actionIndex) {
-            case 0:
+            case 0: // Move
                 movesPanel.setVisible(true);
+                if (game != null && game.getCurrentPlayer().getActivePokemon() != null) {
+                    Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
+                    List<Move> moves = activePokemon.getMoves();
+                    
+                    for (int i = 0; i < moveButtons.length; i++) {
+                        if (i < moves.size()) {
+                            Move move = moves.get(i);
+                            if (move.getPowerPoints() <= 0) {
+                                moveButtons[i].setText("Struggle");
+                                moveButtons[i].setEnabled(true);
+                                moveButtons[i].setVisible(true);
+                            } else {
+                                moveButtons[i].setText(move.getName() + " (" + move.getPowerPoints() + " PP)");
+                                moveButtons[i].setEnabled(true);
+                                moveButtons[i].setVisible(true);
+                            }
+                        } else {
+                            moveButtons[i].setText("---");
+                            moveButtons[i].setEnabled(false);
+                            moveButtons[i].setVisible(false);
+                        }
+                    }
+                }
                 break;
             case 1:
                 itemsPanel.setVisible(true);

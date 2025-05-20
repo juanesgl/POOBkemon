@@ -85,8 +85,19 @@ public class ItemSelectionScreen extends JPanel {
                 return;
             }
 
-            if (isPlayer1Selection) {
+            if (player1Pokemons == null || player1Pokemons.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Player 1 team is not set!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
+            if (selectedModality == GameModality.PLAYER_VS_PLAYER && (player2Pokemons == null || player2Pokemons.isEmpty())) {
+                JOptionPane.showMessageDialog(this, "Player 2 team is not set!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (isPlayer1Selection) {
                 player1Items.addAll(selectedItems);
 
                 if (selectedModality == GameModality.PLAYER_VS_PLAYER) {
@@ -98,15 +109,11 @@ public class ItemSelectionScreen extends JPanel {
             }
 
             if (isPlayer1Selection) {
-
                 controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, selectedItems, null);
                 System.out.println("Starting game with player 1 items: " + selectedItems.size());
-
             } else {
-
                 controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, player1Items, selectedItems);
                 System.out.println("Starting game with player 1 items: " + player1Items.size() + " and player 2 items: " + selectedItems.size());
-                
             }
         });
 

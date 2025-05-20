@@ -5,6 +5,7 @@ import domain.player.AIPlayer;
 import domain.player.Player;
 import domain.enums.GameState;
 import domain.moves.Move;
+import domain.moves.StruggleMove;
 import presentation.screens.GameScreen;
 import java.util.Random;
 import java.util.Timer;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import javax.swing.JDialog;
+import presentation.screens.MovesSelectionScreen;
 
 /**
  * Represents a game session in the POOBkemon game.
@@ -241,28 +244,20 @@ public class Game implements Serializable{
      */
 
     public void executeMove(int moveIndex) {
-        /*System.out.println("executeMove called");
-
-        if (isGameOver || turnActionTaken || !(state == GameState.PLAYER_TURN && !currentPlayer.isAI())) {
-        return;
-    }*/
-        if (isGameOver || turnActionTaken ) {
-        return;
-    }
-        Player opponent = (currentPlayer == player1) ? player2 : player1;
-        Pokemon activePokemon = currentPlayer.getActivePokemon();
-
-
-        if (activePokemon.allMovesOutOfPP()) {
+        if (isGameOver || turnActionTaken) {
             return;
         }
 
-        
+        Player opponent = (currentPlayer == player1) ? player2 : player1;
+        Pokemon activePokemon = currentPlayer.getActivePokemon();
         Move move = activePokemon.getMoves().get(moveIndex);
 
-        if (move.getPowerPoints() <= 0) return;
+        // Si el movimiento seleccionado no tiene PP, usamos Struggle
+        if (move.getPowerPoints() <= 0) {
+            move = new StruggleMove();
+        }
+        
         turnActionTaken = true;
-
         executeMove(activePokemon, opponent.getActivePokemon(), move);
 
         new Timer().schedule(new TimerTask() {
@@ -487,5 +482,13 @@ public static Game load(File file) throws IOException, ClassNotFoundException {
     }
 }
 
+    /**
+     * Gets the opponent player of the current player.
+     * 
+     * @return The opponent player
+     */
+    public Player getOpponentPlayer() {
+        return (currentPlayer == player1) ? player2 : player1;
+    }
 
 }

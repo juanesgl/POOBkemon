@@ -5,6 +5,7 @@ import java.util.List;
 import domain.game.TypeEffectivenessTable;
 import domain.enums.PokemonType;
 import domain.moves.Move;
+import domain.moves.StruggleMove;
 import java.io.Serializable;
 
 public abstract class Pokemon implements Serializable{
@@ -74,29 +75,6 @@ public abstract class Pokemon implements Serializable{
     }
 
     /**
-     * Attacks a target Pokemon with a specified move.
-     * Calculates damage based on move power, Pokemon stats, and type effectiveness.
-     * Reduces the PP of the move by 1.
-     * 
-     * @param target The target Pokemon to attack
-     * @param move The move to use for the attack
-     * @return The amount of damage dealt
-     */
-    public int attack(Pokemon target, Move move) {
-
-        if (move.getPowerPoints() <= 0) {
-            System.out.println("You don't have PP for this move");
-            return 0;
-        }
-
-        move.reducePP(1);
-
-        int damage = calculateDamage(move, target);
-        target.takeDamage(damage);
-        return damage;
-    }
-
-    /**
      * Checks if all moves of the Pokemon are out of PP.
      * 
      * @return true if all moves are out of PP, false otherwise
@@ -114,6 +92,46 @@ public abstract class Pokemon implements Serializable{
         }
 
         return true;
+    }
+
+    /**
+     * Gets the Struggle move that a Pokemon uses when it has no PP left.
+     * 
+     * @return The Struggle move
+     */
+    private Move getStruggleMove() {
+        return new StruggleMove();
+    }
+
+    /**
+     * Attacks a target Pokemon with a specified move.
+     * If the Pokemon has no PP left in any move, it will use Struggle.
+     * Calculates damage based on move power, Pokemon stats, and type effectiveness.
+     * Reduces the PP of the move by 1.
+     * 
+     * @param target The target Pokemon to attack
+     * @param move The move to use for the attack
+     * @return The amount of damage dealt
+     */
+    public int attack(Pokemon target, Move move) {
+        if (allMovesOutOfPP()) {
+            move = getStruggleMove();
+        } else if (move.getPowerPoints() <= 0) {
+            System.out.println("You don't have PP for this move");
+            return 0;
+        }
+
+        move.reducePP(1);
+
+        int damage = calculateDamage(move, target);
+        target.takeDamage(damage);
+
+        // If using Struggle, the Pokemon takes half of the damage dealt
+        if (move instanceof StruggleMove) {
+            takeDamage(damage / 2);
+        }
+
+        return damage;
     }
 
     public int calculateDamage(Move move, Pokemon target) {
@@ -236,13 +254,17 @@ public abstract class Pokemon implements Serializable{
      * Gets the primary type of the Pokemon.
      * @return The primary type
      */
-    public PokemonType getPrimaryType() { return primaryType; }
+    public PokemonType getPrimaryType() {
+        return primaryType;
+    }
 
     /**
      * Gets the secondary type of the Pokemon.
      * @return The secondary type (can be null)
      */
-    public PokemonType getSecondaryType() { return secondaryType; }
+    public PokemonType getSecondaryType() {
+        return secondaryType;
+    }
 
     /**
      * Sets the level of the Pokemon and scales its stats accordingly.
@@ -261,6 +283,11 @@ public abstract class Pokemon implements Serializable{
         this.specialAttack = (int) (this.specialAttack * scaleFactor);
         this.specialDefense = (int) (this.specialDefense * scaleFactor);
         this.speed = (int) (this.speed * scaleFactor);
+    }
+
+    public void setMoves(List<Move> moves) {
+        this.moves.clear();
+        this.moves.addAll(moves);
     }
 
     @Override

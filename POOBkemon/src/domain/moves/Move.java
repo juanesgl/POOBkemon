@@ -17,6 +17,7 @@ public abstract class Move implements Serializable {
     private final PokemonType type;
     private final int accuracy;
     private int powerPoints;
+    private final int maxPowerPoints;
     private final int priority; 
 
     /**
@@ -38,6 +39,7 @@ public abstract class Move implements Serializable {
         this.type = type;
         this.accuracy = accuracy;
         this.powerPoints = powerPoints;
+        this.maxPowerPoints = powerPoints;
         this.priority = priority;
     }
 
@@ -93,6 +95,12 @@ public abstract class Move implements Serializable {
     public int getPowerPoints() { return powerPoints; }
 
     /**
+     * Gets the maximum power points (PP) of the move.
+     * @return The maximum number of times the move can be used
+     */
+    public int getMaxPowerPoints() { return maxPowerPoints; }
+
+    /**
      * Sets the power points (PP) of the move.
      * @param powerPoints The new number of times the move can be used
      */
@@ -109,6 +117,13 @@ public abstract class Move implements Serializable {
     }
 
     /**
+     * Restores the power points (PP) of the move to the maximum.
+     */
+    public void restorePP() {
+        powerPoints = maxPowerPoints;
+    }
+
+    /**
      * Gets the priority of the move.
      * Higher priority moves go first, regardless of Pokemon speed.
      *
@@ -119,5 +134,8 @@ public abstract class Move implements Serializable {
     public boolean isDefensive(){ return false; }
     public boolean isOffensive(){ return false; }
 
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }

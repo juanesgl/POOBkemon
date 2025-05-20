@@ -88,7 +88,8 @@ public class GameSetupScreen extends JPanel {
         startGameButton.addActionListener(e -> {
             GameModality modality = (GameModality) modalitiesCombo.getSelectedItem();
             GameMode mode = (GameMode) modesCombo.getSelectedItem();
-            controller.startGameSetup(modality, mode);
+            controller.showModalitySelection(mode);
+            controller.showPokemonSelection(modality);
         });
 
         add(modalitiesLabel);

@@ -1,11 +1,9 @@
 package presentation.screens;
 
 import domain.enums.PokemonType;
-import domain.pokemons.Blastoise;
-import domain.pokemons.Charizard;
-import domain.pokemons.Gengar;
+import domain.enums.PokemonData;
+import domain.pokemons.ConcretePokemon;
 import domain.pokemons.Pokemon;
-import domain.pokemons.Raichu;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
 import presentation.components.AnimatedButton;
@@ -31,17 +29,20 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+import javax.swing.JDialog;
 
 public class PokemonSelectionScreen extends JPanel {
 
     private JLabel backgroundLabel;
     private JPanel pokemonSelectionPanel;
     private List<Pokemon> selectedPokemons = new ArrayList<>();
-    private GameController controller;
+    private List<Pokemon> player1Pokemons = new ArrayList<>();
+    private List<Pokemon> player2Pokemons = new ArrayList<>();
+    private boolean isPlayer1Selection = true;
     private GameModality selectedModality;
     private GameMode selectedMode;
-    private boolean isPlayer1Selection = true;
-    private List<Pokemon> player1Pokemons = new ArrayList<>();
+    private GameController controller;
     private JTextArea descriptionTextArea;
 
     public PokemonSelectionScreen(GameController controller) {
@@ -63,7 +64,7 @@ public class PokemonSelectionScreen extends JPanel {
         ImageIcon startIconNormal = new ImageIcon(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH));
         JButton startGameButton = new AnimatedButton(startIconNormal); 
         startGameButton.setBounds(423, 600, 179, 71);
-        startGameButton.addActionListener(e -> {
+        startGameButton.addActionListener(_ -> {
             if (selectedPokemons.size() < 4) {
                 JOptionPane.showMessageDialog(this, "Please select at least 4 Pokemon for a team!",
                         "Team Selection", JOptionPane.WARNING_MESSAGE);
@@ -71,21 +72,67 @@ public class PokemonSelectionScreen extends JPanel {
             }
 
             if (isPlayer1Selection) {
-
                 player1Pokemons.addAll(selectedPokemons);
 
-                if (selectedMode == GameMode.NORMAL) {
+              
+                if (selectedMode != GameMode.SURVIVAL) {
+                    for (Pokemon pokemon : player1Pokemons) {
+                        JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+                        moveDialog.setTitle("Seleccionar movimientos para " + pokemon.getName() + " - Jugador 1");
+                        moveDialog.setModal(true);
+                        moveDialog.setLocationRelativeTo(this);
+                        moveDialog.setSize(800, 600);
+                        moveDialog.setLocation(
+                            (int)(getLocationOnScreen().getX() + (getWidth() - 800) / 2),
+                            (int)(getLocationOnScreen().getY() + (getHeight() - 600) / 2)
+                        );
+                        
+                        MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
+                        moveDialog.add(movesScreen);
+                        moveDialog.setVisible(true);
+                    }
+                }
+
+                
+                if (selectedMode == GameMode.NORMAL && selectedModality != GameModality.PLAYER_VS_AI) {
                     isPlayer1Selection = false;
                     selectedPokemons.clear();
                     updateSelectionPanelForPlayer2();
                     return;
                 }
-            }
 
-            if (isPlayer1Selection) {
-                controller.showItemSelectionScreen(selectedModality, selectedMode, selectedPokemons, null);
+                
+                if (selectedModality == GameModality.PLAYER_VS_AI) {
+                    selectedPokemons.clear();
+                    player2Pokemons = controller.generateRandomTeam();
+                    controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
+                    return;
+                }
+
+                
+                controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, null);
             } else {
-                controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, selectedPokemons);
+                player2Pokemons = new ArrayList<>(selectedPokemons);
+                
+                if (selectedMode != GameMode.SURVIVAL) {
+                    for (Pokemon pokemon : selectedPokemons) {
+                        JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+                        moveDialog.setTitle("Seleccionar movimientos para " + pokemon.getName() + " - Jugador 2");
+                        moveDialog.setModal(true);
+                        moveDialog.setLocationRelativeTo(this);
+                        moveDialog.setSize(800, 600);
+                        moveDialog.setLocation(
+                            (int)(getLocationOnScreen().getX() + (getWidth() - 800) / 2),
+                            (int)(getLocationOnScreen().getY() + (getHeight() - 600) / 2)
+                        );
+                        
+                        MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
+                        moveDialog.add(movesScreen);
+                        moveDialog.setVisible(true);
+                    }
+                }
+
+                controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
             }
         });
 
@@ -313,20 +360,8 @@ public class PokemonSelectionScreen extends JPanel {
     }
 
     private Pokemon createPokemonByName(String name) {
-    switch (name.toLowerCase()) {
-        case "charizard":
-            return new Charizard();
-        case "blastoise":
-            return new Blastoise();
-        case "gengar":
-            return new Gengar();
-        case "raichu":
-            return new Raichu();
-        default:
-            throw new IllegalArgumentException("Unknown Pokémon: " + name);
+        return new ConcretePokemon(PokemonData.fromName(name));
     }
-}
-
 
     private PokemonType getPokemonTypeFromName(String pokemonName) {
 
