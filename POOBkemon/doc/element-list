@@ -2,7 +2,10 @@ domain.entities
 domain.enums
 domain.exceptions
 domain.game
+domain.moves
 domain.player
+domain.player.ai
+domain.pokemons
 presentation.components
 presentation.controllers
 presentation.screens

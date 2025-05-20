@@ -688,25 +688,25 @@ public class GameScreen extends JPanel {
     public void showWinnerDialog(Player winner) {
         JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(this));
         dialog.setTitle("Victory!");
-        dialog.setSize(500, 400);
+        dialog.setSize(400, 200);
         dialog.setLocationRelativeTo(this);
         dialog.setModal(true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBackground(new Color(25, 25, 112));
+        mainPanel.setBackground(Color.WHITE);
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-       
+        // Title
         JLabel titleLabel = new JLabel("VICTORY!", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
-        titleLabel.setForeground(Color.YELLOW);
+        titleLabel.setForeground(new Color(0, 51, 102)); // Dark blue
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(titleLabel);
         mainPanel.add(Box.createVerticalStrut(20));
 
-        
+        // Winner announcement
         JLabel winnerLabel = new JLabel(winner.getName() + " wins!", SwingConstants.CENTER);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         winnerLabel.setForeground(winner.getColor());
@@ -714,73 +714,30 @@ public class GameScreen extends JPanel {
         mainPanel.add(winnerLabel);
         mainPanel.add(Box.createVerticalStrut(30));
 
-        
-        JPanel statsPanel = new JPanel();
-        statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
-        statsPanel.setBackground(new Color(25, 25, 112));
-        statsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        addStatLabel(statsPanel, "Pokémon Defeated: " + winner.getDefeatedPokemonCount());
-        addStatLabel(statsPanel, "Remaining Team Members: " + winner.getTeam().size());
-        if (!winner.getTeam().isEmpty()) {
-            Pokemon activePokemon = winner.getActivePokemon();
-            addStatLabel(statsPanel, "Active Pokémon HP: " + activePokemon.getHealth() + "/" + activePokemon.getMaxHealth());
-        }
-        addStatLabel(statsPanel, "Items Used: " + winner.getUsedItemsCount());
-
-        mainPanel.add(statsPanel);
-        mainPanel.add(Box.createVerticalStrut(30));
-
-        
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setBackground(new Color(25, 25, 112));
-
-       
-        JButton replayButton = new JButton("Play Again");
-        replayButton.setFont(new Font("Arial", Font.BOLD, 16));
-        replayButton.setBackground(new Color(50, 205, 50));
-        replayButton.setForeground(Color.WHITE);
-        replayButton.setFocusPainted(false);
-        replayButton.addActionListener(e -> {
-            dialog.dispose();
-            Window window = SwingUtilities.getWindowAncestor(this);
-            window.dispose();
-            try {
-                Class<?> guiClass = Class.forName("POOBkemonGUI");
-                Object guiObject = guiClass.getDeclaredConstructor().newInstance();
-                guiClass.getMethod("showGameScreen").invoke(guiObject);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-
-       
+        // Return to Menu button
         JButton menuButton = new JButton("Return to Menu");
         menuButton.setFont(new Font("Arial", Font.BOLD, 16));
-        menuButton.setBackground(new Color(220, 20, 60));
+        menuButton.setBackground(new Color(0, 51, 102)); // Dark blue
         menuButton.setForeground(Color.WHITE);
         menuButton.setFocusPainted(false);
+        menuButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         menuButton.addActionListener(e -> {
             dialog.dispose();
-            Window window = SwingUtilities.getWindowAncestor(this);
-            window.dispose();
+            Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
+            if (window != null) {
+                window.dispose();
+            }
             try {
                 Class<?> guiClass = Class.forName("POOBkemonGUI");
                 Object guiObject = guiClass.getDeclaredConstructor().newInstance();
+                guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
                 guiClass.getMethod("showMainMenu").invoke(guiObject);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
 
-        buttonPanel.add(Box.createHorizontalStrut(20));
-        buttonPanel.add(replayButton);
-        buttonPanel.add(Box.createHorizontalStrut(20));
-        buttonPanel.add(menuButton);
-        buttonPanel.add(Box.createHorizontalStrut(20));
-        mainPanel.add(buttonPanel);
-
+        mainPanel.add(menuButton);
         dialog.add(mainPanel);
         dialog.setVisible(true);
     }
