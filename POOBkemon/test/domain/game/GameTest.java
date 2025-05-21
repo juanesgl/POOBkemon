@@ -29,7 +29,7 @@ class GameTest {
         team2 = new ArrayList<>();
         items = new ArrayList<>();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             team1.add(new TestPokemon());
             team2.add(new TestPokemon());
         }

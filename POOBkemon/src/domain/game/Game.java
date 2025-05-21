@@ -6,6 +6,7 @@ import domain.player.Player;
 import domain.enums.GameState;
 import domain.moves.Move;
 import domain.moves.StruggleMove;
+import domain.exceptions.POOBkemonException;
 import presentation.screens.GameScreen;
 
 import java.io.*;
@@ -13,6 +14,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
+import java.util.List;
 
 /**
  * Represents a game session in the POOBkemon game.
@@ -234,28 +236,31 @@ public class Game implements Serializable{
      * @param moveIndex The index of the move to execute from the active Pokemon's move list
      */
 
-    public void executeMove(int moveIndex) {
+    public void executeMove(int moveIndex) throws POOBkemonException {
         if (isGameOver || turnActionTaken) {
-            return;
+            throw new POOBkemonException(POOBkemonException.INVALID_GAME_STATE);
         }
 
-        Player opponent = (currentPlayer == player1) ? player2 : player1;
-        Pokemon activePokemon = currentPlayer.getActivePokemon();
-        Move move = activePokemon.getMoves().get(moveIndex);
+        Pokemon attacker = currentPlayer.getActivePokemon();
+        Pokemon defender = (currentPlayer == player1) ? player2.getActivePokemon() : player1.getActivePokemon();
 
+        if (attacker == null || defender == null) {
+            throw new POOBkemonException(POOBkemonException.INVALID_POKEMON_STATE);
+        }
+
+        List<Move> moves = attacker.getMoves();
+        if (moveIndex < 0 || moveIndex >= moves.size()) {
+            throw new POOBkemonException(POOBkemonException.INVALID_MOVE_SELECTION);
+        }
+
+        Move move = moves.get(moveIndex);
         if (move.getPowerPoints() <= 0) {
             move = new StruggleMove();
         }
-        
-        turnActionTaken = true;
-        executeMove(activePokemon, opponent.getActivePokemon(), move);
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                endTurn();
-            }
-        }, 2000);
+        executeMove(attacker, defender, move);
+        turnActionTaken = true;
+        endTurn();
     }
 
 
@@ -271,7 +276,15 @@ public class Game implements Serializable{
      * @param move The move that is being used
      */
 
-    private void executeMove(Pokemon attacker, Pokemon defender, Move move) {
+    private void executeMove(Pokemon attacker, Pokemon defender, Move move) throws POOBkemonException {
+        if (attacker == null || defender == null) {
+            throw new POOBkemonException(POOBkemonException.INVALID_POKEMON_STATE);
+        }
+
+        if (move == null) {
+            throw new POOBkemonException(POOBkemonException.INVALID_MOVE_SELECTION);
+        }
+
         attacker.attack(defender, move);
 
         if (defender.isFainted()) {
@@ -279,7 +292,6 @@ public class Game implements Serializable{
                                     ((currentPlayer == player1) ? player2 : player1) : currentPlayer;
             gameMode.handleFaintedPokemon(defenderPlayer);
 
-            
             if (gameMode.isGameOver(player1, player2)) {
                 isGameOver = true;
                 stopTurnTimer();
@@ -315,13 +327,17 @@ public class Game implements Serializable{
      * @param item The item to use
      */
 
-    public void useItem(Item item) {
-        if (isGameOver || turnActionTaken) return;
+    public void useItem(Item item) throws POOBkemonException {
+        if (isGameOver || turnActionTaken) {
+            throw new POOBkemonException(POOBkemonException.INVALID_GAME_STATE);
+        }
+
+        if (item == null) {
+            throw new POOBkemonException(POOBkemonException.INVALID_ITEM_USAGE);
+        }
 
         item.use(currentPlayer.getActivePokemon());
-
         turnActionTaken = true;
-
         endTurn();
     }
 
@@ -332,27 +348,27 @@ public class Game implements Serializable{
      * @param pokemonIndex The index of the Pokemon to switch to
      */
 
-    public void switchPokemon(int pokemonIndex) {
-        if (isGameOver || turnActionTaken) return;
-
-        if (pokemonIndex >= 0 && pokemonIndex < currentPlayer.getTeam().size()) {
-            Pokemon pokemon = currentPlayer.getTeam().get(pokemonIndex);
-            if (!pokemon.isFainted() && pokemon != currentPlayer.getActivePokemon()) {
-                currentPlayer.setActivePokemonIndex(pokemonIndex);
-                turnActionTaken = true;
-                endTurn();
-            }
-        } else {
-            
-            if (currentPlayer.getTeam().isEmpty() || currentPlayer.getTeam().stream().allMatch(Pokemon::isFainted)) {
-                isGameOver = true;
-                stopTurnTimer();
-                Player winner = determineWinner();
-                if (winner != null && gameScreen != null) {
-                    gameScreen.showWinnerDialog(winner);
-                }
-            }
+    public void switchPokemon(int pokemonIndex) throws POOBkemonException {
+        if (isGameOver || turnActionTaken) {
+            throw new POOBkemonException(POOBkemonException.INVALID_GAME_STATE);
         }
+
+        if (pokemonIndex < 0 || pokemonIndex >= currentPlayer.getTeam().size()) {
+            throw new POOBkemonException(POOBkemonException.INVALID_POKEMON_SWITCH);
+        }
+
+        Pokemon pokemon = currentPlayer.getTeam().get(pokemonIndex);
+        if (pokemon.isFainted()) {
+            throw new POOBkemonException(POOBkemonException.INVALID_POKEMON_SWITCH);
+        }
+
+        if (pokemon == currentPlayer.getActivePokemon()) {
+            throw new POOBkemonException(POOBkemonException.INVALID_POKEMON_SWITCH);
+        }
+
+        currentPlayer.setActivePokemonIndex(pokemonIndex);
+        turnActionTaken = true;
+        endTurn();
     }
 
     /**
@@ -406,70 +422,69 @@ public class Game implements Serializable{
     public void resumeGame(){
         startTurnTimer();
         secondsRemaining=secondsInPause;
-        
-        
     }
     /*  
      * Performs an AI move.
      * 
      */
     private void performAIMove() {
-    synchronized (timerLock) {
-        if (isGameOver || turnActionTaken || !getCurrentPlayer().isAI()) return;
-        
-        AIPlayer aiPlayer = (AIPlayer) getCurrentPlayer();
-        
-        if (aiPlayer.getTeam().isEmpty() || aiPlayer.getTeam().stream().allMatch(Pokemon::isFainted)) {
-            isGameOver = true;
-            stopTurnTimer();
-            Player winner = determineWinner();
-            if (winner != null && gameScreen != null) {
-                SwingUtilities.invokeLater(() -> gameScreen.showWinnerDialog(winner));
+        synchronized (timerLock) {
+            if (isGameOver || turnActionTaken || !getCurrentPlayer().isAI()) return;
+            
+            AIPlayer aiPlayer = (AIPlayer) getCurrentPlayer();
+            
+            if (aiPlayer.getTeam().isEmpty() || aiPlayer.getTeam().stream().allMatch(Pokemon::isFainted)) {
+                isGameOver = true;
+                stopTurnTimer();
+                Player winner = determineWinner();
+                if (winner != null && gameScreen != null) {
+                    SwingUtilities.invokeLater(() -> gameScreen.showWinnerDialog(winner));
+                }
+                return;
             }
-            return;
+            
+            try {
+                aiPlayer.makeDecision(this);
+                turnActionTaken = true;
+                endTurn();
+            } catch (POOBkemonException e) {
+                // Propagar la excepción para que sea manejada en un nivel superior
+                throw new RuntimeException(e);
+            }
         }
-        
-        aiPlayer.makeDecision(this);
-        turnActionTaken = true;
-        endTurn(); 
-    }
-    
-}
-
-/*  
- * Saves the game state to a file.
- */
-    public void save(File file) throws IOException {
-    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-        oos.writeObject(this); 
-    }
-
-    
     }
 
     /**
- * Loads a game state from a file.
- * @param file The file to load from
- * @return The loaded Game instance
- * @throws IOException If an I/O error occurs
- * @throws ClassNotFoundException If the class of a serialized object can't be found
- */
-public static Game load(File file) throws IOException, ClassNotFoundException {
-    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-        Game loadedGame = (Game) ois.readObject();
-        
-        
-        loadedGame.turnTimer = new Timer();
-        loadedGame.startTurnTimer(); 
-        
-        
-        if (loadedGame.state == GameState.SETUP) {
-            GameLoop gameLoop = new GameLoop(loadedGame);
-            gameLoop.start();
+     * Saves the game state to a file.
+     * @param file The file to save to
+     * @throws IOException If an I/O error occurs
+     */
+    public void save(File file) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(this); 
         }
-        
-        return loadedGame;
     }
-}
 
+    /**
+     * Loads a game state from a file.
+     * @param file The file to load from
+     * @return The loaded Game instance
+     * @throws IOException If an I/O error occurs
+     * @throws ClassNotFoundException If the class of a serialized object can't be found
+     */
+    public static Game load(File file) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            Game loadedGame = (Game) ois.readObject();
+            
+            loadedGame.turnTimer = new Timer();
+            loadedGame.startTurnTimer(); 
+            
+            if (loadedGame.state == GameState.SETUP) {
+                GameLoop gameLoop = new GameLoop(loadedGame);
+                gameLoop.start();
+            }
+            
+            return loadedGame;
+        }
+    }
 }

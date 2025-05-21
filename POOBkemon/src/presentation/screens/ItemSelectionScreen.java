@@ -4,6 +4,7 @@ import domain.entities.Item;
 import domain.pokemons.Pokemon;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
+import domain.exceptions.POOBkemonException;
 import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
@@ -82,19 +83,19 @@ public class ItemSelectionScreen extends JPanel {
         startGameButton.setBounds(423, 600, 179, 71);
         startGameButton.addActionListener(_ -> {
             if (selectedItems.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please select at least one item!",
+                JOptionPane.showMessageDialog(this, POOBkemonException.INVALID_ITEM_COUNT,
                         "Item Selection", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             if (player1Pokemons == null || player1Pokemons.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Player 1 team is not set!",
+                JOptionPane.showMessageDialog(this, POOBkemonException.INVALID_POKEMON_TEAM,
                         "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             if (selectedModality == GameModality.PLAYER_VS_PLAYER && (player2Pokemons == null || player2Pokemons.isEmpty())) {
-                JOptionPane.showMessageDialog(this, "Player 2 team is not set!",
+                JOptionPane.showMessageDialog(this, POOBkemonException.INVALID_POKEMON_TEAM,
                         "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }

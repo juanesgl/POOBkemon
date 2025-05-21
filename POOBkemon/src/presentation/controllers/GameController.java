@@ -13,6 +13,7 @@ import domain.player.HumanPlayer;
 import domain.player.Player;
 import domain.entities.Item;
 import domain.enums.MachineType;
+import domain.exceptions.POOBkemonException;
 import presentation.screens.CoverScreen;
 import presentation.screens.GameSetupScreen;
 import presentation.screens.PokemonSelectionScreen;
@@ -161,7 +162,7 @@ public class GameController {
 
     public void saveGame() {
          if (game == null) {
-            JOptionPane.showMessageDialog(null, "There is no game to save.",
+            JOptionPane.showMessageDialog(null, POOBkemonException.INVALID_GAME_STATE,
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -173,7 +174,7 @@ public class GameController {
                 game.save(file);
                 JOptionPane.showMessageDialog(null, "Game saved successfully: " + file.getAbsolutePath());
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Error saving: " + ex.getMessage(),
+                JOptionPane.showMessageDialog(null, POOBkemonException.INVALID_SAVE_OPERATION + ": " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -192,7 +193,7 @@ public class GameController {
                     this.game = Game.load(file);
                     showGameScreen(game);
             } catch (IOException | ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(null, "Error loading: " + ex.getMessage(),
+                    JOptionPane.showMessageDialog(null, POOBkemonException.INVALID_LOAD_OPERATION + ": " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

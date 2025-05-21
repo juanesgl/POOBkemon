@@ -71,7 +71,7 @@ class PlayerTest {
 
     private List<Pokemon> okTeam() {
         var list = new ArrayList<Pokemon>();
-        for (int i = 0; i < 4; i++) list.add(new DummyPokemon(100, false));
+        for (int i = 0; i < 6; i++) list.add(new DummyPokemon(100, false));
         return list;
     }
 
@@ -107,7 +107,7 @@ class PlayerTest {
         assertEquals("Alice", human.getName());
         assertEquals(Color.BLUE, human.getColor());
         assertNull(human.getMachineType());
-        assertEquals(4, human.getTeam().size());
+        assertEquals(6, human.getTeam().size());
         assertEquals(2, human.getItems().size());
         var ai = new TestPlayer("Bot", MachineType.defensiveTrainer, team, items);
         assertEquals("Bot", ai.getName());
@@ -122,6 +122,8 @@ class PlayerTest {
         team.add(new DummyPokemon(100, false));
         team.add(new DummyPokemon(100, true));
         team.add(new DummyPokemon(100, false));
+        team.add(new DummyPokemon(100, true));
+        team.add(new DummyPokemon(100, false));
         var player = new TestPlayer("Test", Color.RED, team, createItems());
         
         player.switchToNextAvailablePokemon();
@@ -131,6 +133,8 @@ class PlayerTest {
     @Test
     void allPokemonFainted_returnsCorrectState() {
         var team = new ArrayList<Pokemon>();
+        team.add(new DummyPokemon(100, true));
+        team.add(new DummyPokemon(100, true));
         team.add(new DummyPokemon(100, true));
         team.add(new DummyPokemon(100, true));
         team.add(new DummyPokemon(100, true));

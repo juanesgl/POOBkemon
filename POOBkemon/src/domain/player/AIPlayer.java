@@ -6,6 +6,8 @@ import java.util.List;
 import domain.enums.MachineType;
 import domain.player.ai.AIStrategy;
 import domain.player.ai.AIStrategyFactory;
+import domain.exceptions.POOBkemonException;
+import java.util.Random;
 
 /*
  * AIPlayer class represents a player controlled by an AI.
@@ -14,6 +16,7 @@ import domain.player.ai.AIStrategyFactory;
 
 public class AIPlayer extends Player {
     private AIStrategy strategy;
+    private final Random random;
     
     public AIPlayer(String name, MachineType machineType, List<Pokemon> team, List<Item> items) {
         /*  
@@ -25,6 +28,7 @@ public class AIPlayer extends Player {
          */
         super(name, machineType, team, items);
         this.strategy = AIStrategyFactory.createStrategy(machineType);
+        this.random = new Random();
     }
 
     /*
@@ -33,7 +37,11 @@ public class AIPlayer extends Player {
      */
 
     public int selectMove() {
-        return strategy.selectMove(getActivePokemon());
+        Pokemon activePokemon = getActivePokemon();
+        if (activePokemon == null) return -1;
+        List<domain.moves.Move> moves = activePokemon.getMoves();
+        if (moves.isEmpty()) return -1;
+        return random.nextInt(moves.size());
     }
 
     /*
@@ -42,7 +50,11 @@ public class AIPlayer extends Player {
      */
 
     public int selectSwitch() {
-        return strategy.selectSwitch(getActivePokemon(), getTeam(), getActivePokemon());
+        List<Pokemon> team = getTeam();
+        if (team.size() <= 1) return -1;
+        int currentIndex = getTeam().indexOf(getActivePokemon());
+        int nextIndex = (currentIndex + 1) % team.size();
+        return nextIndex;
     }
 
     /*  
@@ -78,18 +90,24 @@ public class AIPlayer extends Player {
      * @param game The game in which the decision is made.
      */
 
-    public void makeDecision(Game game) {
+    public void makeDecision(Game game) throws POOBkemonException {
+        if (game == null) {
+            throw new POOBkemonException(POOBkemonException.INVALID_GAME_STATE);
+        }
         int moveIndex = selectMove();
         int switchIndex = selectSwitch();
-        if (switchIndex <= 10) {
+        if (switchIndex != -1) {
             game.switchPokemon(switchIndex);
-            return; 
-        } else if (moveIndex <= 10) {
-            game.executeMove(moveIndex); 
             return;
-        } else {
-            return; 
         }
+        if (moveIndex != -1) {
+            game.executeMove(moveIndex);
+            return;
+        }
+    }
 
+    @Override
+    public void executeMove(int moveIndex) throws POOBkemonException {
+        throw new POOBkemonException("AIPlayer does not support direct move execution");
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.io.Serializable;
+import domain.exceptions.POOBkemonException;
 
 /**
  * Abstract base class for all player types in the game.
@@ -59,9 +60,8 @@ public abstract class Player implements Serializable {
      * @param team The list of Pokemon in the player's team
      */
     private void validateTeam(List<Pokemon> team) {
-
-        if (team.size() < 4) {
-            throw new IllegalArgumentException("Team must have at least 4 Pokemon");
+        if (team.size() < 6) {
+            throw new IllegalArgumentException("Team must have exactly 6 Pokemon");
         }
     }
 
@@ -176,5 +176,10 @@ public abstract class Player implements Serializable {
      * @return true if the player is an AI player, false otherwise
      */
     public abstract boolean isAI();
+
+    public void executeMove(int moveIndex) throws POOBkemonException {
+        // Implementación base en Player
+        throw new POOBkemonException("Base Player does not support direct move execution");
+    }
 
 }

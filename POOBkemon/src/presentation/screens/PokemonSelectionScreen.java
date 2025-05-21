@@ -6,6 +6,7 @@ import domain.pokemons.ConcretePokemon;
 import domain.pokemons.Pokemon;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
+import domain.exceptions.POOBkemonException;
 import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
@@ -80,7 +81,7 @@ public class PokemonSelectionScreen extends JPanel {
         startGameButton.addActionListener(_ -> {
 
             if (selectedPokemons.size() < 6) {
-                JOptionPane.showMessageDialog(this, "Please select at least 6 Pokemon for a team!",
+                JOptionPane.showMessageDialog(this, POOBkemonException.INVALID_POKEMON_COUNT,
                         "Team Selection", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -181,7 +182,7 @@ public class PokemonSelectionScreen extends JPanel {
         titleLabel.setFont(new Font("Georgia", Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
 
-        JLabel instructionsLabel = new JLabel("Click on the checkboxes below to select Pokémon for your team", JLabel.CENTER);
+        JLabel instructionsLabel = new JLabel("Select exactly 6 Pokémon for your team", JLabel.CENTER);
         instructionsLabel.setFont(new Font("Arial", Font.ITALIC, 14));
         instructionsLabel.setForeground(Color.YELLOW);
 
@@ -387,26 +388,23 @@ public class PokemonSelectionScreen extends JPanel {
      */
 
     private void updateStatusLabel() {
-
         JPanel bottomPanel = (JPanel) pokemonSelectionPanel.getComponent(2);
-
         JPanel statusPanel = (JPanel) bottomPanel.getComponent(1);
-
         JLabel statusLabel = (JLabel) statusPanel.getComponent(0);
 
         if (selectedPokemons.isEmpty()) {
-            statusLabel.setText("No Pokémon selected yet");
-            statusLabel.setForeground(Color.WHITE);
-        } else if (selectedPokemons.size() == 1) {
-            statusLabel.setText("1 Pokémon selected: " + selectedPokemons.get(0).getName());
-            statusLabel.setForeground(Color.GREEN);
+            statusLabel.setText("Select 6 Pokémon for your team");
+            statusLabel.setForeground(Color.YELLOW);
+        } else if (selectedPokemons.size() < 6) {
+            statusLabel.setText(selectedPokemons.size() + " Pokémon selected. Need " + (6 - selectedPokemons.size()) + " more.");
+            statusLabel.setForeground(Color.YELLOW);
         } else {
             StringBuilder names = new StringBuilder();
             for (int i = 0; i < selectedPokemons.size(); i++) {
                 if (i > 0) names.append(", ");
                 names.append(selectedPokemons.get(i).getName());
             }
-            statusLabel.setText(selectedPokemons.size() + " Pokémon selected: " + names.toString());
+            statusLabel.setText("Team complete! Selected: " + names.toString());
             statusLabel.setForeground(Color.GREEN);
         }
     }

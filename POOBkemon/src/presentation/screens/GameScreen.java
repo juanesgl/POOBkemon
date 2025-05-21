@@ -4,6 +4,7 @@ import domain.entities.Item;
 import domain.game.Game;
 import domain.moves.Move;
 import domain.player.Player;
+import domain.exceptions.POOBkemonException;
 import presentation.utils.UIConstants;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -214,7 +215,7 @@ public class GameScreen extends JPanel {
             actionButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             actionButtons[i].setFocusPainted(false);
             final int actionIndex = i;
-            actionButtons[i].addActionListener(_ -> showActionPanel(actionIndex));
+            actionButtons[i].addActionListener(_ -> handleGameAction(actionIndex));
             actionMenuPanel.add(actionButtons[i]);
         }
 
@@ -237,10 +238,18 @@ public class GameScreen extends JPanel {
             final int moveIndex = i;
             moveButtons[i].addActionListener(_ -> {
                 if (game != null) {
-                    game.executeMove(moveIndex);
-                    updateBattleUI();
-
-                    hideAllActionPanels();
+                    try {
+                        game.executeMove(moveIndex);
+                        updateBattleUI();
+                        hideAllActionPanels();
+                    } catch (POOBkemonException e) {
+                        String errorMessage = e.getMessage();
+                        if (errorMessage == null || errorMessage.isEmpty()) {
+                            errorMessage = "An error occurred during the game action.";
+                        }
+                        JOptionPane.showMessageDialog(this, errorMessage,
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
             movesPanel.add(moveButtons[i]);
@@ -263,10 +272,18 @@ public class GameScreen extends JPanel {
             final int itemIndex = i;
             itemButtons[i].addActionListener(_ -> {
                 if (game != null && game.getCurrentPlayer().getItems().size() > itemIndex) {
-                    game.useItem(game.getCurrentPlayer().getItems().get(itemIndex));
-                    updateBattleUI();
-
-                    hideAllActionPanels();
+                    try {
+                        game.useItem(game.getCurrentPlayer().getItems().get(itemIndex));
+                        updateBattleUI();
+                        hideAllActionPanels();
+                    } catch (POOBkemonException e) {
+                        String errorMessage = e.getMessage();
+                        if (errorMessage == null || errorMessage.isEmpty()) {
+                            errorMessage = "An error occurred during the game action.";
+                        }
+                        JOptionPane.showMessageDialog(this, errorMessage,
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
             itemsPanel.add(itemButtons[i]);
@@ -289,11 +306,18 @@ public class GameScreen extends JPanel {
             final int pokemonIndex = i;
             switchButtons[i].addActionListener(_ -> {
                 if (game != null) {
-
-                    game.switchPokemon(pokemonIndex);
-                    updateBattleUI();
-
-                    hideAllActionPanels();
+                    try {
+                        game.switchPokemon(pokemonIndex);
+                        updateBattleUI();
+                        hideAllActionPanels();
+                    } catch (POOBkemonException e) {
+                        String errorMessage = e.getMessage();
+                        if (errorMessage == null || errorMessage.isEmpty()) {
+                            errorMessage = "An error occurred during the game action.";
+                        }
+                        JOptionPane.showMessageDialog(this, errorMessage,
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
             switchPanel.add(switchButtons[i]);
@@ -323,12 +347,10 @@ public class GameScreen extends JPanel {
             }
 
             try {
-
                 Class<?> guiClass = Class.forName("POOBkemonGUI");
                 Object guiObject = guiClass.getDeclaredConstructor().newInstance();
-
-
                 guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
+                guiClass.getMethod("showCoverScreen").invoke(guiObject);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -570,13 +592,12 @@ public class GameScreen extends JPanel {
 
                 String tooltip = pokemon.getName() + " - HP: " + pokemon.getHealth() + "/" + pokemon.getMaxHealth();
                 if (isFainted) {
-                    tooltip += " (Fainted)";
+                    tooltip += " (" + POOBkemonException.INVALID_POKEMON_SWITCH + ")";
                 }
                 if (isActive) {
                     tooltip += " (Active)";
                 }
                 switchButtons[i].setToolTipText(tooltip);
-
 
                 if (isFainted) {
                     switchButtons[i].setBackground(Color.GRAY);
@@ -585,7 +606,6 @@ public class GameScreen extends JPanel {
                 } else {
                     switchButtons[i].setBackground(new Color(100, 100, 200));
                 }
-
             } else {
                 switchButtons[i].setText("---");
                 switchButtons[i].setToolTipText(null);
@@ -813,7 +833,7 @@ public class GameScreen extends JPanel {
                 Class<?> guiClass = Class.forName("POOBkemonGUI");
                 Object guiObject = guiClass.getDeclaredConstructor().newInstance();
                 guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
-                guiClass.getMethod("showMainMenu").invoke(guiObject);
+                guiClass.getMethod("showCoverScreen").invoke(guiObject);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -823,4 +843,36 @@ public class GameScreen extends JPanel {
         dialog.add(mainPanel);
         dialog.setVisible(true);
     }         
+
+    private void handleGameAction(int actionIndex) {
+        try {
+            switch (actionIndex) {
+                case 0: // Move
+                    if (game != null && game.getCurrentPlayer().getActivePokemon() != null) {
+                        List<Move> moves = game.getCurrentPlayer().getActivePokemon().getMoves();
+                        if (moves != null && !moves.isEmpty()) {
+                            game.executeMove(0); // Use the first move
+                        }
+                    }
+                    break;
+                case 1: // Item
+                    if (game != null && !game.getCurrentPlayer().getItems().isEmpty()) {
+                        game.useItem(game.getCurrentPlayer().getItems().get(0));
+                    }
+                    break;
+                case 2: // Switch
+                    if (game != null && game.getCurrentPlayer().getTeam().size() > 1) {
+                        game.switchPokemon(1);
+                    }
+                    break;
+            }
+        } catch (POOBkemonException e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage == null || errorMessage.isEmpty()) {
+                errorMessage = "An error occurred during the game action.";
+            }
+            JOptionPane.showMessageDialog(this, errorMessage,
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
