@@ -130,7 +130,7 @@ public abstract class Pokemon implements Serializable{
         int damage = calculateDamage(move, target);
         target.takeDamage(damage);
 
-        // If using Struggle, the Pokemon takes half of the damage dealt
+    
         if (move instanceof StruggleMove) {
             takeDamage(damage / 2);
         }

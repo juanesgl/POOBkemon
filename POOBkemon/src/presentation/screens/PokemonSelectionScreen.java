@@ -88,26 +88,23 @@ public class PokemonSelectionScreen extends JPanel {
             if (isPlayer1Selection) {
                 player1Pokemons.addAll(selectedPokemons);
 
-              
-                if (selectedMode != GameMode.SURVIVAL) {
-                    for (Pokemon pokemon : player1Pokemons) {
-                        JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
-                        moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 1");
-                        moveDialog.setModal(true);
-                        moveDialog.setLocationRelativeTo(this);
-                        moveDialog.setSize(800, 600);
-                        moveDialog.setLocation(
-                            (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
-                            (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
-                        );
-                        
-                        MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
-                        moveDialog.add(movesScreen);
-                        moveDialog.setVisible(true);
-                    }
+                // Show move selection for both Normal and Survival modes
+                for (Pokemon pokemon : player1Pokemons) {
+                    JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+                    moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 1");
+                    moveDialog.setModal(true);
+                    moveDialog.setLocationRelativeTo(this);
+                    moveDialog.setSize(800, 600);
+                    moveDialog.setLocation(
+                        (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
+                        (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
+                    );
+                    
+                    MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
+                    moveDialog.add(movesScreen);
+                    moveDialog.setVisible(true);
                 }
 
-                
                 if (selectedMode == GameMode.NORMAL && selectedModality != GameModality.PLAYER_VS_AI) {
                     isPlayer1Selection = false;
                     selectedPokemons.clear();
@@ -115,38 +112,49 @@ public class PokemonSelectionScreen extends JPanel {
                     return;
                 }
 
-                
                 if (selectedModality == GameModality.PLAYER_VS_AI) {
                     selectedPokemons.clear();
                     player2Pokemons = controller.generateRandomTeam();
-                    controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
+                    if (selectedMode != GameMode.SURVIVAL) {
+                        controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
+                    } else {
+                        controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, new ArrayList<>(), new ArrayList<>());
+                    }
                     return;
                 }
 
-                
-                controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, null);
+                if (selectedMode != GameMode.SURVIVAL) {
+                    controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, null);
+                } else {
+                    isPlayer1Selection = false;
+                    selectedPokemons.clear();
+                    updateSelectionPanelForPlayer2();
+                }
             } else {
                 player2Pokemons = new ArrayList<>(selectedPokemons);
                 
-                if (selectedMode != GameMode.SURVIVAL) {
-                    for (Pokemon pokemon : selectedPokemons) {
-                        JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
-                        moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 2");
-                        moveDialog.setModal(true);
-                        moveDialog.setLocationRelativeTo(this);
-                        moveDialog.setSize(800, 600);
-                        moveDialog.setLocation(
-                            (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
-                            (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
-                        );
-                        
-                        MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
-                        moveDialog.add(movesScreen);
-                        moveDialog.setVisible(true);
-                    }
+                // Show move selection for both Normal and Survival modes
+                for (Pokemon pokemon : selectedPokemons) {
+                    JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+                    moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 2");
+                    moveDialog.setModal(true);
+                    moveDialog.setLocationRelativeTo(this);
+                    moveDialog.setSize(800, 600);
+                    moveDialog.setLocation(
+                        (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
+                        (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
+                    );
+                    
+                    MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
+                    moveDialog.add(movesScreen);
+                    moveDialog.setVisible(true);
                 }
 
-                controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
+                if (selectedMode != GameMode.SURVIVAL) {
+                    controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
+                } else {
+                    controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, new ArrayList<>(), new ArrayList<>());
+                }
             }
         });
 

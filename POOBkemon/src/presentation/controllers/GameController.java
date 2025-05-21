@@ -90,6 +90,16 @@ public class GameController {
      */
 
     public void showPokemonSelection(GameModality modality) {
+        // If Survival Mode is selected, only allow Player vs Player
+        if (selectedMode == GameMode.SURVIVAL && modality != GameModality.PLAYER_VS_PLAYER) {
+            JOptionPane.showMessageDialog(mainFrame,
+                "Survival Mode is only available in Player vs Player mode. AI players cannot play in Survival Mode.",
+                "Mode Restriction",
+                JOptionPane.INFORMATION_MESSAGE);
+            showGameModeSelection();
+            return;
+        }
+
         this.selectedModality = modality;
         PokemonSelectionScreen selectionScreen = new PokemonSelectionScreen(this);
         selectionScreen.setGameOptions(selectedModality, selectedMode);
