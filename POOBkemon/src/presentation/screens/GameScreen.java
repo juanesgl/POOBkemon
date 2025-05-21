@@ -371,6 +371,10 @@ public class GameScreen extends JPanel {
             ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource(backgroundPath)));
             battlePanel.setIcon(background);
 
+            boolean isSurvivalMode = game.getGameMode().getClass().getSimpleName().equals("SurvivalMode");
+            actionButtons[1].setVisible(!isSurvivalMode); 
+            itemsPanel.setVisible(false);
+
             updateBattleUI();
         } else {
         }
@@ -633,8 +637,13 @@ public class GameScreen extends JPanel {
     private void showActionPanel(int actionIndex) {
         hideAllActionPanels();
 
+        // Don't show items panel in Survival Mode
+        if (actionIndex == 1 && game != null && game.getGameMode().getClass().getSimpleName().equals("SurvivalMode")) {
+            return;
+        }
+
         switch (actionIndex) {
-            case 0: 
+            case 0:
                 movesPanel.setVisible(true);
                 if (game != null && game.getCurrentPlayer().getActivePokemon() != null) {
                     Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
@@ -661,7 +670,9 @@ public class GameScreen extends JPanel {
                 }
                 break;
             case 1:
-                itemsPanel.setVisible(true);
+                if (!game.getGameMode().getClass().getSimpleName().equals("SurvivalMode")) {
+                    itemsPanel.setVisible(true);
+                }
                 break;
             case 2:
                 switchPanel.setVisible(true);
