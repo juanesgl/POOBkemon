@@ -395,7 +395,7 @@ public class GameScreen extends JPanel {
 
             boolean isSurvivalMode = game.getGameMode().getClass().getSimpleName().equals("SurvivalMode");
             actionButtons[1].setVisible(!isSurvivalMode); 
-            itemsPanel.setVisible(false);
+            itemsPanel.setVisible(!isSurvivalMode);
 
             updateBattleUI();
         } else {
@@ -657,13 +657,12 @@ public class GameScreen extends JPanel {
     private void showActionPanel(int actionIndex) {
         hideAllActionPanels();
 
-
         if (actionIndex == 1 && game != null && game.getGameMode().getClass().getSimpleName().equals("SurvivalMode")) {
             return;
         }
 
         switch (actionIndex) {
-            case 0:
+            case 0: // Move
                 movesPanel.setVisible(true);
                 if (game != null && game.getCurrentPlayer().getActivePokemon() != null) {
                     Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
@@ -689,13 +688,15 @@ public class GameScreen extends JPanel {
                     }
                 }
                 break;
-            case 1:
+            case 1: // Item
                 if (!game.getGameMode().getClass().getSimpleName().equals("SurvivalMode")) {
                     itemsPanel.setVisible(true);
+                    updateItemButtons(game.getCurrentPlayer());
                 }
                 break;
-            case 2:
+            case 2: // Switch
                 switchPanel.setVisible(true);
+                updateSwitchButtons(game.getCurrentPlayer());
                 break;
         }
     }
@@ -845,34 +846,6 @@ public class GameScreen extends JPanel {
     }         
 
     private void handleGameAction(int actionIndex) {
-        try {
-            switch (actionIndex) {
-                case 0: // Move
-                    if (game != null && game.getCurrentPlayer().getActivePokemon() != null) {
-                        List<Move> moves = game.getCurrentPlayer().getActivePokemon().getMoves();
-                        if (moves != null && !moves.isEmpty()) {
-                            game.executeMove(0); // Use the first move
-                        }
-                    }
-                    break;
-                case 1:
-                    if (game != null && !game.getCurrentPlayer().getItems().isEmpty()) {
-                        game.useItem(game.getCurrentPlayer().getItems().getFirst());
-                    }
-                    break;
-                case 2:
-                    if (game != null && game.getCurrentPlayer().getTeam().size() > 1) {
-                        game.switchPokemon(1);
-                    }
-                    break;
-            }
-        } catch (POOBkemonException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage == null || errorMessage.isEmpty()) {
-                errorMessage = "An error occurred during the game action.";
-            }
-            JOptionPane.showMessageDialog(this, errorMessage,
-                "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        showActionPanel(actionIndex);
     }
 }

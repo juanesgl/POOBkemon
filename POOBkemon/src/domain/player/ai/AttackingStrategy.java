@@ -58,8 +58,16 @@ public class AttackingStrategy implements AIStrategy {
      */
       @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
-        
-        return 50;
+        // Si el Pokémon actual está débil, intenta cambiar
+        if (activePokemon.getHealth() < activePokemon.getMaxHealth() * 0.3) {
+            for (int i = 0; i < team.size(); i++) {
+                Pokemon pokemon = team.get(i);
+                if (pokemon != activePokemon && !pokemon.isFainted()) {
+                    return i;
+                }
+            }
+        }
+        return -1; // No cambiar si no es necesario
     }
     
 }

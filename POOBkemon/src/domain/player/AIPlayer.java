@@ -39,9 +39,7 @@ public class AIPlayer extends Player {
     public int selectMove() {
         Pokemon activePokemon = getActivePokemon();
         if (activePokemon == null) return -1;
-        List<domain.moves.Move> moves = activePokemon.getMoves();
-        if (moves.isEmpty()) return -1;
-        return random.nextInt(moves.size());
+        return strategy.selectMove(activePokemon);
     }
 
     /*
