@@ -92,7 +92,14 @@ public class GameController {
 
     public void showPokemonSelection(GameModality modality) {
         if (selectedMode == GameMode.SURVIVAL) {
-           
+            if (modality != GameModality.PLAYER_VS_PLAYER) {
+                JOptionPane.showMessageDialog(mainFrame,
+                    "Survival Mode is only available in Player vs Player mode. AI players cannot play in Survival Mode.",
+                    "Mode Restriction",
+                    JOptionPane.INFORMATION_MESSAGE);
+                showGameModeSelection();
+                return;
+            }
             List<Pokemon> player1Team = generateRandomTeam();
             List<Pokemon> player2Team = generateRandomTeam();
             startGame(modality, selectedMode, player1Team, player2Team, new ArrayList<>(), new ArrayList<>());
@@ -309,15 +316,32 @@ public class GameController {
      */
 
     private MachineType askMachineType() {
-        MachineType machineType = (MachineType) JOptionPane.showInputDialog(
-                null,
-                "Select Machine Type:",
-                "Machine Type Selection",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                MachineType.values(),
-                MachineType.values()[0]
-        );
+        MachineType machineType = null;
+        while (machineType == null) {
+            machineType = (MachineType) JOptionPane.showInputDialog(
+                    null,
+                    "Select Machine Type:",
+                    "Machine Type Selection",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    MachineType.values(),
+                    MachineType.values()[0]
+            );
+            
+            if (machineType == null) {
+                int response = JOptionPane.showConfirmDialog(
+                    null,
+                    "You must select a machine type to continue. Would you like to try again?",
+                    "Selection Required",
+                    JOptionPane.YES_NO_OPTION
+                );
+                
+                if (response == JOptionPane.NO_OPTION) {
+                    showGameModeSelection();
+                    return null;
+                }
+            }
+        }
 
         showInfoMessage("Machine Type", machineType.toString());
         return machineType;
