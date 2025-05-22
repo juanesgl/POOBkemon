@@ -1,3 +1,5 @@
+package Pokemons;
+
 import domain.pokemons.Pokemon;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +24,12 @@ class PokemonTest {
                     PokemonType.NORMAL,
                     100,
                     5);
+        }
+    }
+
+    static class TestMove extends Move {
+        TestMove(String name, int power, MoveCategory category, PokemonType type, int accuracy, int pp) {
+            super(name, power, category, type, accuracy, pp);
         }
     }
 
@@ -99,5 +107,97 @@ class PokemonTest {
         p.addMove(move);
         p.addMove(move);
         assertEquals(2, p.getMoves().size());
+    }
+
+    @Test
+    void constructor_initializesStatsCorrectly() {
+        TestPokemon p = new TestPokemon();
+        assertEquals(100, p.getMaxHealth());
+        assertEquals(50, p.getAttack());
+        assertEquals(50, p.getDefense());
+        assertEquals(50, p.getSpecialAttack());
+        assertEquals(50, p.getSpecialDefense());
+        assertEquals(50, p.getSpeed());
+    }
+
+    @Test
+    void heal_restoresHealthToMax() {
+        TestPokemon p = new TestPokemon();
+        p.takeDamage(50);
+        p.heal();
+        assertEquals(p.getMaxHealth(), p.getHealth());
+    }
+
+    @Test
+    void heal_doesNotExceedMaxHealth() {
+        TestPokemon p = new TestPokemon();
+        p.heal();
+        assertEquals(p.getMaxHealth(), p.getHealth());
+    }
+
+    @Test
+    void getMoves_returnsEmptyListInitially() {
+        TestPokemon p = new TestPokemon();
+        assertTrue(p.getMoves().isEmpty());
+    }
+
+    @Test
+    void getMoves_returnsCorrectMoves() {
+        TestPokemon p = new TestPokemon();
+        DummyMove move1 = new DummyMove();
+        DummyMove move2 = new DummyMove();
+        p.addMove(move1);
+        p.addMove(move2);
+        assertEquals(2, p.getMoves().size());
+        assertTrue(p.getMoves().contains(move1));
+        assertTrue(p.getMoves().contains(move2));
+    }
+
+    @Test
+    void comprehensiveBattleSimulation() {
+        TestPokemon attacker = new TestPokemon();
+        new TestPokemon();
+        TestPokemon defender;
+
+        attacker = new TestPokemon() {
+            @Override
+            public PokemonType getPrimaryType() {
+                return PokemonType.FIRE;
+            }
+        };
+        
+        defender = new TestPokemon() {
+            @Override
+            public PokemonType getPrimaryType() {
+                return PokemonType.GRASS;
+            }
+        };
+
+        Move physicalMove = new TestMove("Tackle", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 35);
+        Move specialMove = new TestMove("Flamethrower", 90, MoveCategory.SPECIAL, PokemonType.FIRE, 100, 15);
+        Move statusMove = new TestMove("Growl", 0, MoveCategory.STATUS, PokemonType.NORMAL, 100, 40);
+
+        attacker.addMove(physicalMove);
+        attacker.addMove(specialMove);
+        attacker.addMove(statusMove);
+        assertEquals(3, attacker.getMoves().size(), "Pokemon should have 3 moves");
+
+
+        int physicalDamage = attacker.attack(defender, physicalMove);
+        int specialDamage = attacker.attack(defender, specialMove);
+        assertTrue(specialDamage > physicalDamage, "Special damage should be greater than physical due to STAB and type effectiveness");
+
+        defender.takeDamage(defender.getMaxHealth());
+        assertTrue(defender.isFainted(), "Pokemon should faint when health reaches 0");
+
+        int originalAttack = attacker.getAttack();
+        int originalDefense = attacker.getDefense();
+        attacker.setLevel(100);
+        assertTrue(attacker.getAttack() > originalAttack, "Attack should increase with level");
+        assertTrue(attacker.getDefense() > originalDefense, "Defense should increase with level");
+
+        defender.setHealth(defender.getMaxHealth());
+        defender.takeDamage(defender.getMaxHealth() + 100);
+        assertEquals(0, defender.getHealth(), "Health should not go below 0");
     }
 }

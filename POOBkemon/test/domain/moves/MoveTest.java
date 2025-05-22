@@ -1,4 +1,4 @@
-
+package moves;
 
 import domain.moves.Move;
 import org.junit.jupiter.api.Test;
@@ -43,6 +43,43 @@ class MoveTest {
         assertEquals(100, move.getAccuracy());
         assertEquals(30, move.getPowerPoints());
         assertEquals(1, move.getPriority());
+    }
+
+
+    @Test
+    void getPower_returnsCorrectValue() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 35);
+        assertEquals(40, move.getPower());
+    }
+
+    @Test
+    void getCategory_returnsCorrectValue() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 35);
+        assertEquals(MoveCategory.PHYSICAL, move.getCategory());
+    }
+
+    @Test
+    void getType_returnsCorrectValue() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 35);
+        assertEquals(PokemonType.NORMAL, move.getType());
+    }
+
+    @Test
+    void getAccuracy_returnsCorrectValue() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 35);
+        assertEquals(100, move.getAccuracy());
+    }
+
+    @Test
+    void getPriority_returnsCorrectValue() {
+        TestMove move = new TestMove("Quick Attack", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 30, 1);
+        assertEquals(1, move.getPriority());
+    }
+
+    @Test
+    void getName_returnsCorrectValue() {
+        TestMove move = new TestMove("Tackle", 40, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 35);
+        assertEquals("Tackle", move.getName());
     }
 
     @Test

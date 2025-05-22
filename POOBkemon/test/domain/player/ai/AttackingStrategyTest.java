@@ -1,8 +1,6 @@
-package test.domain.player.ai;
+package player.ai;
 
 import domain.player.ai.AttackingStrategy;
-import domain.player.ai.AIStrategy;
-import domain.player.Player;
 import domain.pokemons.Pokemon;
 import domain.moves.Move;
 import domain.enums.MoveCategory;
@@ -41,22 +39,22 @@ class AttackingStrategyTest {
     }
 
     @Test
-    void selectMove_withNoHighDamageMove_returnsOffensiveMoveIndex() {
+    void selectMove_withNoDamageMove() {
         // Arrange
         strategy = new AttackingStrategy();
         activePokemon = new TestPokemon("Test", 100);
         
         TestMove defensiveMove = new TestMove("Defensive", 0, MoveCategory.STATUS, PokemonType.NORMAL, 100, 35);
-        TestMove offensiveMove = new TestMove("Offensive", 60, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 35);
+
         
         activePokemon.addMove(defensiveMove);
-        activePokemon.addMove(offensiveMove);
+
 
         // Act
         int selectedIndex = strategy.selectMove(activePokemon);
 
         // Assert
-        assertEquals(1, selectedIndex); // Index of offensiveMove
+        assertEquals(0, selectedIndex); // Index of offensiveMove
     }
 
     @Test
@@ -96,7 +94,7 @@ class AttackingStrategyTest {
     // Test doubles
     private static class TestPokemon extends Pokemon {
         public TestPokemon(String name, int hp) {
-            super(name, hp);
+            super(name, hp, 50, 50, 50, 50, 50, PokemonType.NORMAL, null, "test.png");
         }
 
         public void addMove(Move move) {

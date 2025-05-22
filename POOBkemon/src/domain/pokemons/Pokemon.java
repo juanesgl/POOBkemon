@@ -241,6 +241,19 @@ public abstract class Pokemon implements Serializable{
     public int getSpeed() { return speed; }
 
     /**
+     * Gets the special attack stat of the Pokemon.
+     * @return The special attack stat
+     */
+    public int getSpecialAttack() { return specialAttack; }
+
+    /**
+     * Heals the Pokemon to its maximum health.
+     */
+    public void heal() {
+        this.health = this.maxHealth;
+    }
+
+    /**
      * Gets the list of moves the Pokemon knows.
      * @return The list of moves
      */
