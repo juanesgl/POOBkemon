@@ -161,7 +161,7 @@ public class GameController {
 
     public void saveGame() {
          if (game == null) {
-            JOptionPane.showMessageDialog(null, POOBkemonException.INVALID_GAME_STATE,
+            JOptionPane.showMessageDialog(null, POOBkemonException.INVALID_GAME_SAVE,
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }

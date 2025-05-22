@@ -18,6 +18,7 @@ public class POOBkemonException extends Exception {
     public static final String INVALID_POKEMON_TEAM = "Invalid Pokémon team configuration.";
     public static final String INVALID_SAVE_OPERATION = "Failed to save the game.";
     public static final String INVALID_LOAD_OPERATION = "Failed to load the game.";
+    public static final String INVALID_GAME_SAVE = "You dont have a game for save.";
 
     public POOBkemonException(String message) {
         super(message);
