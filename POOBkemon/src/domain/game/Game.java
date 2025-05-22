@@ -8,8 +8,14 @@ import domain.moves.Move;
 import domain.moves.StruggleMove;
 import domain.exceptions.POOBkemonException;
 import presentation.screens.GameScreen;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
