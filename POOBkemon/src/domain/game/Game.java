@@ -483,7 +483,7 @@ public class Game implements Serializable{
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Game loadedGame = (Game) ois.readObject();
             
-            loadedGame.turnTimer = new Timer();
+            //loadedGame.turnTimer = new Timer();
             loadedGame.startTurnTimer(); 
             
             if (loadedGame.state == GameState.SETUP) {
