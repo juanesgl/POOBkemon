@@ -178,7 +178,6 @@ public abstract class Player implements Serializable {
     public abstract boolean isAI();
 
     public void executeMove(int moveIndex) throws POOBkemonException {
-        // Implementación base en Player
         throw new POOBkemonException("Base Player does not support direct move execution");
     }
 

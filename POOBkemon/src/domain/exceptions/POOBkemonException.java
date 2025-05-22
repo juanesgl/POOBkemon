@@ -1,8 +1,11 @@
 package domain.exceptions;
 
 /*
- * Class POOBkemonException
+ * This class defines custom exceptions for the POOBkemon game.
+ * It extends the Exception class and provides specific error messages
+ * for various invalid operations within the game.
  */
+
 public class POOBkemonException extends Exception {
     public static final String INVALID_POKEMON_COUNT = "Invalid number of Pokémon selected. Please select exactly 6 Pokémon.";
     public static final String INVALID_ITEM_COUNT = "Invalid number of items selected. Please select exactly 3 items.";

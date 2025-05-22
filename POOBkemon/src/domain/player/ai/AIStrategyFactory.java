@@ -14,10 +14,9 @@ import domain.enums.MachineType;
      */
     public static AIStrategy createStrategy(MachineType type) {
         return switch(type) {
-            case defensiveTrainer -> new DefensiveStrategy();
+            case defensiveTrainer, expertTrainer -> new DefensiveStrategy();
             case attackingTrainer -> new AttackingStrategy();
             case changingTrainer -> new ChangingStrategy();
-            case expertTrainer -> new DefensiveStrategy();
         };
     }
 }

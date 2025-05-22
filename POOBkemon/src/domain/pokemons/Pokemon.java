@@ -63,9 +63,7 @@ public abstract class Pokemon implements Serializable{
         this.moves = new ArrayList<>();
     }
 
-
-
-        /**
+    /**
      * Adds a move to the Pokemon's move list.
      * A Pokemon can have a maximum of 4 moves.
      * 

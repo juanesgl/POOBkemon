@@ -150,6 +150,7 @@ public class Game implements Serializable{
         }
     }
     }
+
     /*  
      * Ends the current player's turn and starts the next player's turn.
      * Updates the game state to indicate the next player's turn.
@@ -448,7 +449,7 @@ public class Game implements Serializable{
                 turnActionTaken = true;
                 endTurn();
             } catch (POOBkemonException e) {
-                // Propagar la excepción para que sea manejada en un nivel superior
+
                 throw new RuntimeException(e);
             }
         }

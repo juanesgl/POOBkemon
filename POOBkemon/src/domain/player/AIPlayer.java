@@ -53,8 +53,7 @@ public class AIPlayer extends Player {
         List<Pokemon> team = getTeam();
         if (team.size() <= 1) return -1;
         int currentIndex = getTeam().indexOf(getActivePokemon());
-        int nextIndex = (currentIndex + 1) % team.size();
-        return nextIndex;
+        return (currentIndex + 1) % team.size();
     }
 
     /*  
@@ -102,7 +101,6 @@ public class AIPlayer extends Player {
         }
         if (moveIndex != -1) {
             game.executeMove(moveIndex);
-            return;
         }
     }
 

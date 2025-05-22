@@ -657,7 +657,7 @@ public class GameScreen extends JPanel {
     private void showActionPanel(int actionIndex) {
         hideAllActionPanels();
 
-        // Don't show items panel in Survival Mode
+
         if (actionIndex == 1 && game != null && game.getGameMode().getClass().getSimpleName().equals("SurvivalMode")) {
             return;
         }
@@ -855,12 +855,12 @@ public class GameScreen extends JPanel {
                         }
                     }
                     break;
-                case 1: // Item
+                case 1:
                     if (game != null && !game.getCurrentPlayer().getItems().isEmpty()) {
-                        game.useItem(game.getCurrentPlayer().getItems().get(0));
+                        game.useItem(game.getCurrentPlayer().getItems().getFirst());
                     }
                     break;
-                case 2: // Switch
+                case 2:
                     if (game != null && game.getCurrentPlayer().getTeam().size() > 1) {
                         game.switchPokemon(1);
                     }
