@@ -125,7 +125,7 @@ public class GameScreen extends JPanel {
         pauseButton.setFont(new Font("Arial", Font.BOLD, 5));
         pauseButton.setFocusPainted(false);
 
-        pauseButton.addActionListener(x -> {
+        pauseButton.addActionListener(_ -> {
             if (!gamePaused) {
                 gamePaused=true;
                 game.pauseGame();
@@ -215,7 +215,7 @@ public class GameScreen extends JPanel {
             actionButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             actionButtons[i].setFocusPainted(false);
             final int actionIndex = i;
-            actionButtons[i].addActionListener(e -> handleGameAction(actionIndex));
+            actionButtons[i].addActionListener(_ -> handleGameAction(actionIndex));
             actionMenuPanel.add(actionButtons[i]);
         }
 
@@ -236,7 +236,7 @@ public class GameScreen extends JPanel {
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             moveButtons[i].setFocusPainted(false);
             final int moveIndex = i;
-            moveButtons[i].addActionListener(x -> {
+            moveButtons[i].addActionListener(_ -> {
                 if (game != null) {
                     try {
                         game.executeMove(moveIndex);
@@ -270,7 +270,7 @@ public class GameScreen extends JPanel {
             itemButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
             itemButtons[i].setFocusPainted(false);
             final int itemIndex = i;
-            itemButtons[i].addActionListener(x -> {
+            itemButtons[i].addActionListener(_ -> {
                 if (game != null && game.getCurrentPlayer().getItems().size() > itemIndex) {
                     try {
                         game.useItem(game.getCurrentPlayer().getItems().get(itemIndex));
@@ -304,7 +304,7 @@ public class GameScreen extends JPanel {
             switchButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
             switchButtons[i].setFocusPainted(false);
             final int pokemonIndex = i;
-            switchButtons[i].addActionListener(x -> {
+            switchButtons[i].addActionListener(_ -> {
                 if (game != null) {
                     try {
                         game.switchPokemon(pokemonIndex);
@@ -340,7 +340,7 @@ public class GameScreen extends JPanel {
         exitButton.setFont(new Font("Arial", Font.BOLD, 14));
         exitButton.setFocusPainted(false);
 
-        exitButton.addActionListener(e -> {
+        exitButton.addActionListener(_ -> {
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
             if (window != null) {
                 window.dispose();
@@ -662,7 +662,7 @@ public class GameScreen extends JPanel {
         }
 
         switch (actionIndex) {
-            case 0: // Move
+            case 0: 
                 movesPanel.setVisible(true);
                 if (game != null && game.getCurrentPlayer().getActivePokemon() != null) {
                     Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
@@ -688,13 +688,13 @@ public class GameScreen extends JPanel {
                     }
                 }
                 break;
-            case 1: // Item
+            case 1: 
                 if (!game.getGameMode().getClass().getSimpleName().equals("SurvivalMode")) {
                     itemsPanel.setVisible(true);
                     updateItemButtons(game.getCurrentPlayer());
                 }
                 break;
-            case 2: // Switch
+            case 2: 
                 switchPanel.setVisible(true);
                 updateSwitchButtons(game.getCurrentPlayer());
                 break;
@@ -763,7 +763,7 @@ public class GameScreen extends JPanel {
     contentPanel.add(resultLabel, BorderLayout.CENTER);
     
     JButton okButton = new JButton("OK");
-    okButton.addActionListener(e -> {
+    okButton.addActionListener(_ -> {
         resultDialog.dispose();
         gifDialog.dispose();  
     });
@@ -774,7 +774,7 @@ public class GameScreen extends JPanel {
     resultDialog.add(contentPanel);
 
     
-    Timer timer = new Timer(10000, e -> {
+    Timer timer = new Timer(10000, _ -> {
         gifDialog.dispose();
         resultDialog.setVisible(true);
     });
@@ -804,7 +804,7 @@ public class GameScreen extends JPanel {
        
         JLabel titleLabel = new JLabel("VICTORY!", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
-        titleLabel.setForeground(new Color(0, 51, 102)); // Dark blue
+        titleLabel.setForeground(new Color(0, 51, 102)); 
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(titleLabel);
         mainPanel.add(Box.createVerticalStrut(20));
@@ -820,11 +820,11 @@ public class GameScreen extends JPanel {
       
         JButton menuButton = new JButton("Return to Menu");
         menuButton.setFont(new Font("Arial", Font.BOLD, 16));
-        menuButton.setBackground(new Color(0, 51, 102)); // Dark blue
+        menuButton.setBackground(new Color(0, 51, 102));
         menuButton.setForeground(Color.WHITE);
         menuButton.setFocusPainted(false);
         menuButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        menuButton.addActionListener(e -> {
+        menuButton.addActionListener(_ -> {
             dialog.dispose();
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
             if (window != null) {

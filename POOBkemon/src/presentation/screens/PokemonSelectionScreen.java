@@ -78,7 +78,7 @@ public class PokemonSelectionScreen extends JPanel {
         ImageIcon startIconNormal = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH)));
         JButton startGameButton = new AnimatedButton(startIconNormal); 
         startGameButton.setBounds(423, 600, 179, 71);
-        startGameButton.addActionListener(e -> {
+        startGameButton.addActionListener(_ -> {
 
             if (selectedPokemons.size() < 6) {
                 JOptionPane.showMessageDialog(this, POOBkemonException.INVALID_POKEMON_COUNT,
@@ -89,7 +89,7 @@ public class PokemonSelectionScreen extends JPanel {
             if (isPlayer1Selection) {
                 player1Pokemons.addAll(selectedPokemons);
 
-                // Show move selection for both Normal and Survival modes
+             
                 for (Pokemon pokemon : player1Pokemons) {
                     JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
                     moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 1");
@@ -116,25 +116,14 @@ public class PokemonSelectionScreen extends JPanel {
                 if (selectedModality == GameModality.PLAYER_VS_AI) {
                     selectedPokemons.clear();
                     player2Pokemons = controller.generateRandomTeam();
-                    if (selectedMode != GameMode.SURVIVAL) {
-                        controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
-                    } else {
-                        controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, new ArrayList<>(), new ArrayList<>());
-                    }
+                    controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
                     return;
                 }
 
-                if (selectedMode != GameMode.SURVIVAL) {
-                    controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, null);
-                } else {
-                    isPlayer1Selection = false;
-                    selectedPokemons.clear();
-                    updateSelectionPanelForPlayer2();
-                }
+                controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, null);
             } else {
                 player2Pokemons = new ArrayList<>(selectedPokemons);
                 
-                // Show move selection for both Normal and Survival modes
                 for (Pokemon pokemon : selectedPokemons) {
                     JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
                     moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 2");
@@ -151,11 +140,7 @@ public class PokemonSelectionScreen extends JPanel {
                     moveDialog.setVisible(true);
                 }
 
-                if (selectedMode != GameMode.SURVIVAL) {
-                    controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
-                } else {
-                    controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, new ArrayList<>(), new ArrayList<>());
-                }
+                controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);
             }
         });
 
@@ -317,23 +302,25 @@ public class PokemonSelectionScreen extends JPanel {
             }
         });
 
-        selectBox.addActionListener(e -> {
-
+        selectBox.addActionListener(_ -> {
             if (selectBox.isSelected()) {
+                if (selectedPokemons.size() >= 6) {
+                    selectBox.setSelected(false);
+                    JOptionPane.showMessageDialog(this, "You can only select 6 Pokémon for your team!",
+                            "Team Selection", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
 
                 Pokemon pokemon = createPokemonByName(pokemonName);
-
                 selectedPokemons.add(pokemon);
 
                 panel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
                 panel.setBackground(new Color(30, 70, 30));
 
                 updateStatusLabel();
-
                 updatePokemonDescription(pokemonName);
 
             } else {
-
                 selectedPokemons.removeIf(p -> p.getName().equalsIgnoreCase(pokemonName));
 
                 panel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
@@ -447,13 +434,20 @@ public class PokemonSelectionScreen extends JPanel {
      */
 
     public void setGameOptions(GameModality modality, GameMode mode) {
-
         this.selectedModality = modality;
         this.selectedMode = mode;
 
         this.selectedPokemons.clear();
         this.player1Pokemons.clear();
         this.isPlayer1Selection = true;
+
+        // If it's survival mode, generate random teams and start game immediately
+        if (mode == GameMode.SURVIVAL) {
+            player1Pokemons = controller.generateRandomTeam();
+            player2Pokemons = controller.generateRandomTeam();
+            controller.startGame(selectedModality, selectedMode, player1Pokemons, player2Pokemons, new ArrayList<>(), new ArrayList<>());
+            return;
+        }
 
         JPanel headerPanel = (JPanel) pokemonSelectionPanel.getComponent(0);
         JLabel titleLabel = (JLabel) headerPanel.getComponent(0);

@@ -102,7 +102,7 @@ public class GameSetupScreen extends JPanel {
         startGameButton = new AnimatedButton(startIconNormal);
         startGameButton.setBounds(423, 550, 179, 71);
 
-        startGameButton.addActionListener(e -> {
+        startGameButton.addActionListener(_ -> {
             GameModality modality = (GameModality) modalitiesCombo.getSelectedItem();
             GameMode mode = (GameMode) modesCombo.getSelectedItem();
             controller.showModalitySelection(mode);

@@ -8,6 +8,7 @@ import domain.enums.PokemonType;
 import domain.moves.Move;
 import domain.moves.StruggleMove;
 import java.io.Serializable;
+import java.util.Random;
 
 /*
  * Pokemon is an abstract class representing a Pokemon in the game.
@@ -306,6 +307,32 @@ public abstract class Pokemon implements Serializable{
     public void setMoves(List<Move> moves) {
         this.moves.clear();
         this.moves.addAll(moves);
+    }
+
+    /**
+     * Assigns random moves to the Pokémon from the available moves in the MoveRegistry.
+     * The moves are selected based on the Pokémon's types and are limited to 4 moves.
+     */
+    public void assignRandomMoves() {
+        this.moves.clear();
+        List<Move> availableMoves = new ArrayList<>();
+        Random random = new Random();
+        
+        
+        availableMoves.addAll(domain.moves.MoveRegistry.getMovesByType(primaryType));
+        if (secondaryType != null) {
+            availableMoves.addAll(domain.moves.MoveRegistry.getMovesByType(secondaryType));
+        }
+        
+        
+        availableMoves.addAll(domain.moves.MoveRegistry.getMovesByType(PokemonType.NORMAL));
+        
+        
+        int movesToSelect = Math.min(4, availableMoves.size());
+        for (int i = 0; i < movesToSelect; i++) {
+            int randomIndex = random.nextInt(availableMoves.size());
+            addMove(availableMoves.remove(randomIndex));
+        }
     }
 
     /**

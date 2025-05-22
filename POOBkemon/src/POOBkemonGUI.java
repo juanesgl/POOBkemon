@@ -174,8 +174,8 @@ public class POOBkemonGUI extends JFrame implements GameView {
         menuBar.add(fileMenu);
         setJMenuBar(menuBar);
 
-        Save.addActionListener(e -> gameController.saveGame());
-        Load.addActionListener(e -> gameController.loadGame());
+        Save.addActionListener(_ -> gameController.saveGame());
+        Load.addActionListener(_ -> gameController.loadGame());
     }
 
     /**

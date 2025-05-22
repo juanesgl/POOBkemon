@@ -43,7 +43,7 @@ public class CoverScreen extends JPanel {
 
         AnimatedButton startButton = new AnimatedButton(startIconNormal);
         startButton.setBounds(423, 550, 179, 71);
-        startButton.addActionListener(e -> controller.showGameModeSelection());
+        startButton.addActionListener(_ -> controller.showGameModeSelection());
         add(startButton);
 
         setComponentZOrder(startButton, 0);

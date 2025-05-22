@@ -91,12 +91,11 @@ public class GameController {
      */
 
     public void showPokemonSelection(GameModality modality) {
-        if (selectedMode == GameMode.SURVIVAL && modality != GameModality.PLAYER_VS_PLAYER) {
-            JOptionPane.showMessageDialog(mainFrame,
-                "Survival Mode is only available in Player vs Player mode. AI players cannot play in Survival Mode.",
-                "Mode Restriction",
-                JOptionPane.INFORMATION_MESSAGE);
-            showGameModeSelection();
+        if (selectedMode == GameMode.SURVIVAL) {
+           
+            List<Pokemon> player1Team = generateRandomTeam();
+            List<Pokemon> player2Team = generateRandomTeam();
+            startGame(modality, selectedMode, player1Team, player2Team, new ArrayList<>(), new ArrayList<>());
             return;
         }
 
@@ -138,17 +137,15 @@ public class GameController {
         mainFrame.repaint();
     }
 
-
-
     public List<Pokemon> generateRandomTeam() {
         List<Pokemon> team = new ArrayList<>();
         PokemonData[] allPokemon = PokemonData.values();
         Random random = new Random();
 
-       
         while (team.size() < 6) {
             int randomIndex = random.nextInt(allPokemon.length);
             Pokemon pokemon = new ConcretePokemon(allPokemon[randomIndex]);
+            pokemon.assignRandomMoves();
             team.add(pokemon);
         }
 

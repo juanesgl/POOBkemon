@@ -1,9 +1,7 @@
 package domain.player.ai;
-/*
- * Factory class for creating AI strategies based on the machine type.
- *
- */
 import domain.enums.MachineType;
+
+    
 
   public class AIStrategyFactory {
     /*

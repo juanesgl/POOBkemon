@@ -12,12 +12,14 @@ import domain.moves.Move;
 public class AttackingStrategy implements AIStrategy {
     private static final double HIGH_DAMAGE_THRESHOLD = 70.0; 
     private final Random random = new Random();
+
     /*
      * Selects a move based on the following criteria:
      * 1. If a move with high damage is available, select it.
      * 2. If no high-damage moves are available, select any offensive move.
      * 3. If no offensive moves are available, select a random move.
      */
+    
     @Override
     public int selectMove(Pokemon activePokemon) {
 
@@ -56,9 +58,10 @@ public class AttackingStrategy implements AIStrategy {
      * @param opponentPokemon The opponent's current Pokemon.
      * @return 0
      */
+
       @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
-        // Si el Pokémon actual está débil, intenta cambiar
+        
         if (activePokemon.getHealth() < activePokemon.getMaxHealth() * 0.3) {
             for (int i = 0; i < team.size(); i++) {
                 Pokemon pokemon = team.get(i);
@@ -67,7 +70,7 @@ public class AttackingStrategy implements AIStrategy {
                 }
             }
         }
-        return -1; // No cambiar si no es necesario
+        return -1; 
     }
     
 }

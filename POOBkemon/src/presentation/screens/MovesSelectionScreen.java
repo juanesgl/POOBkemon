@@ -78,10 +78,10 @@ public class MovesSelectionScreen extends JPanel {
         
         confirmButton = new JButton("Confirm Selection");
         confirmButton.setEnabled(false);
-        confirmButton.addActionListener(e -> confirmSelection());
+        confirmButton.addActionListener(_ -> confirmSelection());
         
         backButton = new JButton("Back");
-        backButton.addActionListener(e -> goBack());
+        backButton.addActionListener(_ -> goBack());
         
         bottomPanel.add(confirmButton);
         bottomPanel.add(backButton);
@@ -139,7 +139,7 @@ public class MovesSelectionScreen extends JPanel {
             button.setBackground(new Color(200, 255, 200));
         }
         
-        button.addActionListener(e -> toggleMoveSelection(move, button));
+        button.addActionListener(_ -> toggleMoveSelection(move, button));
         
         return button;
     }
