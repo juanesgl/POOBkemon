@@ -28,8 +28,8 @@ public class MoveRegistry {
         registerMove(new BasicMove("Earthquake", 100, MoveCategory.PHYSICAL, PokemonType.GROUND, 100, 10));
         registerMove(new BasicMove("Crunch", 80, MoveCategory.PHYSICAL, PokemonType.DARK, 100, 15));
         registerMove(new BasicMove("Shadow Claw", 70, MoveCategory.PHYSICAL, PokemonType.GHOST, 100, 15));
-        
 
+        //Crear movimiento
         registerMove(new BasicMove("Thunderbolt", 90, MoveCategory.SPECIAL, PokemonType.ELECTRIC, 100, 15));
         registerMove(new BasicMove("Psychic", 90, MoveCategory.SPECIAL, PokemonType.PSYCHIC, 100, 10));
         registerMove(new BasicMove("Ice Beam", 90, MoveCategory.SPECIAL, PokemonType.ICE, 100, 10));

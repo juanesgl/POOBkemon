@@ -7,7 +7,7 @@ package domain.enums;
 public enum GameState {
 
     /**
-     * The game is displaying the title screen.
+     * The game is displaying the title screen. TODO: Add this
      */
     TITLE_SCREEN,
 
@@ -27,12 +27,12 @@ public enum GameState {
     OPPONENT_TURN,
 
     /**
-     * An animation is currently playing and user input should be ignored.
+     * An animation is currently playing and user input should be ignored. TODO: Add this
      */
     ANIMATION_PLAYING,
 
     /**
-     * The game has ended and is displaying the game over screen.
+     * The game has ended and is displaying the game over screen. TODO: Add this
      */
     GAME_OVER;
 }

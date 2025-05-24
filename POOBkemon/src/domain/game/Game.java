@@ -89,27 +89,27 @@ public class Game implements Serializable{
      * Starts the turn timer for the current player.
      */
     private void startTurnTimer() {
-       
+
         if (turnTimer != null) {
             turnTimer.cancel();
             turnTimer.purge();
             turnTimer = null;
         }
 
-      
+
         turnTimer = new Timer();
         secondsRemaining = TURN_TIME_LIMIT;
         if (!gif) {
             secondsRemaining = TURN_TIME_LIMIT + 12;
             gif = true;
         }
-    
+
         turnTimedOut = false;
         turnActionTaken = false;
 
-       
+
         if (getCurrentPlayer().isAI()) {
-        
+
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -122,7 +122,7 @@ public class Game implements Serializable{
             }, 1500); 
         }
 
-  
+
         turnTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -133,7 +133,7 @@ public class Game implements Serializable{
                             gameScreen.updateTimer(secondsRemaining);
                         }
                     }
-                    
+
                     if (secondsRemaining <= 0) {
                         turnTimedOut = true;
                         endTurn();
@@ -317,7 +317,7 @@ public class Game implements Serializable{
      * @return The winning player, or null if there is no winner yet
      */
     private Player determineWinner() {
-        
+
         if (player1.getTeam().isEmpty() || player1.getTeam().stream().allMatch(Pokemon::isFainted)) {
             return player2;
         }
@@ -334,6 +334,7 @@ public class Game implements Serializable{
      * @param item The item to use
      */
 
+    //Comportamiento Item
     public void useItem(Item item) throws POOBkemonException {
         if (isGameOver || turnActionTaken) {
             throw new POOBkemonException(POOBkemonException.INVALID_GAME_STATE);
@@ -343,7 +344,25 @@ public class Game implements Serializable{
             throw new POOBkemonException(POOBkemonException.INVALID_ITEM_USAGE);
         }
 
-        item.use(currentPlayer.getActivePokemon());
+
+        if (item.getName().equalsIgnoreCase("Revive")) {
+            boolean hasFaintedPokemon = false;
+            for (Pokemon pokemon : currentPlayer.getTeam()) {
+                if (pokemon.isFainted()) {
+                    hasFaintedPokemon = true;
+                    item.use(pokemon);
+                    break;
+                }
+            }
+
+            if (!hasFaintedPokemon) {
+                throw new POOBkemonException("No fainted Pokémon to use Revive on!");
+            }
+        } else {
+
+            item.use(currentPlayer.getActivePokemon());
+        }
+
         turnActionTaken = true;
         endTurn();
     }
@@ -437,9 +456,9 @@ public class Game implements Serializable{
     private void performAIMove() {
         synchronized (timerLock) {
             if (isGameOver || turnActionTaken || !getCurrentPlayer().isAI()) return;
-            
+
             AIPlayer aiPlayer = (AIPlayer) getCurrentPlayer();
-            
+
             if (aiPlayer.getTeam().isEmpty() || aiPlayer.getTeam().stream().allMatch(Pokemon::isFainted)) {
                 isGameOver = true;
                 stopTurnTimer();
@@ -449,7 +468,7 @@ public class Game implements Serializable{
                 }
                 return;
             }
-            
+
             try {
                 aiPlayer.makeDecision(this);
                 turnActionTaken = true;
@@ -482,15 +501,15 @@ public class Game implements Serializable{
     public static Game load(File file) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Game loadedGame = (Game) ois.readObject();
-            
+
             //loadedGame.turnTimer = new Timer();
             loadedGame.startTurnTimer(); 
-            
+
             if (loadedGame.state == GameState.SETUP) {
                 GameLoop gameLoop = new GameLoop(loadedGame);
                 gameLoop.start();
             }
-            
+
             return loadedGame;
         }
     }

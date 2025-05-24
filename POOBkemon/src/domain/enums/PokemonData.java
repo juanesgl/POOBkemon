@@ -43,7 +43,12 @@ public enum PokemonData {
 
     SNORLAX("Snorlax", 540, 350, 251, 251, 328, 174,
             PokemonType.NORMAL, null,
-            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/snorlax-front.png");
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/snorlax-front.png"),
+
+    //1.Crear Pokemon
+    MEWTWO("Mewtwo", 426, 306, 251, 394, 328, 328,
+            PokemonType.PSYCHIC, null,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/mewtwo-front.png");
 
     private final String name;
     private final int health;

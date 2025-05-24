@@ -92,8 +92,7 @@ public enum PokemonDescription {
                     Tyranitar belongs to the second generation of Pokémon, originally from Johto, and is the final evolution of Larvitar. \
                     It is a massive, dinosaur-like Pokémon with a tough exterior and a fierce personality. Tyranitar is known for its \
                     incredible strength and ability to create storms by unleashing its power.
-                    STATS:
-                    HP: 404 Attack: 403 Defense: 350 Speed: 243
+                    STATS: HP: 404 Attack: 403 Defense: 350 Speed: 243
                     Special Attack: 317 Special Defense: 328"""
     ),
 
@@ -106,6 +105,17 @@ public enum PokemonDescription {
                     STATS:
                     HP: 524 Attack: 350 Defense: 251 Speed: 174
                     Special Attack: 251 Special Defense: 350"""
+    ),
+    //2. Crear Pokemon
+    MEWTWO(
+            """
+                    TYPE: PSYCHIC
+                    Mewtwo belongs to the first generation of Pokémon, originally from Kanto, and is a genetically engineered Pokémon \
+                    created from the DNA of Mew. It is known for its incredible psychic powers and intelligence. Mewtwo is often portrayed \
+                    as a powerful and enigmatic figure, capable of manipulating time and space.
+                    STATS:
+                    HP: 426 Attack: 306 Defense: 251 Speed: 328
+                    Special Attack: 394 Special Defense: 328"""
     );
 
 

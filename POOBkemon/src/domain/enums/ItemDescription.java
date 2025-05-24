@@ -22,6 +22,11 @@ public enum ItemDescription {
     REVIVE(
             "Revives can only be used on a Pokémon that is fainted (its HP is zero). " +
                     "They restore the Pokémon's HP to half of its original maximum."
+    ),
+    //1. Crear Item
+    PRUEBA(
+            "Prueba is a special item that can be used to test the functionality of the game. " +
+                    "It has no effect on Pokémon or battles."
     );
 
     /*

@@ -205,13 +205,16 @@ public class ItemSelectionScreen extends JPanel {
 
         JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         selectionArea.removeAll();
-
-        String[] itemNames = {"potion", "super-potion", "Hiperpoción", "revive"};
+        // 2. Crear Item
+        String[] itemNames = {"potion", "super-potion", "Hiperpoción", "revive", "prueba"};
         String[] itemDescriptions = {
             ItemDescription.POTION.getDescription(),
             ItemDescription.SUPER_POTION.getDescription(), 
             ItemDescription.HYPER_POTION.getDescription(), 
-            ItemDescription.REVIVE.getDescription()
+            ItemDescription.REVIVE.getDescription(),
+
+                // 3. Crear Item
+                ItemDescription.PRUEBA.getDescription()
         };
 
         for (int i = 0; i < itemNames.length; i++) {
@@ -226,6 +229,9 @@ public class ItemSelectionScreen extends JPanel {
                     itemName = "Super Potion";
                 } else if (name.equals("Hiperpoción")) {
                     itemName = "Hyper Potion";
+                    // 4. Crear Item
+                } else if (name.equals("prueba")) {
+                    itemName = "Prueba";
                 }
 
                 JPanel itemPanel = createItemPanel(itemName, resourcePath, description);
@@ -366,7 +372,7 @@ public class ItemSelectionScreen extends JPanel {
      */
 
     private Item createItemFromSprite(String itemName, String spritePath, String description) {
-
+        // 5. Crear Item
         ItemEffect effect;
         if (itemName.equalsIgnoreCase("Potion")) {
             effect = new HealingEffect(20);
@@ -376,9 +382,10 @@ public class ItemSelectionScreen extends JPanel {
             effect = new HealingEffect(200);
         } else if (itemName.equalsIgnoreCase("Revive")) {
             effect = new ReviveEffect(0.5f);
-        } else {
-
+        } else if (itemName.equalsIgnoreCase("Prueba")) {
             effect = new HealingEffect(10);
+        }else{
+            effect = new HealingEffect(0);
         }
 
         return new Item(itemName, description, spritePath, effect);
