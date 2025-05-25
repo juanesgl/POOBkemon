@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -502,8 +503,25 @@ public class Game implements Serializable{
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Game loadedGame = (Game) ois.readObject();
 
-            //loadedGame.turnTimer = new Timer();
-            loadedGame.startTurnTimer(); 
+
+            Field timerLockField;
+            try {
+                timerLockField = Game.class.getDeclaredField("timerLock");
+                timerLockField.setAccessible(true);
+                timerLockField.set(loadedGame, new Object());
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new IOException("Failed to reinitialize transient fields", e);
+            }
+
+            loadedGame.turnTimer = new Timer();
+
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    loadedGame.startTurnTimer();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
             if (loadedGame.state == GameState.SETUP) {
                 GameLoop gameLoop = new GameLoop(loadedGame);
