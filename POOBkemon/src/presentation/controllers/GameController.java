@@ -19,10 +19,14 @@ import presentation.screens.GameSetupScreen;
 import presentation.screens.PokemonSelectionScreen;
 import presentation.screens.ItemSelectionScreen;
 import presentation.screens.GameScreen;
+import presentation.utils.SoundManager;
+import presentation.utils.UIConstants;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -36,18 +40,19 @@ import java.util.Random;
  */
 
 public class GameController {
-    private JFrame mainFrame;
-    private GameMode selectedMode;
-    private GameModality selectedModality;
+    private final GameView view;
     private Game game;
+    private final SoundManager soundManager;
 
     /**
      * Constructor for GameController.
-     * @param mainFrame The main JFrame of the application.
+     * @param view The GameView instance.
+     * @param soundManager The SoundManager instance.
      */
 
-    public GameController(JFrame mainFrame) {
-        this.mainFrame = mainFrame;
+    public GameController(GameView view, SoundManager soundManager) {
+        this.view = view;
+        this.soundManager = soundManager;
     }
 
     /**
@@ -56,9 +61,7 @@ public class GameController {
 
     public void showMainMenu() {
         CoverScreen coverScreen = new CoverScreen(this);
-        mainFrame.setContentPane(coverScreen);
-        mainFrame.revalidate();
-        mainFrame.repaint();
+        view.showMainMenu(coverScreen);
     }
 
     /**
@@ -67,9 +70,7 @@ public class GameController {
 
     public void showGameModeSelection() {
         GameSetupScreen setupScreen = new GameSetupScreen(this);
-        mainFrame.setContentPane(setupScreen);
-        mainFrame.revalidate();
-        mainFrame.repaint();
+        view.showGameModeSelection(setupScreen);
     }
 
     /**
@@ -78,11 +79,7 @@ public class GameController {
      */
 
     public void showModalitySelection(GameMode mode) {
-        this.selectedMode = mode;
-        GameSetupScreen setupScreen = new GameSetupScreen(this);
-        mainFrame.setContentPane(setupScreen);
-        mainFrame.revalidate();
-        mainFrame.repaint();
+        view.showModalitySelection(mode);
     }
 
     /**
@@ -91,9 +88,9 @@ public class GameController {
      */
 
     public void showPokemonSelection(GameModality modality) {
-        if (selectedMode == GameMode.SURVIVAL) {
+        if (view.getSelectedMode() == GameMode.SURVIVAL) {
             if (modality != GameModality.PLAYER_VS_PLAYER) {
-                JOptionPane.showMessageDialog(mainFrame,
+                JOptionPane.showMessageDialog(view.getMainFrame(),
                     "Survival Mode is only available in Player vs Player mode. AI players cannot play in Survival Mode.",
                     "Mode Restriction",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -102,16 +99,14 @@ public class GameController {
             }
             List<Pokemon> player1Team = generateRandomTeam();
             List<Pokemon> player2Team = generateRandomTeam();
-            startGame(modality, selectedMode, player1Team, player2Team, new ArrayList<>(), new ArrayList<>());
+            startGame(modality, view.getSelectedMode(), player1Team, player2Team, new ArrayList<>(), new ArrayList<>());
             return;
         }
 
-        this.selectedModality = modality;
+        view.setSelectedModality(modality);
         PokemonSelectionScreen selectionScreen = new PokemonSelectionScreen(this);
-        selectionScreen.setGameOptions(selectedModality, selectedMode);
-        mainFrame.setContentPane(selectionScreen);
-        mainFrame.revalidate();
-        mainFrame.repaint();
+        selectionScreen.setGameOptions(modality, view.getSelectedMode());
+        view.showPokemonSelection(selectionScreen);
     }
 
     /**
@@ -125,9 +120,7 @@ public class GameController {
     public void showItemSelectionScreen(GameModality modality, GameMode mode, List<Pokemon> player1Team, List<Pokemon> player2Team) {
         ItemSelectionScreen itemScreen = new ItemSelectionScreen(this);
         itemScreen.setGameOptions(modality, mode, player1Team, player2Team);
-        mainFrame.setContentPane(itemScreen);
-        mainFrame.revalidate();
-        mainFrame.repaint();
+        view.showItemSelectionScreen(itemScreen);
     }
 
     /**
@@ -137,11 +130,9 @@ public class GameController {
 
     public void showGameScreen(Game game) {
         this.game = game;
-        GameScreen gameScreen = new GameScreen();
+        GameScreen gameScreen = new GameScreen(soundManager, this);
         gameScreen.setGame(game);
-        mainFrame.setContentPane(gameScreen);
-        mainFrame.revalidate();
-        mainFrame.repaint();
+        view.showGameScreen(game);
     }
 
     public List<Pokemon> generateRandomTeam() {
@@ -174,6 +165,8 @@ public class GameController {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
+                // Play save game music
+                soundManager.playBackgroundMusic("/sounds-music/music-cover/saveGame.wav");
                 game.save(file);
                 JOptionPane.showMessageDialog(null, "Game saved successfully: " + file.getAbsolutePath());
             } catch (IOException ex) {
@@ -219,7 +212,6 @@ public class GameController {
         Color playerColor;
         MachineType machineType;
 
-      
         if (player1Team == null || player1Team.isEmpty()) {
             player1Team = generateRandomTeam();
         }
@@ -227,7 +219,6 @@ public class GameController {
             player2Team = generateRandomTeam();
         }
 
-       
         if (player1Team.size() < 6) {
             player1Team = generateRandomTeam();
         }
@@ -235,7 +226,6 @@ public class GameController {
             player2Team = generateRandomTeam();
         }
 
-       
         if (player1Items == null) {
             player1Items = new ArrayList<>();
         }
@@ -288,8 +278,61 @@ public class GameController {
         }
 
         domain.game.GameMode gameMode = (mode == GameMode.NORMAL) ? new NormalMode() : new SurvivalMode();
-        Game game = new Game(gameMode, player1, player2);
+        this.game = new Game(gameMode, player1, player2);
+
+        // Start background music based on game mode and modality
+        if (mode == GameMode.SURVIVAL) {
+            soundManager.playBackgroundMusic("/sounds-music/music-cover/survivalTheme.wav");
+        } else {
+            switch (modality) {
+                case PLAYER_VS_PLAYER:
+                    soundManager.playBackgroundMusic("/sounds-music/music-cover/playerVSplayer.wav");
+                    break;
+                case PLAYER_VS_AI:
+                case AI_VS_AI:
+                    soundManager.playBackgroundMusic("/sounds-music/music-cover/playerVSAi.wav");
+                    break;
+                default:
+                    soundManager.playBackgroundMusic("/sounds-music/music-cover/playerVSplayer.wav");
+            }
+        }
+        
+        // Show game screen
         showGameScreen(game);
+    }
+
+    private void updateGameScreen() {
+        if (game != null) {
+            view.showGameScreen(game);
+        }
+    }
+
+    public void executeMove(int moveIndex) throws POOBkemonException {
+        game.executeMove(moveIndex);
+        soundManager.playSoundEffect("attack");
+        updateGameScreen();
+    }
+
+    public void useItem(Item item) throws POOBkemonException {
+        game.useItem(item);
+        // Play item selection music
+        soundManager.playBackgroundMusic("/sounds-music/music-cover/itemSelection.wav");
+        updateGameScreen();
+    }
+
+    public void switchPokemon(int pokemonIndex) throws POOBkemonException {
+        game.switchPokemon(pokemonIndex);
+        soundManager.playSoundEffect("switch");
+        updateGameScreen();
+    }
+
+    public void endGame(Player winner) {
+        if (winner != null) {
+            soundManager.playBackgroundMusic("/sounds-music/music-cover/victorySound.wav");
+        } else {
+            soundManager.playSoundEffect("defeat");
+        }
+        // ... rest of the end game code ...
     }
 
     /**

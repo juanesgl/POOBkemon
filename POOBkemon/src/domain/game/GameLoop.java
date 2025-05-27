@@ -3,20 +3,31 @@ package domain.game;
  * GameLoop.java
  * 
  */
-public class GameLoop implements Runnable {
-    private static final int TARGET_FPS = 60;
-    private static final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+import presentation.screens.GameScreen;
 
-    private final Game game;
-    private boolean running = false;
+public class GameLoop implements Runnable {
+    private Game game;
+    private boolean running;
+    private static final int TARGET_FPS = 30;
+    private static final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+    private boolean paused;
     private Thread gameThread;
+    private int fps;
+    private long lastFpsTime;
+    private int frameCount;
+
     /*
      * Constructor for GameLoop class.
      * 
-     * @param game The game instance
+     * @param gameScreen The game screen instance
      */
     public GameLoop(Game game) {
         this.game = game;
+        this.running = false;
+        this.paused = false;
+        this.fps = 0;
+        this.lastFpsTime = System.nanoTime();
+        this.frameCount = 0;
     }
     /*
      * Starts the game loop thread.
@@ -31,39 +42,80 @@ public class GameLoop implements Runnable {
      * Stops the game loop thread.
      */
     public void stop() {
-        if (!running) return;
         running = false;
         try {
-            gameThread.join();
+            if (gameThread != null) {
+                gameThread.join();
+            }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
+
+    public void pause() {
+        paused = true;
+    }
+
+    public void resume() {
+        paused = false;
+    }
+
     /*  
      * Runs the game loop.
      */
     @Override
     public void run() {
-        System.nanoTime();
-        long lastUpdateTime;
-        long timer = System.currentTimeMillis();
-        int frames = 0;
+        long lastUpdateTime = System.nanoTime();
+        long lastRenderTime = System.nanoTime();
+        double unprocessedTime = 0;
+        double unprocessedRenderTime = 0;
 
-        while (running) {           
-            lastUpdateTime = System.nanoTime();           
-            game.render();
-            frames++;
-            if (System.currentTimeMillis() - timer > 1000) {
-                timer += 1000;
-                game.setFPS(frames);
-                frames = 0;
-            }           
-            try {
-                long sleepTime = (lastUpdateTime - System.nanoTime() + OPTIMAL_TIME) / 1000000;
-                if (sleepTime > 0) Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        while (running) {
+            if (!paused) {
+                long currentTime = System.nanoTime();
+                long updateTime = currentTime - lastUpdateTime;
+                lastUpdateTime = currentTime;
+
+                unprocessedTime += updateTime;
+                unprocessedRenderTime += updateTime;
+
+                // Update game logic
+                while (unprocessedTime >= OPTIMAL_TIME) {
+                    game.update();
+                    unprocessedTime -= OPTIMAL_TIME;
+                }
+
+                // Render game and update FPS
+                if (unprocessedRenderTime >= OPTIMAL_TIME) {
+                    game.render();
+                    unprocessedRenderTime = 0;
+                    
+                    // Calculate FPS
+                    frameCount++;
+                    if (currentTime - lastFpsTime >= 1000000000) { // 1 second
+                        fps = frameCount;
+                        frameCount = 0;
+                        lastFpsTime = currentTime;
+                        game.setFPS(fps);
+                    }
+                }
+
+                // Sleep to maintain target FPS
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            } else {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
             }
         }
     }
 }
+

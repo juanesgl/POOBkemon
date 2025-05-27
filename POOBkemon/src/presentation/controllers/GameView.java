@@ -4,6 +4,11 @@ import domain.game.Game;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
 import domain.pokemons.Pokemon;
+import presentation.screens.CoverScreen;
+import presentation.screens.GameSetupScreen;
+import presentation.screens.PokemonSelectionScreen;
+import presentation.screens.ItemSelectionScreen;
+import javax.swing.JFrame;
 import java.util.List;
 
 /**
@@ -12,9 +17,34 @@ import java.util.List;
  */
 public interface GameView {
     /**
-     * Shows the game setup screen.
+     * Shows the main menu screen.
+     * @param coverScreen The cover screen
      */
-    void showSetupScreen();
+    void showMainMenu(CoverScreen coverScreen);
+
+    /**
+     * Shows the game mode selection screen.
+     * @param setupScreen The game setup screen
+     */
+    void showGameModeSelection(GameSetupScreen setupScreen);
+
+    /**
+     * Shows the modality selection screen.
+     * @param mode The game mode
+     */
+    void showModalitySelection(GameMode mode);
+
+    /**
+     * Shows the Pokémon selection screen.
+     * @param selectionScreen The Pokémon selection screen
+     */
+    void showPokemonSelection(PokemonSelectionScreen selectionScreen);
+
+    /**
+     * Shows the item selection screen.
+     * @param itemScreen The item selection screen
+     */
+    void showItemSelectionScreen(ItemSelectionScreen itemScreen);
 
     /**
      * Shows the game screen with the specified game instance.
@@ -23,21 +53,28 @@ public interface GameView {
     void showGameScreen(Game game);
 
     /**
-     * Shows the Pokémon selection screen.
-     * @param modality The game modality
-     * @param mode The game mode
+     * Gets the main frame.
+     * @return The main frame
      */
-    void showPokemonSelectionScreen(GameModality modality, GameMode mode);
+    JFrame getMainFrame();
 
     /**
-     * Shows the item selection screen.
-     * @param modality The game modality
-     * @param mode The game mode
-     * @param player1Pokemons Selected Pokémon for player 1
-     * @param player2Pokemons Selected Pokémon for player 2
+     * Gets the selected game mode.
+     * @return The selected game mode
      */
-    void showItemSelectionScreen(GameModality modality, GameMode mode, 
-                               List<Pokemon> player1Pokemons, List<Pokemon> player2Pokemons);
+    GameMode getSelectedMode();
 
-    void showMessage(String s, String warning, int warningMessage);
+    /**
+     * Sets the selected modality.
+     * @param modality The selected modality
+     */
+    void setSelectedModality(GameModality modality);
+
+    /**
+     * Shows a message.
+     * @param message The message to display
+     * @param title The title of the message
+     * @param messageType The type of message
+     */
+    void showMessage(String message, String title, int messageType);
 }

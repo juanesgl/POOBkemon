@@ -2,10 +2,14 @@ package presentation.screens;
 import domain.pokemons.Pokemon;
 import domain.entities.Item;
 import domain.game.Game;
+import domain.game.GameLoop;
 import domain.moves.Move;
 import domain.player.Player;
 import domain.exceptions.POOBkemonException;
+import presentation.controllers.GameController;
+import presentation.screens.CoverScreen;
 import presentation.utils.UIConstants;
+import presentation.utils.SoundManager;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,13 +22,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.net.URL;
 import java.util.Objects;
@@ -32,6 +39,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.SwingConstants;
 import java.awt.Component;
+import javax.swing.JFrame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /*
  * This class represents the game screen of the Pokemon game. It displays the
@@ -59,30 +69,42 @@ public class GameScreen extends JPanel {
     private JButton[] moveButtons;
     private JButton[] itemButtons;
     private JButton[] switchButtons;
+    private final SoundManager soundManager;
+    private GameController gameController;
+    private GameLoop gameLoop;
+    private boolean isPaused;
+
+    // Animation variables
+    private float player1YOffset = 0;
+    private float player2YOffset = 0;
+    private float animationSpeed = 0.003f;
+    private float animationRange = 10.0f;
+    private long lastUpdateTime = System.currentTimeMillis();
+    private Image player1Image;
+    private Image player2Image;
 
     private static final int POKEMON_WIDTH = 150;
     private static final int POKEMON_HEIGHT = 150;
     private static final int HEALTH_BAR_WIDTH = 200;
     private static final int HEALTH_BAR_HEIGHT = 20;
-    private boolean gamePaused = false;
 
     /**
      * Constructor for the GameScreen class.
      * Initializes the game screen with layout, components, and event listeners.
      */
 
-    public GameScreen() {
-
+    public GameScreen(SoundManager soundManager, GameController gameController) {
+        this.soundManager = soundManager;
+        this.gameController = gameController;
+        this.isPaused = false;
         setLayout(null);
-        setBounds(0, 0, UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT);
-        setBackground(new Color(20, 20, 50));
+        setPreferredSize(new Dimension(UIConstants.WINDOW_WIDTH, UIConstants.WINDOW_HEIGHT));
+        setBackground(Color.BLACK);
 
         fpsLabel = new JLabel("FPS: 0");
-        fpsLabel.setBounds(10, 10, 100, 20);
-        fpsLabel.setFont(new Font("Arial", Font.BOLD, 12));
         fpsLabel.setForeground(Color.YELLOW);
-        fpsLabel.setOpaque(true);
-        fpsLabel.setBackground(Color.BLACK);
+        fpsLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        fpsLabel.setBounds(10, 10, 100, 20);
         add(fpsLabel);
 
         timerLabel = new JLabel("Time: 20s");
@@ -95,13 +117,25 @@ public class GameScreen extends JPanel {
 
         initializeBattleUI();
 
+        JButton pauseButton = getPauseButton();
+        JButton exitButton = getJButton();
+
+        add(battlePanel);
+        add(pauseButton);
+        add(exitButton);
+        
+        // Ensure buttons and labels are on top
+        setComponentZOrder(fpsLabel, 0);
+        setComponentZOrder(timerLabel, 1);
+        setComponentZOrder(pauseButton, 2);
+        setComponentZOrder(exitButton, 3);
+        setComponentZOrder(battlePanel, 4);
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-
                 fpsLabel.setBounds(10, 10, 100, 20);
             }
-
         });
     }
 
@@ -111,34 +145,7 @@ public class GameScreen extends JPanel {
      */
 
     private void initializeBattleUI() {
-
         GameScreen.this.setLayout(null);
-
-        JButton exitButton = getJButton();
-
-        GameScreen.this.add(exitButton);
-
-        JButton pauseButton = new JButton("II");
-        pauseButton.setBounds(240, 10, 20, 20); 
-        pauseButton.setBackground(Color.RED);
-        pauseButton.setForeground(Color.WHITE);
-        pauseButton.setFont(new Font("Arial", Font.BOLD, 5));
-        pauseButton.setFocusPainted(false);
-
-        pauseButton.addActionListener(e -> {
-            if (!gamePaused) {
-                gamePaused=true;
-                game.pauseGame();
-            } else {
-                gamePaused=false;
-                game.resumeGame();
-            }
-        });
-
-        GameScreen.this.add(pauseButton);
-        GameScreen.this.setLayout(new BorderLayout());
-        GameScreen.this.revalidate();
-        GameScreen.this.repaint();
 
         String backgroundPath = game != null && game.getGameMode().getClass().getSimpleName().equals("SurvivalMode") 
             ? UIConstants.SURVIVAL_IMAGE_PATH 
@@ -152,7 +159,7 @@ public class GameScreen extends JPanel {
         battlePanel.setVisible(true);
 
         player1PokemonLabel = new JLabel();
-        player1PokemonLabel.setBounds(100, UIConstants.WINDOW_HEIGHT - 200, POKEMON_WIDTH, POKEMON_HEIGHT);
+        player1PokemonLabel.setBounds(50, UIConstants.WINDOW_HEIGHT - 200, POKEMON_WIDTH, POKEMON_HEIGHT);
         battlePanel.add(player1PokemonLabel);
 
         player2PokemonLabel = new JLabel();
@@ -195,18 +202,20 @@ public class GameScreen extends JPanel {
         turnLabel.setFont(new Font("Arial", Font.BOLD, 18));
         battlePanel.add(turnLabel);
 
-
         actionMenuPanel = new JPanel();
         actionMenuPanel.setLayout(new GridLayout(1, 3, 10, 10));
-        actionMenuPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 200, UIConstants.WINDOW_HEIGHT - 250, 400, 40);
-        actionMenuPanel.setOpaque(false); 
-        actionMenuPanel.setBackground(new Color(0, 0, 0, 0)); 
+        actionMenuPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 180, UIConstants.WINDOW_HEIGHT - 250, 360, 40);
+        actionMenuPanel.setOpaque(false);
+        actionMenuPanel.setBackground(new Color(0, 0, 0, 0));
         battlePanel.add(actionMenuPanel);
-
 
         actionButtons = new JButton[3];
         String[] actionNames = {"Move", "Item", "Switch"};
-        Color[] actionColors = {new Color(100, 100, 200), new Color(100, 200, 100), new Color(200, 100, 100)};
+        Color[] actionColors = {
+            new Color(69, 120, 237),    // Water blue
+            new Color(46, 204, 113),    // Grass green
+            new Color(231, 76, 60)      // Fire red
+        };
 
         for (int i = 0; i < 3; i++) {
             actionButtons[i] = new JButton(actionNames[i]);
@@ -214,29 +223,40 @@ public class GameScreen extends JPanel {
             actionButtons[i].setForeground(Color.WHITE);
             actionButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             actionButtons[i].setFocusPainted(false);
+            actionButtons[i].setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(actionColors[i].darker(), 2),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+            ));
             final int actionIndex = i;
-            actionButtons[i].addActionListener(e -> handleGameAction(actionIndex));
+            actionButtons[i].addActionListener(_ -> handleGameAction(actionIndex));
             actionMenuPanel.add(actionButtons[i]);
         }
 
         movesPanel = new JPanel();
         movesPanel.setLayout(new GridLayout(2, 2, 10, 10));
-        movesPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 200, UIConstants.WINDOW_HEIGHT - 200, 400, 100);
-        movesPanel.setOpaque(false); 
-        movesPanel.setBackground(new Color(0, 0, 0, 0)); 
-        movesPanel.setVisible(false); 
+        movesPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 180, UIConstants.WINDOW_HEIGHT - 200, 360, 90);
+        movesPanel.setOpaque(true);
+        movesPanel.setBackground(new Color(40, 40, 80, 200));
+        movesPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(69, 120, 237), 2),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        movesPanel.setVisible(false);
         battlePanel.add(movesPanel);
-
 
         moveButtons = new JButton[4];
         for (int i = 0; i < 4; i++) {
             moveButtons[i] = new JButton("Move " + (i + 1));
-            moveButtons[i].setBackground(new Color(100, 100, 200));
+            moveButtons[i].setBackground(new Color(69, 120, 237));  // Water blue
             moveButtons[i].setForeground(Color.WHITE);
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             moveButtons[i].setFocusPainted(false);
+            moveButtons[i].setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(52, 152, 219), 2),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+            ));
             final int moveIndex = i;
-            moveButtons[i].addActionListener(x -> {
+            moveButtons[i].addActionListener(_ -> {
                 if (game != null) {
                     try {
                         game.executeMove(moveIndex);
@@ -256,21 +276,30 @@ public class GameScreen extends JPanel {
         }
 
         itemsPanel = new JPanel();
-        itemsPanel.setLayout(new GridLayout(1, 4, 10, 10));
-        itemsPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 200, UIConstants.WINDOW_HEIGHT - 200, 400, 40);
-        itemsPanel.setBackground(new Color(70, 70, 120));
+        itemsPanel.setLayout(new GridLayout(2, 2, 10, 10));
+        itemsPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 180, UIConstants.WINDOW_HEIGHT - 200, 360, 90);
+        itemsPanel.setOpaque(true);
+        itemsPanel.setBackground(new Color(40, 40, 80, 200));
+        itemsPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(46, 204, 113), 2),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
         itemsPanel.setVisible(false);
         battlePanel.add(itemsPanel);
 
         itemButtons = new JButton[4];
         for (int i = 0; i < 4; i++) {
             itemButtons[i] = new JButton("Item " + (i + 1));
-            itemButtons[i].setBackground(new Color(100, 200, 100));
+            itemButtons[i].setBackground(new Color(46, 204, 113));  // Grass green
             itemButtons[i].setForeground(Color.WHITE);
-            itemButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
+            itemButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             itemButtons[i].setFocusPainted(false);
+            itemButtons[i].setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(39, 174, 96), 2),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+            ));
             final int itemIndex = i;
-            itemButtons[i].addActionListener(x -> {
+            itemButtons[i].addActionListener(_ -> {
                 if (game != null && game.getCurrentPlayer().getItems().size() > itemIndex) {
                     try {
                         game.useItem(game.getCurrentPlayer().getItems().get(itemIndex));
@@ -290,21 +319,30 @@ public class GameScreen extends JPanel {
         }
 
         switchPanel = new JPanel();
-        switchPanel.setLayout(new GridLayout(1, 6, 5, 5));
-        switchPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 300, UIConstants.WINDOW_HEIGHT - 200, 600, 40);
-        switchPanel.setBackground(new Color(70, 70, 120));
+        switchPanel.setLayout(new GridLayout(2, 3, 10, 10));
+        switchPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 270, UIConstants.WINDOW_HEIGHT - 200, 540, 90);
+        switchPanel.setOpaque(true);
+        switchPanel.setBackground(new Color(40, 40, 80, 200));
+        switchPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(231, 76, 60), 2),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
         switchPanel.setVisible(false);
         battlePanel.add(switchPanel);
 
         switchButtons = new JButton[6];
         for (int i = 0; i < 6; i++) {
             switchButtons[i] = new JButton("Pokemon " + (i + 1));
-            switchButtons[i].setBackground(new Color(100, 100, 200));
+            switchButtons[i].setBackground(new Color(231, 76, 60));  // Fire red
             switchButtons[i].setForeground(Color.WHITE);
-            switchButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
+            switchButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             switchButtons[i].setFocusPainted(false);
+            switchButtons[i].setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(192, 57, 43), 2),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+            ));
             final int pokemonIndex = i;
-            switchButtons[i].addActionListener(x -> {
+            switchButtons[i].addActionListener(_ -> {
                 if (game != null) {
                     try {
                         game.switchPokemon(pokemonIndex);
@@ -322,8 +360,6 @@ public class GameScreen extends JPanel {
             });
             switchPanel.add(switchButtons[i]);
         }
-
-        add(battlePanel);
     }
 
     /**
@@ -333,12 +369,13 @@ public class GameScreen extends JPanel {
      */
 
     private JButton getJButton() {
-        JButton exitButton = new JButton("Exit");
+        JButton exitButton = new JButton("SCAPE");
         exitButton.setBounds(900, 600, 80, 30);
         exitButton.setBackground(Color.RED);
         exitButton.setForeground(Color.WHITE);
         exitButton.setFont(new Font("Arial", Font.BOLD, 14));
         exitButton.setFocusPainted(false);
+        exitButton.setText("SCAPE");  // Ensure the text is set correctly
 
         exitButton.addActionListener(x -> {
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
@@ -358,6 +395,41 @@ public class GameScreen extends JPanel {
         return exitButton;
     }
 
+    private JButton getPauseButton() {
+        JButton pauseButton = new JButton("PAUSE");
+        pauseButton.setBounds(UIConstants.WINDOW_WIDTH - 130, 20, 100, 30);
+        pauseButton.setBackground(new Color(52, 73, 94));
+        pauseButton.setForeground(Color.WHITE);
+        pauseButton.setFont(new Font("Arial", Font.BOLD, 14));
+        pauseButton.setFocusPainted(false);
+        pauseButton.setBorder(BorderFactory.createLineBorder(new Color(44, 62, 80), 2));
+
+        pauseButton.addActionListener(e -> {
+            isPaused = !isPaused;
+            if (isPaused) {
+                pauseButton.setText("RESUME");
+                soundManager.pauseBackgroundMusic();
+                if (gameLoop != null) {
+                    gameLoop.pause();
+                }
+                if (game != null) {
+                    game.pauseGame();
+                }
+            } else {
+                pauseButton.setText("PAUSE");
+                soundManager.resumeBackgroundMusic();
+                if (gameLoop != null) {
+                    gameLoop.resume();
+                }
+                if (game != null) {
+                    game.resumeGame();
+                }
+            }
+        });
+
+        return pauseButton;
+    }
+
     /**
      * Paints the component and draws a red border around the FPS label.
      *
@@ -367,9 +439,22 @@ public class GameScreen extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+        // Draw FPS label border
         if (fpsLabel != null) {
             g.setColor(Color.RED);
             g.drawRect(fpsLabel.getX() - 1, fpsLabel.getY() - 1, fpsLabel.getWidth() + 1, fpsLabel.getHeight() + 1);
+        }
+
+        // Draw Pokemon sprites with animation
+        if (player1Image != null) {
+            int baseY = UIConstants.WINDOW_HEIGHT - 200;
+            g.drawImage(player1Image, 50, baseY + (int)player1YOffset, POKEMON_WIDTH, POKEMON_HEIGHT, null);
+        }
+
+        if (player2Image != null) {
+            int baseY = 100;
+            g.drawImage(player2Image, UIConstants.WINDOW_WIDTH - 250, baseY + (int)player2YOffset, POKEMON_WIDTH, POKEMON_HEIGHT, null);
         }
     }
 
@@ -381,10 +466,8 @@ public class GameScreen extends JPanel {
 
     public void setGame(Game game) {
         this.game = game;
-
         if (game != null) {
             game.setGameScreen(this);
-
 
             String backgroundPath = game.getGameMode().getClass().getSimpleName().equals("SurvivalMode")
                 ? UIConstants.SURVIVAL_IMAGE_PATH
@@ -397,9 +480,53 @@ public class GameScreen extends JPanel {
             actionButtons[1].setVisible(!isSurvivalMode); 
             itemsPanel.setVisible(!isSurvivalMode);
 
+            // Crear y iniciar el GameLoop solo cuando se establece el juego
+            if (gameLoop != null) {
+                gameLoop.stop();
+            }
+            gameLoop = new GameLoop(game);
+            gameLoop.start();
+
+            // Agregar WindowListener para detener el GameLoop
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window != null) {
+                window.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        if (gameLoop != null) {
+                            gameLoop.stop();
+                        }
+                    }
+                });
+            }
+
             updateBattleUI();
-        } else {
         }
+    }
+
+    /**
+     * Updates the animation of Pokemon sprites
+     */
+    public void updatePokemonAnimation() {
+        if (isPaused) return;
+        
+        long currentTime = System.currentTimeMillis();
+        float deltaTime = (currentTime - lastUpdateTime) / 1000.0f;
+        lastUpdateTime = currentTime;
+
+        // Update player 1 animation
+        player1YOffset += animationSpeed * deltaTime;
+        if (player1YOffset > animationRange || player1YOffset < -animationRange) {
+            animationSpeed = -animationSpeed;
+        }
+
+        // Update player 2 animation
+        player2YOffset += animationSpeed * deltaTime;
+        if (player2YOffset > animationRange || player2YOffset < -animationRange) {
+            animationSpeed = -animationSpeed;
+        }
+
+        repaint();
     }
 
     /**
@@ -410,13 +537,13 @@ public class GameScreen extends JPanel {
     public void updateBattleUI() {
         if (game == null) return;
 
+        updatePokemonAnimation(); // Add animation update here
+
         Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
-       
-       
+
         if (activePokemon != null) {
-            
             List<Move> moves = activePokemon.getMoves();
-            
+
             for (int i = 0; i < moveButtons.length; i++) {
                 if (i < moves.size()) {
                     Move move = moves.get(i);
@@ -435,8 +562,7 @@ public class GameScreen extends JPanel {
                     moveButtons[i].setVisible(false);
                 }
             }
-            
-            
+
             movesPanel.setVisible(true);
         }
 
@@ -463,7 +589,7 @@ public class GameScreen extends JPanel {
 
         updateItemButtons(currentPlayer);
         updateSwitchButtons(currentPlayer);
-        
+
         actionMenuPanel.setVisible(true);
 
         for (JButton button : actionButtons) {
@@ -505,19 +631,26 @@ public class GameScreen extends JPanel {
      */
 
     private void updatePokemonSprite(JLabel label, Pokemon pokemon, boolean isPlayer1) {
-    String spritePath = pokemon.getSpritePath();
+        String spritePath = pokemon.getSpritePath();
 
-    if (isPlayer1) {
-        String pokemonName = spritePath.substring(spritePath.lastIndexOf("/") + 1, spritePath.lastIndexOf("-front.png"));
-        spritePath = presentation.utils.UIConstants.POKEMON_BACK_SPRITES_PATH + pokemonName + "-back.png";
+        if (isPlayer1) {
+            String pokemonName = spritePath.substring(spritePath.lastIndexOf("/") + 1, spritePath.lastIndexOf("-front.png"));
+            spritePath = presentation.utils.UIConstants.POKEMON_BACK_SPRITES_PATH + pokemonName + "-back.png";
+        }
+
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(spritePath)));
+        Image scaledImage = icon.getImage().getScaledInstance(POKEMON_WIDTH, POKEMON_HEIGHT, Image.SCALE_SMOOTH);
+
+        if (isPlayer1) {
+            player1Image = scaledImage;
+        } else {
+            player2Image = scaledImage;
+        }
+
+        label.setIcon(new ImageIcon(scaledImage));
+        label.setVisible(true);
     }
 
-
-    ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(spritePath)));
-    Image scaledImage = icon.getImage().getScaledInstance(POKEMON_WIDTH, POKEMON_HEIGHT, Image.SCALE_SMOOTH);
-    label.setIcon(new ImageIcon(scaledImage));
-    label.setVisible(true);
-}
     /*
      * Updates the health bar for the given Pokemon.
      *
@@ -533,12 +666,10 @@ public class GameScreen extends JPanel {
         int healthPercentage = (int)((double)currentHealth / maxHealth * 100);
 
         healthBar.setValue(healthPercentage);
-        
-      
+
         String healthText = String.format("HP: %d/%d", currentHealth, maxHealth);
         healthBar.setString(healthText);
 
-       
         if (healthPercentage < 20) {
             healthBar.setForeground(new Color(231, 76, 60)); 
         } else if (healthPercentage < 50) {
@@ -547,7 +678,6 @@ public class GameScreen extends JPanel {
             healthBar.setForeground(new Color(46, 204, 113)); 
         }
 
-       
         healthBar.setStringPainted(true);
         healthBar.setFont(new Font("Arial", Font.BOLD, 12));
     }
@@ -634,7 +764,6 @@ public class GameScreen extends JPanel {
      */
 
     public void updateTimer(int seconds) {
-
         if (timerLabel != null) {
             timerLabel.setText("Time: " + seconds + "s");
 
@@ -667,7 +796,7 @@ public class GameScreen extends JPanel {
                 if (game != null && game.getCurrentPlayer().getActivePokemon() != null) {
                     Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
                     List<Move> moves = activePokemon.getMoves();
-                    
+
                     for (int i = 0; i < moveButtons.length; i++) {
                         if (i < moves.size()) {
                             Move move = moves.get(i);
@@ -720,67 +849,63 @@ public class GameScreen extends JPanel {
      */
 
     public void showCoinTossDialog(String player1Name, String player2Name, boolean player1First) {
-    
-    JDialog gifDialog = new JDialog();
-    gifDialog.setTitle("Coin Toss");
-    gifDialog.setSize(640, 272);
-    gifDialog.setLocationRelativeTo(this);
-    gifDialog.setModal(false);  
-    gifDialog.setLayout(new BorderLayout());
-    
-    
-    URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
-    if (gifURL == null) {
-        JOptionPane.showMessageDialog(this, 
-            "No gif found", 
-            "Error", JOptionPane.ERROR_MESSAGE);
-        return;
+        JDialog gifDialog = new JDialog();
+        gifDialog.setTitle("Coin Toss");
+        gifDialog.setSize(640, 272);
+        gifDialog.setLocationRelativeTo(this);
+        gifDialog.setModal(false);  
+        gifDialog.setLayout(new BorderLayout());
+
+        URL gifURL = getClass().getResource("/resources/SelectionScreen/coin-flip-2.gif");
+        if (gifURL == null) {
+            JOptionPane.showMessageDialog(this, 
+                "No gif found", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ImageIcon gifIcon = new ImageIcon(gifURL);
+        JLabel gifLabel = new JLabel(gifIcon);
+        gifLabel.setHorizontalAlignment(JLabel.CENTER);
+        gifDialog.add(gifLabel, BorderLayout.CENTER);
+        gifDialog.setVisible(true);
+
+        JDialog resultDialog = new JDialog();
+        resultDialog.setTitle("Coin Toss Result");
+        resultDialog.setSize(300, 150);
+        resultDialog.setLocationRelativeTo(this);
+        resultDialog.setModal(true);
+
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel titleLabel = new JLabel("Coin Toss Result", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        contentPanel.add(titleLabel, BorderLayout.NORTH);
+
+        String winner = player1First ? player1Name : player2Name;
+        JLabel resultLabel = new JLabel(winner + " goes first!", JLabel.CENTER);
+        resultLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        contentPanel.add(resultLabel, BorderLayout.CENTER);
+
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(_ -> {
+            resultDialog.dispose();
+            gifDialog.dispose();  
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(okButton);
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+        resultDialog.add(contentPanel);
+
+        Timer timer = new Timer(10000, _ -> {
+            gifDialog.dispose();
+            resultDialog.setVisible(true);
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
-    
-    ImageIcon gifIcon = new ImageIcon(gifURL);
-    JLabel gifLabel = new JLabel(gifIcon);
-    gifLabel.setHorizontalAlignment(JLabel.CENTER);
-    gifDialog.add(gifLabel, BorderLayout.CENTER);
-    gifDialog.setVisible(true);
-
-    
-    JDialog resultDialog = new JDialog();
-    resultDialog.setTitle("Coin Toss Result");
-    resultDialog.setSize(300, 150);
-    resultDialog.setLocationRelativeTo(this);
-    resultDialog.setModal(true);
-    
-    JPanel contentPanel = new JPanel(new BorderLayout());
-    contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    
-    JLabel titleLabel = new JLabel("Coin Toss Result", JLabel.CENTER);
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    contentPanel.add(titleLabel, BorderLayout.NORTH);
-    
-    String winner = player1First ? player1Name : player2Name;
-    JLabel resultLabel = new JLabel(winner + " goes first!", JLabel.CENTER);
-    resultLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-    contentPanel.add(resultLabel, BorderLayout.CENTER);
-    
-    JButton okButton = new JButton("OK");
-    okButton.addActionListener(e -> {
-        resultDialog.dispose();
-        gifDialog.dispose();  
-    });
-    
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.add(okButton);
-    contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-    resultDialog.add(contentPanel);
-
-    
-    Timer timer = new Timer(10000, e -> {
-        gifDialog.dispose();
-        resultDialog.setVisible(true);
-    });
-    timer.setRepeats(false);
-    timer.start();
-}
 
     /**
      * Shows a victory dialog when a player wins the game.
@@ -801,7 +926,6 @@ public class GameScreen extends JPanel {
         mainPanel.setBackground(Color.WHITE);
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-       
         JLabel titleLabel = new JLabel("VICTORY!", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
         titleLabel.setForeground(new Color(0, 51, 102)); 
@@ -809,7 +933,6 @@ public class GameScreen extends JPanel {
         mainPanel.add(titleLabel);
         mainPanel.add(Box.createVerticalStrut(20));
 
-        
         JLabel winnerLabel = new JLabel(winner.getName() + " wins!", SwingConstants.CENTER);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         winnerLabel.setForeground(winner.getColor());
@@ -817,27 +940,19 @@ public class GameScreen extends JPanel {
         mainPanel.add(winnerLabel);
         mainPanel.add(Box.createVerticalStrut(30));
 
-      
         JButton menuButton = new JButton("Return to Menu");
         menuButton.setFont(new Font("Arial", Font.BOLD, 16));
         menuButton.setBackground(new Color(0, 51, 102));
         menuButton.setForeground(Color.WHITE);
         menuButton.setFocusPainted(false);
         menuButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        menuButton.addActionListener(e -> {
+        menuButton.addActionListener(_ -> {
             dialog.dispose();
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
             if (window != null) {
                 window.dispose();
             }
-            try {
-                Class<?> guiClass = Class.forName("POOBkemonGUI");
-                Object guiObject = guiClass.getDeclaredConstructor().newInstance();
-                guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
-                guiClass.getMethod("showCoverScreen").invoke(guiObject);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            gameController.showMainMenu();
         });
 
         mainPanel.add(menuButton);

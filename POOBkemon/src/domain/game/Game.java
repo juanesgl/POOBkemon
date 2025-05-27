@@ -235,6 +235,16 @@ public class Game implements Serializable{
     }
 
     /**
+     * Updates game state and animations.
+     * Called by the game loop to update animations and other time-based elements.
+     */
+    public void update() {
+        if (gameScreen != null) {
+            gameScreen.updatePokemonAnimation();
+        }
+    }
+
+    /**
      * Executes a move in the battle.
      * The current player's active Pokemon attacks the opponent's active Pokemon with the selected move.
      * Handles Pokemon fainting and checks if the game is over after the move.

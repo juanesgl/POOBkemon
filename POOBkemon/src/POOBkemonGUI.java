@@ -35,7 +35,8 @@ public class POOBkemonGUI extends JFrame implements GameView {
     private GameScreen gameScreen;
     private SoundManager soundManager;
     private GameController gameController;
-
+    private GameMode selectedMode;
+    private GameModality selectedModality;
 
     private JMenuBar menuBar;
     private JMenuItem Save;
@@ -53,23 +54,19 @@ public class POOBkemonGUI extends JFrame implements GameView {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setResizable(false);
 
-        
         soundManager = new SoundManager();
-        gameController = new GameController(this);
+        gameController = new GameController(this, soundManager);
 
-        
         coverScreen = new CoverScreen(gameController);
         setupScreen = new GameSetupScreen(gameController);
-        gameScreen = new GameScreen();
+        gameScreen = new GameScreen(soundManager, gameController);
         pokemonSelectionScreen = new PokemonSelectionScreen(gameController);
         itemSelectionScreen = new ItemSelectionScreen(gameController);
 
         menu();
 
-        
         showCoverScreen();
 
-        
         setupWindowCloseEvent();
     }
 
@@ -106,12 +103,14 @@ public class POOBkemonGUI extends JFrame implements GameView {
      * @param game The game to be displayed
      */
     public void showGameScreen(Game game) {
-        getContentPane().removeAll();
+        if (gameScreen == null) {
+            gameScreen = new GameScreen(soundManager, gameController);
+        }
         gameScreen.setGame(game);
+        getContentPane().removeAll();
         getContentPane().add(gameScreen);
         revalidate();
         repaint();
-        gameScreen.setVisible(true);
     }
 
     /**
@@ -161,8 +160,6 @@ public class POOBkemonGUI extends JFrame implements GameView {
         });
     }
 
-
-
     private void menu(){
         menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
@@ -206,9 +203,65 @@ public class POOBkemonGUI extends JFrame implements GameView {
         });
     }
 
+    @Override
+    public void showMainMenu(CoverScreen coverScreen) {
+        getContentPane().removeAll();
+        getContentPane().add(coverScreen);
+        revalidate();
+        repaint();
+    }
+
+    @Override
+    public void showGameModeSelection(GameSetupScreen setupScreen) {
+        getContentPane().removeAll();
+        getContentPane().add(setupScreen);
+        revalidate();
+        repaint();
+    }
+
+    @Override
+    public void showModalitySelection(GameMode mode) {
+        this.selectedMode = mode;
+        showGameModeSelection(setupScreen);
+    }
+
+    @Override
+    public void showPokemonSelection(PokemonSelectionScreen selectionScreen) {
+        getContentPane().removeAll();
+        getContentPane().add(selectionScreen);
+        revalidate();
+        repaint();
+    }
+
+    @Override
+    public void showItemSelectionScreen(ItemSelectionScreen itemScreen) {
+        getContentPane().removeAll();
+        getContentPane().add(itemScreen);
+        revalidate();
+        repaint();
+    }
+
+    @Override
+    public JFrame getMainFrame() {
+        return this;
+    }
+
+    @Override
+    public GameMode getSelectedMode() {
+        return selectedMode;
+    }
+
+    @Override
+    public void setSelectedModality(GameModality modality) {
+        this.selectedModality = modality;
+    }
 
     @Override
     public void showMessage(String message, String title, int messageType) {
         JOptionPane.showMessageDialog(this, message, title, messageType);
+    }
+
+    public SoundManager getSoundManager() {
+        return soundManager;
     }
 }

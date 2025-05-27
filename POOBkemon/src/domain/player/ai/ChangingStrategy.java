@@ -4,17 +4,32 @@ import domain.pokemons.Pokemon;
 import domain.enums.PokemonType;
 import java.util.List;
 import domain.game.TypeEffectivenessTable;
+import domain.moves.Move;
 
 /*
  * ChangingStrategy class implements the AIStrategy interface.
  * It provides a strategy for selecting moves and switches based on the effectiveness of the Pokemon's types.
  */
 public class ChangingStrategy implements AIStrategy {
-    
+
     @Override
     public int selectMove(Pokemon activePokemon) {
-  
-        return 50; 
+        // Select a random move with available PP
+        List<Move> moves = activePokemon.getMoves();
+        List<Integer> validMoves = new java.util.ArrayList<>();
+
+        for (int i = 0; i < moves.size(); i++) {
+            if (moves.get(i).getPowerPoints() > 0) {
+                validMoves.add(i);
+            }
+        }
+
+        if (validMoves.isEmpty()) {
+            return 0; // Default to first move if no valid moves (will use Struggle)
+        }
+
+        // Select a random valid move
+        return validMoves.get(new java.util.Random().nextInt(validMoves.size()));
     }
 
     /*  
@@ -26,20 +41,20 @@ public class ChangingStrategy implements AIStrategy {
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
         int bestSwitchIndex = -1;
         double maxEffectiveness = -1;
-        
+
         for (int i = 0; i < team.size(); i++) {
             Pokemon candidate = team.get(i);
-            
+
             if (candidate.isFainted() || candidate == activePokemon) continue;
-            
+
             double effectiveness = calculateTotalEffectiveness(candidate, opponentPokemon);
-            
+
             if (effectiveness > maxEffectiveness) {
                 maxEffectiveness = effectiveness;
                 bestSwitchIndex = i;
             }
         }
-        
+
         return bestSwitchIndex != -1 ? bestSwitchIndex : findFirstAvailable(activePokemon, team);
     }
 
@@ -52,24 +67,24 @@ public class ChangingStrategy implements AIStrategy {
 
     private double calculateTotalEffectiveness(Pokemon attacker, Pokemon defender) {
         double total = 1.0;
-        
-   
+
+
         total *= getTypeEffectiveness(attacker.getPrimaryType(), defender.getPrimaryType());
-        
+
 
         if (defender.getSecondaryType() != null) {
             total *= getTypeEffectiveness(attacker.getPrimaryType(), defender.getSecondaryType());
         }
-        
-   
+
+
         if (attacker.getSecondaryType() != null) {
             total *= getTypeEffectiveness(attacker.getSecondaryType(), defender.getPrimaryType());
-            
+
             if (defender.getSecondaryType() != null) {
                 total *= getTypeEffectiveness(attacker.getSecondaryType(), defender.getSecondaryType());
             }
         }
-        
+
         return total;
     }
 
@@ -97,6 +112,6 @@ public class ChangingStrategy implements AIStrategy {
                 return i;
             }
         }
-        return 50; 
+        return -1; // Return -1 if no available Pokemon is found
     }
 }

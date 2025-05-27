@@ -27,8 +27,27 @@ public class DefensiveStrategy implements AIStrategy {
      */
     @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
-        return 50;
+        // Switch to a Pokemon with higher defense if current Pokemon's health is low
+        if (activePokemon.getHealth() < activePokemon.getMaxHealth() * 0.3) {
+            int bestIndex = -1;
+            int highestDefense = -1;
+
+            for (int i = 0; i < team.size(); i++) {
+                Pokemon pokemon = team.get(i);
+                if (!pokemon.isFainted() && pokemon != activePokemon) {
+                    int defense = pokemon.getDefense() + pokemon.getSpecialDefense();
+                    if (defense > highestDefense) {
+                        highestDefense = defense;
+                        bestIndex = i;
+                    }
+                }
+            }
+
+            return bestIndex;
+        }
+
+        return -1; // Don't switch if health is not low
     }
-    
-   
+
+
 }
