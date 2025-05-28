@@ -28,11 +28,22 @@ import javax.swing.JOptionPane;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Window;
+import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Font;
 
 /**
  * GameController is responsible for managing the game flow and user interactions.
@@ -208,6 +219,27 @@ public class GameController {
                 this.game = loadedGame;
                 view.showGameScreen(loadedGame);
 
+                // Play appropriate music based on game mode
+                if (loadedGame.getGameMode() instanceof SurvivalMode) {
+                    soundManager.playBackgroundMusic("/sounds-music/music-cover/survivalTheme.wav");
+                } else {
+                    GameModality modality = loadedGame.getPlayer1().isAI() ? 
+                        (loadedGame.getPlayer2().isAI() ? GameModality.AI_VS_AI : GameModality.PLAYER_VS_AI) 
+                        : GameModality.PLAYER_VS_PLAYER;
+                    
+                    switch (modality) {
+                        case PLAYER_VS_PLAYER:
+                            soundManager.playBackgroundMusic("/sounds-music/music-cover/playerVSplayer.wav");
+                            break;
+                        case PLAYER_VS_AI:
+                        case AI_VS_AI:
+                            soundManager.playBackgroundMusic("/sounds-music/music-cover/playerVSAi.wav");
+                            break;
+                        default:
+                            soundManager.playBackgroundMusic("/sounds-music/music-cover/playerVSplayer.wav");
+                    }
+                }
+
                 // Resume the game
                 loadedGame.resumeGame();
 
@@ -372,13 +404,156 @@ public class GameController {
 
     private String askName() {
         String playerName = JOptionPane.showInputDialog(null, "Insert Player Name:");
-        showInfoMessage("Welcome", playerName);
+        if (playerName != null && !playerName.trim().isEmpty()) {
+            showInfoMessage("Welcome", playerName);
+        }
         return playerName;
     }
 
     private Color askColor() {
-        Color playerColor = JColorChooser.showDialog(null, "Select a color", Color.WHITE);
-        return playerColor != null ? playerColor : Color.WHITE;
+        // Colores predefinidos con nombres
+        Object[][] colorData = {
+            {new Color(255, 0, 0), "Red"},
+            {new Color(0, 0, 255), "Blue"},
+            {new Color(0, 255, 0), "Green"},
+            {new Color(255, 255, 0), "Yellow"},
+            {new Color(255, 0, 255), "Magenta"},
+            {new Color(0, 255, 255), "Cyan"},
+            {new Color(255, 165, 0), "Orange"},
+            {new Color(128, 0, 128), "Purple"},
+            {new Color(0, 128, 0), "Dark Green"},
+            {new Color(128, 0, 0), "Dark Red"},
+            {new Color(0, 0, 128), "Dark Blue"},
+            {new Color(128, 128, 0), "Olive"}
+        };
+
+        // Variable para almacenar el color seleccionado
+        final Color[] selectedColor = new Color[1];
+        selectedColor[0] = Color.WHITE; // Color por defecto
+
+        // Crear el panel principal con un fondo degradado
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(new Color(240, 240, 240));
+
+        // Panel de título
+        JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(new Color(240, 240, 240));
+        JLabel titleLabel = new JLabel("Choose Your Color", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titlePanel.add(titleLabel);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        // Panel de colores con GridLayout
+        JPanel colorPanel = new JPanel(new GridLayout(4, 3, 10, 10));
+        colorPanel.setBackground(new Color(240, 240, 240));
+        
+        // Crear botones para cada color
+        JButton[] colorButtons = new JButton[colorData.length];
+        for (int i = 0; i < colorData.length; i++) {
+            final Color color = (Color)colorData[i][0];
+            final String colorName = (String)colorData[i][1];
+            
+            JPanel buttonPanel = new JPanel(new BorderLayout(0, 5));
+            buttonPanel.setBackground(new Color(240, 240, 240));
+            
+            JButton button = new JButton();
+            button.setPreferredSize(new Dimension(60, 60));
+            button.setBackground(color);
+            button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK, 2),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)
+            ));
+            
+            // Efecto hover
+            button.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    button.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.WHITE, 2),
+                        BorderFactory.createEmptyBorder(2, 2, 2, 2)
+                    ));
+                }
+
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    button.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.BLACK, 2),
+                        BorderFactory.createEmptyBorder(2, 2, 2, 2)
+                    ));
+                }
+            });
+            
+            button.addActionListener(e -> {
+                selectedColor[0] = color;
+                Window window = SwingUtilities.getWindowAncestor(button);
+                if (window instanceof JDialog) {
+                    window.dispose();
+                }
+            });
+            
+            JLabel nameLabel = new JLabel(colorName, SwingConstants.CENTER);
+            nameLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+            
+            buttonPanel.add(button, BorderLayout.CENTER);
+            buttonPanel.add(nameLabel, BorderLayout.SOUTH);
+            
+            colorButtons[i] = button;
+            colorPanel.add(buttonPanel);
+        }
+
+        mainPanel.add(colorPanel, BorderLayout.CENTER);
+        
+        // Panel inferior con botón personalizado
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBackground(new Color(240, 240, 240));
+        JButton customColorButton = new JButton("Choose Custom Color");
+        customColorButton.setFont(new Font("Arial", Font.BOLD, 14));
+        customColorButton.setPreferredSize(new Dimension(200, 40));
+        
+        // Estilo del botón personalizado
+        customColorButton.setBackground(new Color(70, 130, 180));
+        customColorButton.setForeground(Color.WHITE);
+        customColorButton.setFocusPainted(false);
+        customColorButton.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(50, 100, 150), 2),
+            BorderFactory.createEmptyBorder(5, 15, 5, 15)
+        ));
+        
+        // Efecto hover para el botón personalizado
+        customColorButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                customColorButton.setBackground(new Color(100, 150, 200));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                customColorButton.setBackground(new Color(70, 130, 180));
+            }
+        });
+        
+        customColorButton.addActionListener(e -> {
+            Color customColor = JColorChooser.showDialog(customColorButton, "Choose Custom Color", Color.WHITE);
+            if (customColor != null) {
+                selectedColor[0] = customColor;
+                Window window = SwingUtilities.getWindowAncestor(customColorButton);
+                if (window instanceof JDialog) {
+                    window.dispose();
+                }
+            }
+        });
+        
+        bottomPanel.add(customColorButton);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        // Crear el diálogo
+        JDialog dialog = new JDialog((Frame)null, "Player Color Selection", true);
+        dialog.setLayout(new BorderLayout());
+        dialog.add(mainPanel, BorderLayout.CENTER);
+        
+        // Centrar el diálogo
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+
+        return selectedColor[0];
     }
 
     /**

@@ -79,6 +79,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
     public void showCoverScreen() {
         getContentPane().removeAll();
         getContentPane().add(coverScreen);
+        soundManager.stopBackgroundMusic();
         soundManager.playBackgroundMusic(UIConstants.BACKGROUND_MUSIC_PATH);
         revalidate();
         repaint();
@@ -178,7 +179,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
         volumeSlider.addChangeListener(e -> {
             if (!volumeSlider.getValueIsAdjusting()) {
                 float volume = volumeSlider.getValue() / 100f;
-                soundManager.setVolume(volume);
+                soundManager.setMusicVolume(volume);
             }
         });
         volumeMenu.add(volumeSlider);
@@ -222,6 +223,8 @@ public class POOBkemonGUI extends JFrame implements GameView {
     public void showMainMenu(CoverScreen coverScreen) {
         getContentPane().removeAll();
         getContentPane().add(coverScreen);
+        soundManager.stopBackgroundMusic();
+        soundManager.playBackgroundMusic(UIConstants.BACKGROUND_MUSIC_PATH);
         revalidate();
         repaint();
     }
