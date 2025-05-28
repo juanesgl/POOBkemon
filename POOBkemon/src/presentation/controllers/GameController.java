@@ -91,9 +91,9 @@ public class GameController {
         if (view.getSelectedMode() == GameMode.SURVIVAL) {
             if (modality != GameModality.PLAYER_VS_PLAYER) {
                 JOptionPane.showMessageDialog(view.getMainFrame(),
-                    "Survival Mode is only available in Player vs Player mode. AI players cannot play in Survival Mode.",
-                    "Mode Restriction",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Survival Mode is only available in Player vs Player mode. AI players cannot play in Survival Mode.",
+                        "Mode Restriction",
+                        JOptionPane.INFORMATION_MESSAGE);
                 showGameModeSelection();
                 return;
             }
@@ -106,6 +106,7 @@ public class GameController {
         view.setSelectedModality(modality);
         PokemonSelectionScreen selectionScreen = new PokemonSelectionScreen(this);
         selectionScreen.setGameOptions(modality, view.getSelectedMode());
+        soundManager.playBackgroundMusic("/sounds-music/music-cover/pokemonSelectionScreen-ItemSelectionScreen.wav");
         view.showPokemonSelection(selectionScreen);
     }
 
@@ -120,6 +121,7 @@ public class GameController {
     public void showItemSelectionScreen(GameModality modality, GameMode mode, List<Pokemon> player1Team, List<Pokemon> player2Team) {
         ItemSelectionScreen itemScreen = new ItemSelectionScreen(this);
         itemScreen.setGameOptions(modality, mode, player1Team, player2Team);
+        soundManager.playBackgroundMusic("/sounds-music/music-cover/pokemonSelectionScreen-ItemSelectionScreen.wav");
         view.showItemSelectionScreen(itemScreen);
     }
 
@@ -155,22 +157,25 @@ public class GameController {
      */
 
     public void saveGame() {
-         if (game == null) {
-            JOptionPane.showMessageDialog(null, POOBkemonException.INVALID_GAME_SAVE,
+        if (game == null) {
+            JOptionPane.showMessageDialog(view.getMainFrame(), POOBkemonException.INVALID_GAME_SAVE,
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         JFileChooser fileChooser = new JFileChooser();
-        int returnVal = fileChooser.showSaveDialog(null);
+        int returnVal = fileChooser.showSaveDialog(view.getMainFrame());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
+            if (!file.getName().toLowerCase().endsWith(".sav")) {
+                file = new File(file.getAbsolutePath() + ".sav");
+            }
             try {
-                // Play save game music
-                soundManager.playBackgroundMusic("/sounds-music/music-cover/saveGame.wav");
+                // Play save game sound
+                soundManager.playSoundEffect("save");
                 game.save(file);
-                JOptionPane.showMessageDialog(null, "Game saved successfully: " + file.getAbsolutePath());
+                JOptionPane.showMessageDialog(view.getMainFrame(), "Game saved successfully: " + file.getAbsolutePath());
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, POOBkemonException.INVALID_SAVE_OPERATION + ": " + ex.getMessage(),
+                JOptionPane.showMessageDialog(view.getMainFrame(), POOBkemonException.INVALID_SAVE_OPERATION + ": " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -182,15 +187,39 @@ public class GameController {
 
     public void loadGame() {
         JFileChooser fileChooser = new JFileChooser();
-        int returnVal = fileChooser.showOpenDialog(null);
+        int returnVal = fileChooser.showOpenDialog(view.getMainFrame());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
-                    this.game = Game.load(file);
-                    showGameScreen(game);
+                // Stop any current game
+                if (game != null) {
+                    game.pauseGame();
+                }
+
+                // Load the new game
+                Game loadedGame = Game.load(file);
+                
+                // Create new game screen
+                GameScreen gameScreen = new GameScreen(soundManager, this);
+                gameScreen.setGame(loadedGame);
+                loadedGame.setGameScreen(gameScreen);
+                
+                // Update controller and view
+                this.game = loadedGame;
+                view.showGameScreen(loadedGame);
+
+                // Resume the game
+                loadedGame.resumeGame();
+
+                JOptionPane.showMessageDialog(view.getMainFrame(), 
+                    "Game loaded successfully: " + file.getAbsolutePath(),
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException | ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(null, POOBkemonException.INVALID_LOAD_OPERATION + ": " + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view.getMainFrame(), 
+                    "Failed to load game: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -328,7 +357,7 @@ public class GameController {
 
     public void endGame(Player winner) {
         if (winner != null) {
-            soundManager.playBackgroundMusic("/sounds-music/music-cover/victorySound.wav");
+            soundManager.playSoundEffect("victory");
         } else {
             soundManager.playSoundEffect("defeat");
         }

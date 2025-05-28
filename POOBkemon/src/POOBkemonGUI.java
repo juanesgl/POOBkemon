@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JSlider;
 
 /**
  * Main GUI class for the POOBkemon game.
@@ -169,6 +170,20 @@ public class POOBkemonGUI extends JFrame implements GameView {
         fileMenu.add(Save);
         fileMenu.add(Load);
         menuBar.add(fileMenu);
+
+        // Add volume control
+        JMenu volumeMenu = new JMenu("Volume");
+        JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 30);
+        volumeSlider.setPreferredSize(new Dimension(150, 20));
+        volumeSlider.addChangeListener(e -> {
+            if (!volumeSlider.getValueIsAdjusting()) {
+                float volume = volumeSlider.getValue() / 100f;
+                soundManager.setVolume(volume);
+            }
+        });
+        volumeMenu.add(volumeSlider);
+        menuBar.add(volumeMenu);
+
         setJMenuBar(menuBar);
 
         Save.addActionListener(_ -> gameController.saveGame());

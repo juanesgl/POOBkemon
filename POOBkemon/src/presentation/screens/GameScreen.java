@@ -378,6 +378,12 @@ public class GameScreen extends JPanel {
         exitButton.setText("SCAPE");  // Ensure the text is set correctly
 
         exitButton.addActionListener(x -> {
+            // Play scape sound
+            soundManager.playSoundEffect("scape");
+            
+            // Stop current music
+            soundManager.stopBackgroundMusic();
+            
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
             if (window != null) {
                 window.dispose();

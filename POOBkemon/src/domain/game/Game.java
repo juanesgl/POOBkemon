@@ -38,14 +38,15 @@ public class Game implements Serializable{
     private boolean isGameOver;
     private Player currentPlayer;
     private GameState state;
-    private GameScreen gameScreen;
-    private int fps;
+    private transient GameScreen gameScreen;
+    private transient int fps;
     private boolean coinTossShown;
     private final boolean player1First;
-    private static boolean gif = false;
+    private static transient boolean gif = false;
     private static final int TURN_TIME_LIMIT = 20;
     private transient Timer turnTimer;
     private final transient Object timerLock = new Object();
+    private transient GameLoop gameLoop;
     private int secondsRemaining;
     private int secondsInPause;
     private boolean turnTimedOut;
@@ -74,8 +75,8 @@ public class Game implements Serializable{
         this.player1First = coinToss();
         currentPlayer = this.player1First ? player1 : player2;
         this.coinTossShown = false;
-        GameLoop gameLoop = new GameLoop(this);
-        gameLoop.start();
+        this.gameLoop = new GameLoop(this);
+        this.gameLoop.start();
 
         startTurnTimer();
 
@@ -498,7 +499,7 @@ public class Game implements Serializable{
      */
     public void save(File file) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            oos.writeObject(this); 
+            oos.writeObject(this);
         }
     }
 
@@ -513,30 +514,35 @@ public class Game implements Serializable{
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Game loadedGame = (Game) ois.readObject();
 
+            // Reinitialize all transient fields
+            loadedGame.turnTimer = new Timer();
+            loadedGame.secondsRemaining = TURN_TIME_LIMIT;
+            loadedGame.turnTimedOut = false;
+            loadedGame.turnActionTaken = false;
+            loadedGame.gameScreen = null;
+            loadedGame.fps = 0;
+            loadedGame.gameLoop = new GameLoop(loadedGame);
 
-            Field timerLockField;
+            // Reinitialize timer lock
             try {
-                timerLockField = Game.class.getDeclaredField("timerLock");
+                Field timerLockField = Game.class.getDeclaredField("timerLock");
                 timerLockField.setAccessible(true);
                 timerLockField.set(loadedGame, new Object());
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new IOException("Failed to reinitialize transient fields", e);
             }
 
-            loadedGame.turnTimer = new Timer();
-
+            // Start the game loop and timer
             SwingUtilities.invokeLater(() -> {
                 try {
+                    if (loadedGame.state == GameState.SETUP) {
+                        loadedGame.gameLoop.start();
+                    }
                     loadedGame.startTurnTimer();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
-
-            if (loadedGame.state == GameState.SETUP) {
-                GameLoop gameLoop = new GameLoop(loadedGame);
-                gameLoop.start();
-            }
 
             return loadedGame;
         }
