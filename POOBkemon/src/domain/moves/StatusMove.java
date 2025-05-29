@@ -13,6 +13,10 @@ public class StatusMove extends Move {
         super(name, power, MoveCategory.STATUS, type, accuracy, powerPoints);
     }
 
+    /* * Status moves do not deal damage, so the damage calculation is not applicable.
+     * This method returns 0 to indicate no damage.
+     */
+
     @Override
     public boolean isOffensive() {
         return false;

@@ -29,7 +29,7 @@ public class GameSetupScreen extends JPanel {
     private JComboBox<GameModality> modalitiesCombo;
     private JComboBox<GameMode> modesCombo;
     private AnimatedButton startGameButton;
-    private GameController controller;
+    private final GameController controller;
 
     /**
      * Constructor for GameSetupScreen.

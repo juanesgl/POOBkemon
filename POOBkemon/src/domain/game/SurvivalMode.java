@@ -9,6 +9,7 @@ import domain.player.Player;
  * each with four pre-defined moves. No items are allowed.
  * This mode is only available in Player vs Player modality.
  */
+
 public class SurvivalMode implements GameMode {
     /**
      * Handles what happens when a player's active Pokemon faints in Survival mode.
@@ -16,6 +17,7 @@ public class SurvivalMode implements GameMode {
      * 
      * @param player The player whose active Pokemon has fainted
      */
+
     @Override
     public void handleFaintedPokemon(Player player) {
         player.switchToNextAvailablePokemon();
@@ -29,6 +31,7 @@ public class SurvivalMode implements GameMode {
      * @param player2 The second player
      * @return true if all Pokemon of either player have fainted, false otherwise
      */
+
     @Override
     public boolean isGameOver(Player player1, Player player2) {
         return player1.allPokemonFainted() || player2.allPokemonFainted();
@@ -42,6 +45,7 @@ public class SurvivalMode implements GameMode {
      * @param player2 The second player
      * @return The player who still has Pokemon available, or null if the game is not over
      */
+
     @Override
     public Player determineWinner(Player player1, Player player2) {
         if (player1.allPokemonFainted()) {

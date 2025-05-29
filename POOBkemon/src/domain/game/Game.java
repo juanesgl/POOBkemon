@@ -1,6 +1,7 @@
 package domain.game;
 
-import domain.pokemons.Pokemon;import domain.entities.Item;
+import domain.pokemons.Pokemon;
+import domain.entities.Item;
 import domain.player.AIPlayer;
 import domain.player.Player;
 import domain.enums.GameState;
@@ -42,7 +43,7 @@ public class Game implements Serializable{
     private transient int fps;
     private boolean coinTossShown;
     private final boolean player1First;
-    private static transient boolean gif = false;
+    private static boolean gif = false;
     private static final int TURN_TIME_LIMIT = 20;
     private transient Timer turnTimer;
     private final transient Object timerLock = new Object();
@@ -61,6 +62,7 @@ public class Game implements Serializable{
      * @param player1 The first player
      * @param player2 The second player
      */
+
     public Game(GameMode gameMode, Player player1, Player player2) {
         this.gameMode = gameMode;
         this.player1 = player1;
@@ -83,13 +85,22 @@ public class Game implements Serializable{
         this.state = GameState.SETUP;
     }
 
+    /**
+     * Determines which player goes first by simulating a coin toss.
+     * Returns true if player 1 goes first, false if player 2 goes first.
+     *
+     * @return true if player 1 goes first, false if player 2 goes first
+     */
+
     private boolean coinToss() {
         Random random = new Random();
         return random.nextBoolean();
     }
+
     /*
      * Starts the turn timer for the current player.
      */
+
     private void startTurnTimer() {
 
         if (turnTimer != null) {
@@ -145,18 +156,20 @@ public class Game implements Serializable{
             }
         }, 1000, 1000);
     }
+
     /* 
      * Stops the current turn timer.
      * 
       */
+
     private void stopTurnTimer() {
         synchronized (timerLock) {
         if (turnTimer != null) {
             turnTimer.cancel();
             turnTimer.purge();
             turnTimer = null;
+            }
         }
-    }
     }
 
     /*  
@@ -164,6 +177,7 @@ public class Game implements Serializable{
      * Updates the game state to indicate the next player's turn.
      * 
      */
+
     private void endTurn() {
     synchronized (timerLock) {
         stopTurnTimer();
@@ -221,6 +235,7 @@ public class Game implements Serializable{
      * 
      * @param fps The current frames per second
      */
+
     public void setFPS(int fps) {
         this.fps = fps;
     }
@@ -229,6 +244,7 @@ public class Game implements Serializable{
      * Notifies the presentation layer to update the display.
      * Updates the game screen with the current game state and FPS.
      */
+
     public void render() {
         if (gameScreen != null) {
             gameScreen.updateFPS(fps);
@@ -239,6 +255,7 @@ public class Game implements Serializable{
      * Updates game state and animations.
      * Called by the game loop to update animations and other time-based elements.
      */
+
     public void update() {
         if (gameScreen != null) {
             gameScreen.updatePokemonAnimation();
@@ -328,6 +345,7 @@ public class Game implements Serializable{
      * 
      * @return The winning player, or null if there is no winner yet
      */
+
     private Player determineWinner() {
 
         if (player1.getTeam().isEmpty() || player1.getTeam().stream().allMatch(Pokemon::isFainted)) {
@@ -346,7 +364,6 @@ public class Game implements Serializable{
      * @param item The item to use
      */
 
-    //Comportamiento Item
     public void useItem(Item item) throws POOBkemonException {
         if (isGameOver || turnActionTaken) {
             throw new POOBkemonException(POOBkemonException.INVALID_GAME_STATE);
@@ -413,6 +430,7 @@ public class Game implements Serializable{
      * Checks if the game is over.
      * @return true if the game is over, false otherwise
      */
+
     public boolean isGameOver() { return isGameOver; }
 
 
@@ -420,18 +438,21 @@ public class Game implements Serializable{
      * Gets the player whose turn it currently is.
      * @return The current player
      */
+
     public Player getCurrentPlayer() { return currentPlayer; }
 
     /**
      * Gets the first player.
      * @return Player 1
      */
+
     public Player getPlayer1() { return player1; }
 
     /**
      * Gets the second player.
      * @return Player 2
      */
+
     public Player getPlayer2() { return player2; }
 
     /**
@@ -445,26 +466,32 @@ public class Game implements Serializable{
      * Gets the current game mode.
      * @return The game mode
      */
+
     public GameMode getGameMode() { return gameMode; }
 
     /*  
      * Pauses the game timer.
      */
+
     public void pauseGame(){
         secondsInPause=secondsRemaining;
         stopTurnTimer();
     }
+
     /*  
      * Resumes the game timer.
      */
+
     public void resumeGame(){
         startTurnTimer();
         secondsRemaining=secondsInPause;
     }
+
     /*  
      * Performs an AI move.
      * 
      */
+
     private void performAIMove() {
         synchronized (timerLock) {
             if (isGameOver || turnActionTaken || !getCurrentPlayer().isAI()) return;
@@ -497,6 +524,7 @@ public class Game implements Serializable{
      * @param file The file to save to
      * @throws IOException If an I/O error occurs
      */
+
     public void save(File file) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(this);
@@ -510,11 +538,11 @@ public class Game implements Serializable{
      * @throws IOException If an I/O error occurs
      * @throws ClassNotFoundException If the class of a serialized object can't be found
      */
+
     public static Game load(File file) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Game loadedGame = (Game) ois.readObject();
 
-            // Reinitialize all transient fields
             loadedGame.turnTimer = new Timer();
             loadedGame.secondsRemaining = TURN_TIME_LIMIT;
             loadedGame.turnTimedOut = false;
@@ -523,7 +551,6 @@ public class Game implements Serializable{
             loadedGame.fps = 0;
             loadedGame.gameLoop = new GameLoop(loadedGame);
 
-            // Reinitialize timer lock
             try {
                 Field timerLockField = Game.class.getDeclaredField("timerLock");
                 timerLockField.setAccessible(true);
@@ -532,7 +559,6 @@ public class Game implements Serializable{
                 throw new IOException("Failed to reinitialize transient fields", e);
             }
 
-            // Start the game loop and timer
             SwingUtilities.invokeLater(() -> {
                 try {
                     if (loadedGame.state == GameState.SETUP) {

@@ -1,12 +1,14 @@
 package domain.game;
-/*
- * GameLoop.java
- * 
+
+
+/**
+ * GameLoop class that manages the game loop for a game.
+ * It handles the timing for updates and rendering, as well as pausing and resuming the game.
+ * The loop runs at a target frame rate of 30 FPS.
  */
-import presentation.screens.GameScreen;
 
 public class GameLoop implements Runnable {
-    private Game game;
+    private final Game game;
     private boolean running;
     private static final int TARGET_FPS = 30;
     private static final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
@@ -16,11 +18,14 @@ public class GameLoop implements Runnable {
     private long lastFpsTime;
     private int frameCount;
 
-    /*
-     * Constructor for GameLoop class.
-     * 
-     * @param gameScreen The game screen instance
+  /*     * Constructor for the GameLoop class.
+     * Initializes the game loop with the given game instance.
+     * Sets the initial state of the loop to not running and not paused.
+     * Initializes FPS tracking variables.
+     *
+     * @param game The game instance to be managed by this loop.
      */
+
     public GameLoop(Game game) {
         this.game = game;
         this.running = false;
@@ -29,18 +34,22 @@ public class GameLoop implements Runnable {
         this.lastFpsTime = System.nanoTime();
         this.frameCount = 0;
     }
+
     /*
      * Starts the game loop thread.
      */
+
     public void start() {
         if (running) return;
         running = true;
         gameThread = new Thread(this);
         gameThread.start();
     }
+
     /*
      * Stops the game loop thread.
      */
+
     public void stop() {
         running = false;
         try {
@@ -52,9 +61,17 @@ public class GameLoop implements Runnable {
         }
     }
 
+    /*
+     * Pauses the game loop.
+     */
+
     public void pause() {
         paused = true;
     }
+
+    /*
+     * Resumes the game loop.
+     */
 
     public void resume() {
         paused = false;
@@ -63,10 +80,10 @@ public class GameLoop implements Runnable {
     /*  
      * Runs the game loop.
      */
+
     @Override
     public void run() {
         long lastUpdateTime = System.nanoTime();
-        long lastRenderTime = System.nanoTime();
         double unprocessedTime = 0;
         double unprocessedRenderTime = 0;
 
@@ -79,18 +96,16 @@ public class GameLoop implements Runnable {
                 unprocessedTime += updateTime;
                 unprocessedRenderTime += updateTime;
 
-                // Update game logic
+
                 while (unprocessedTime >= OPTIMAL_TIME) {
                     game.update();
                     unprocessedTime -= OPTIMAL_TIME;
                 }
 
-                // Render game and update FPS
                 if (unprocessedRenderTime >= OPTIMAL_TIME) {
                     game.render();
                     unprocessedRenderTime = 0;
                     
-                    // Calculate FPS
                     frameCount++;
                     if (currentTime - lastFpsTime >= 1000000000) { // 1 second
                         fps = frameCount;
@@ -100,7 +115,6 @@ public class GameLoop implements Runnable {
                     }
                 }
 
-                // Sleep to maintain target FPS
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {

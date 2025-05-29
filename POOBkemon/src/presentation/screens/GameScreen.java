@@ -7,7 +7,6 @@ import domain.moves.Move;
 import domain.player.Player;
 import domain.exceptions.POOBkemonException;
 import presentation.controllers.GameController;
-import presentation.screens.CoverScreen;
 import presentation.utils.UIConstants;
 import presentation.utils.SoundManager;
 import javax.swing.BorderFactory;
@@ -25,13 +24,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.net.URL;
 import java.util.Objects;
@@ -39,7 +36,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.SwingConstants;
 import java.awt.Component;
-import javax.swing.JFrame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -70,7 +66,7 @@ public class GameScreen extends JPanel {
     private JButton[] itemButtons;
     private JButton[] switchButtons;
     private final SoundManager soundManager;
-    private GameController gameController;
+    private final GameController gameController;
     private GameLoop gameLoop;
     private boolean isPaused;
 
@@ -78,7 +74,7 @@ public class GameScreen extends JPanel {
     private float player1YOffset = 0;
     private float player2YOffset = 0;
     private float animationSpeed = 0.003f;
-    private float animationRange = 10.0f;
+    private final float animationRange = 10.0f;
     private long lastUpdateTime = System.currentTimeMillis();
     private Image player1Image;
     private Image player2Image;
@@ -124,7 +120,6 @@ public class GameScreen extends JPanel {
         add(pauseButton);
         add(exitButton);
         
-        // Ensure buttons and labels are on top
         setComponentZOrder(fpsLabel, 0);
         setComponentZOrder(timerLabel, 1);
         setComponentZOrder(pauseButton, 2);
@@ -212,9 +207,9 @@ public class GameScreen extends JPanel {
         actionButtons = new JButton[3];
         String[] actionNames = {"Move", "Item", "Switch"};
         Color[] actionColors = {
-            new Color(69, 120, 237),    // Water blue
-            new Color(46, 204, 113),    // Grass green
-            new Color(231, 76, 60)      // Fire red
+            new Color(69, 120, 237),
+            new Color(46, 204, 113),
+            new Color(231, 76, 60)
         };
 
         for (int i = 0; i < 3; i++) {
@@ -247,7 +242,7 @@ public class GameScreen extends JPanel {
         moveButtons = new JButton[4];
         for (int i = 0; i < 4; i++) {
             moveButtons[i] = new JButton("Move " + (i + 1));
-            moveButtons[i].setBackground(new Color(69, 120, 237));  // Water blue
+            moveButtons[i].setBackground(new Color(69, 120, 237));
             moveButtons[i].setForeground(Color.WHITE);
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             moveButtons[i].setFocusPainted(false);
@@ -290,7 +285,7 @@ public class GameScreen extends JPanel {
         itemButtons = new JButton[4];
         for (int i = 0; i < 4; i++) {
             itemButtons[i] = new JButton("Item " + (i + 1));
-            itemButtons[i].setBackground(new Color(46, 204, 113));  // Grass green
+            itemButtons[i].setBackground(new Color(46, 204, 113));
             itemButtons[i].setForeground(Color.WHITE);
             itemButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             itemButtons[i].setFocusPainted(false);
@@ -378,10 +373,9 @@ public class GameScreen extends JPanel {
         exitButton.setText("SCAPE");  // Ensure the text is set correctly
 
         exitButton.addActionListener(x -> {
-            // Play scape sound
+
             soundManager.playSoundEffect("scape");
             
-            // Stop current music
             soundManager.stopBackgroundMusic();
             
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
@@ -446,13 +440,11 @@ public class GameScreen extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        // Draw FPS label border
         if (fpsLabel != null) {
             g.setColor(Color.RED);
             g.drawRect(fpsLabel.getX() - 1, fpsLabel.getY() - 1, fpsLabel.getWidth() + 1, fpsLabel.getHeight() + 1);
         }
 
-        // Draw Pokemon sprites with animation
         if (player1Image != null) {
             int baseY = UIConstants.WINDOW_HEIGHT - 200;
             g.drawImage(player1Image, 50, baseY + (int)player1YOffset, POKEMON_WIDTH, POKEMON_HEIGHT, null);
@@ -486,14 +478,12 @@ public class GameScreen extends JPanel {
             actionButtons[1].setVisible(!isSurvivalMode); 
             itemsPanel.setVisible(!isSurvivalMode);
 
-            // Crear y iniciar el GameLoop solo cuando se establece el juego
             if (gameLoop != null) {
                 gameLoop.stop();
             }
             gameLoop = new GameLoop(game);
             gameLoop.start();
 
-            // Agregar WindowListener para detener el GameLoop
             Window window = SwingUtilities.getWindowAncestor(this);
             if (window != null) {
                 window.addWindowListener(new WindowAdapter() {
@@ -513,6 +503,7 @@ public class GameScreen extends JPanel {
     /**
      * Updates the animation of Pokemon sprites
      */
+
     public void updatePokemonAnimation() {
         if (isPaused) return;
         
@@ -520,13 +511,11 @@ public class GameScreen extends JPanel {
         float deltaTime = (currentTime - lastUpdateTime) / 1000.0f;
         lastUpdateTime = currentTime;
 
-        // Update player 1 animation
         player1YOffset += animationSpeed * deltaTime;
         if (player1YOffset > animationRange || player1YOffset < -animationRange) {
             animationSpeed = -animationSpeed;
         }
 
-        // Update player 2 animation
         player2YOffset += animationSpeed * deltaTime;
         if (player2YOffset > animationRange || player2YOffset < -animationRange) {
             animationSpeed = -animationSpeed;
@@ -543,7 +532,7 @@ public class GameScreen extends JPanel {
     public void updateBattleUI() {
         if (game == null) return;
 
-        updatePokemonAnimation(); // Add animation update here
+        updatePokemonAnimation();
 
         Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
 
@@ -711,6 +700,12 @@ public class GameScreen extends JPanel {
             }
         }
     }
+
+    /**
+     * Updates the switch buttons based on the current player's team.
+     *
+     * @param player The current player
+     */
 
     private void updateSwitchButtons(Player player) {
         if (player == null) return;
@@ -964,7 +959,13 @@ public class GameScreen extends JPanel {
         mainPanel.add(menuButton);
         dialog.add(mainPanel);
         dialog.setVisible(true);
-    }         
+    }
+
+    /**
+     * Handles the game action based on the selected action index.
+     *
+     * @param actionIndex The index of the selected action (0: Move, 1: Item, 2: Switch)
+     */
 
     private void handleGameAction(int actionIndex) {
         showActionPanel(actionIndex);

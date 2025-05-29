@@ -43,6 +43,7 @@ public abstract class Player implements Serializable {
      * @param items The list of items the player has
      * @throws IllegalArgumentException if the team does not meet the requirements
      */
+
     public Player(String name, Color color, List<Pokemon> team, List<Item> items) {
         this.name = name;
         this.color = color;
@@ -54,11 +55,13 @@ public abstract class Player implements Serializable {
         this.items = new ArrayList<>(items);
         this.activePokemonIndex = 0;
     }
+
     /*  
      * Validates the team to ensure it has at least 4 Pokemon.
      * 
      * @param team The list of Pokemon in the player's team
      */
+
     private void validateTeam(List<Pokemon> team) {
         if (team.size() < 6) {
             throw new IllegalArgumentException("Team must have exactly 6 Pokemon");
@@ -129,7 +132,6 @@ public abstract class Player implements Serializable {
         return true;
     }
 
-   
     /**
      * Gets the name of the player.
      * @return The player's name
@@ -175,7 +177,16 @@ public abstract class Player implements Serializable {
      * 
      * @return true if the player is an AI player, false otherwise
      */
+
     public abstract boolean isAI();
+
+    /**
+     * Executes a move by the player.
+     * This method should be overridden by subclasses to provide specific move execution logic.
+     *
+     * @param moveIndex The index of the move to execute
+     * @throws POOBkemonException if the player does not support direct move execution
+     */
 
     public void executeMove(int moveIndex) throws POOBkemonException {
         throw new POOBkemonException("Base Player does not support direct move execution");

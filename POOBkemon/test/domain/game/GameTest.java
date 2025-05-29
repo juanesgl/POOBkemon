@@ -66,7 +66,7 @@ class GameTest {
     @Test
     void survivalModeHasDifferentRules() {
         Game survivalGame = new Game(new SurvivalMode(), player1, player2);
-        assertTrue(survivalGame.getGameMode() instanceof SurvivalMode);
+        assertInstanceOf(SurvivalMode.class, survivalGame.getGameMode());
     }
 
     @Test

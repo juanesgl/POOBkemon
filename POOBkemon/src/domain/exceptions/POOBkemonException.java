@@ -20,6 +20,11 @@ public class POOBkemonException extends Exception {
     public static final String INVALID_LOAD_OPERATION = "Failed to load the game.";
     public static final String INVALID_GAME_SAVE = "You dont have a game for save.";
 
+
+    /* * Default constructor for POOBkemonException.
+     * It initializes the exception with a default message.
+     */
+
     public POOBkemonException(String message) {
         super(message);
     }

@@ -9,6 +9,7 @@ import domain.moves.Move;
  * AttackingStrategy implements the AIStrategy interface to represent an aggressive
  * strategy for the AI player. Prioritizes high-damage offensive moves.
  */
+
 public class AttackingStrategy implements AIStrategy {
     private static final double HIGH_DAMAGE_THRESHOLD = 70.0; 
     private final Random random = new Random();

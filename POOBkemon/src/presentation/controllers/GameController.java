@@ -20,10 +20,8 @@ import presentation.screens.PokemonSelectionScreen;
 import presentation.screens.ItemSelectionScreen;
 import presentation.screens.GameScreen;
 import presentation.utils.SoundManager;
-import presentation.utils.UIConstants;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
@@ -148,6 +146,12 @@ public class GameController {
         view.showGameScreen(game);
     }
 
+    /**
+     * Generates a random Pokémon team of 6 Pokémon.
+     * Each Pokémon is assigned random moves.
+     * @return A list of 6 randomly generated Pokémon.
+     */
+
     public List<Pokemon> generateRandomTeam() {
         List<Pokemon> team = new ArrayList<>();
         PokemonData[] allPokemon = PokemonData.values();
@@ -202,7 +206,7 @@ public class GameController {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
-                // Stop any current game
+
                 if (game != null) {
                     game.pauseGame();
                 }
@@ -210,16 +214,16 @@ public class GameController {
                 // Load the new game
                 Game loadedGame = Game.load(file);
                 
-                // Create new game screen
+
                 GameScreen gameScreen = new GameScreen(soundManager, this);
                 gameScreen.setGame(loadedGame);
                 loadedGame.setGameScreen(gameScreen);
                 
-                // Update controller and view
+
                 this.game = loadedGame;
                 view.showGameScreen(loadedGame);
 
-                // Play appropriate music based on game mode
+
                 if (loadedGame.getGameMode() instanceof SurvivalMode) {
                     soundManager.playBackgroundMusic("/sounds-music/music-cover/survivalTheme.wav");
                 } else {
@@ -240,7 +244,6 @@ public class GameController {
                     }
                 }
 
-                // Resume the game
                 loadedGame.resumeGame();
 
                 JOptionPane.showMessageDialog(view.getMainFrame(), 
@@ -341,7 +344,6 @@ public class GameController {
         domain.game.GameMode gameMode = (mode == GameMode.NORMAL) ? new NormalMode() : new SurvivalMode();
         this.game = new Game(gameMode, player1, player2);
 
-        // Start background music based on game mode and modality
         if (mode == GameMode.SURVIVAL) {
             soundManager.playBackgroundMusic("/sounds-music/music-cover/survivalTheme.wav");
         } else {
@@ -357,10 +359,13 @@ public class GameController {
                     soundManager.playBackgroundMusic("/sounds-music/music-cover/playerVSplayer.wav");
             }
         }
-        
-        // Show game screen
+
         showGameScreen(game);
     }
+
+    /**
+     * Updates the game screen with the current game state.
+     */
 
     private void updateGameScreen() {
         if (game != null) {
@@ -368,18 +373,35 @@ public class GameController {
         }
     }
 
+    /**
+     * Executes a move in the game.
+     * @param moveIndex The index of the move to execute.
+     * @throws POOBkemonException If an error occurs while executing the move.
+     */
+
     public void executeMove(int moveIndex) throws POOBkemonException {
         game.executeMove(moveIndex);
         soundManager.playSoundEffect("attack");
         updateGameScreen();
     }
 
+    /**
+     * Uses an item in the game.
+     * @param item The item to use.
+     * @throws POOBkemonException If an error occurs while using the item.
+     */
+
     public void useItem(Item item) throws POOBkemonException {
         game.useItem(item);
-        // Play item selection music
         soundManager.playBackgroundMusic("/sounds-music/music-cover/itemSelection.wav");
         updateGameScreen();
     }
+
+    /**
+     * Switches the active Pokémon in the game.
+     * @param pokemonIndex The index of the Pokémon to switch to.
+     * @throws POOBkemonException If an error occurs while switching Pokémon.
+     */
 
     public void switchPokemon(int pokemonIndex) throws POOBkemonException {
         game.switchPokemon(pokemonIndex);
@@ -387,13 +409,17 @@ public class GameController {
         updateGameScreen();
     }
 
+    /**
+     * Ends the game and displays the result.
+     * @param winner The player who won the game, or null if there was no winner.
+     */
+
     public void endGame(Player winner) {
         if (winner != null) {
             soundManager.playSoundEffect("victory");
         } else {
             soundManager.playSoundEffect("defeat");
         }
-        // ... rest of the end game code ...
     }
 
     /**
@@ -410,8 +436,14 @@ public class GameController {
         return playerName;
     }
 
+    /**
+     * Displays a color selection dialog and returns the selected color.
+     * If the user cancels the dialog, it returns white as the default color.
+     * @return The selected color.
+     */
+
     private Color askColor() {
-        // Colores predefinidos con nombres
+
         Object[][] colorData = {
             {new Color(255, 0, 0), "Red"},
             {new Color(0, 0, 255), "Blue"},
@@ -427,16 +459,13 @@ public class GameController {
             {new Color(128, 128, 0), "Olive"}
         };
 
-        // Variable para almacenar el color seleccionado
         final Color[] selectedColor = new Color[1];
-        selectedColor[0] = Color.WHITE; // Color por defecto
+        selectedColor[0] = Color.WHITE;
 
-        // Crear el panel principal con un fondo degradado
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         mainPanel.setBackground(new Color(240, 240, 240));
 
-        // Panel de título
         JPanel titlePanel = new JPanel();
         titlePanel.setBackground(new Color(240, 240, 240));
         JLabel titleLabel = new JLabel("Choose Your Color", SwingConstants.CENTER);
@@ -444,11 +473,9 @@ public class GameController {
         titlePanel.add(titleLabel);
         mainPanel.add(titlePanel, BorderLayout.NORTH);
 
-        // Panel de colores con GridLayout
         JPanel colorPanel = new JPanel(new GridLayout(4, 3, 10, 10));
         colorPanel.setBackground(new Color(240, 240, 240));
         
-        // Crear botones para cada color
         JButton[] colorButtons = new JButton[colorData.length];
         for (int i = 0; i < colorData.length; i++) {
             final Color color = (Color)colorData[i][0];
@@ -464,8 +491,7 @@ public class GameController {
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)
             ));
-            
-            // Efecto hover
+
             button.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     button.setBorder(BorderFactory.createCompoundBorder(
@@ -501,15 +527,13 @@ public class GameController {
         }
 
         mainPanel.add(colorPanel, BorderLayout.CENTER);
-        
-        // Panel inferior con botón personalizado
+
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBackground(new Color(240, 240, 240));
         JButton customColorButton = new JButton("Choose Custom Color");
         customColorButton.setFont(new Font("Arial", Font.BOLD, 14));
         customColorButton.setPreferredSize(new Dimension(200, 40));
-        
-        // Estilo del botón personalizado
+
         customColorButton.setBackground(new Color(70, 130, 180));
         customColorButton.setForeground(Color.WHITE);
         customColorButton.setFocusPainted(false);
@@ -517,8 +541,7 @@ public class GameController {
             BorderFactory.createLineBorder(new Color(50, 100, 150), 2),
             BorderFactory.createEmptyBorder(5, 15, 5, 15)
         ));
-        
-        // Efecto hover para el botón personalizado
+
         customColorButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 customColorButton.setBackground(new Color(100, 150, 200));
@@ -543,12 +566,9 @@ public class GameController {
         bottomPanel.add(customColorButton);
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Crear el diálogo
         JDialog dialog = new JDialog((Frame)null, "Player Color Selection", true);
         dialog.setLayout(new BorderLayout());
         dialog.add(mainPanel, BorderLayout.CENTER);
-        
-        // Centrar el diálogo
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);

@@ -2,6 +2,7 @@ package domain.player.ai;
 
 import java.util.List;
 import domain.pokemons.Pokemon;
+
 /*
  * Interface for the AI trainer's strategy.
  * 
