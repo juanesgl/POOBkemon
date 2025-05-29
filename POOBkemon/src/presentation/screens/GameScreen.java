@@ -228,7 +228,7 @@ public class GameScreen extends JPanel {
                 BorderFactory.createEmptyBorder(5, 10, 5, 10)
             ));
             final int actionIndex = i;
-            actionButtons[i].addActionListener(_ -> handleGameAction(actionIndex));
+            actionButtons[i].addActionListener(x -> handleGameAction(actionIndex));
             actionMenuPanel.add(actionButtons[i]);
         }
 
@@ -256,7 +256,7 @@ public class GameScreen extends JPanel {
                 BorderFactory.createEmptyBorder(5, 10, 5, 10)
             ));
             final int moveIndex = i;
-            moveButtons[i].addActionListener(_ -> {
+            moveButtons[i].addActionListener(x -> {
                 if (game != null) {
                     try {
                         game.executeMove(moveIndex);
@@ -299,7 +299,7 @@ public class GameScreen extends JPanel {
                 BorderFactory.createEmptyBorder(5, 10, 5, 10)
             ));
             final int itemIndex = i;
-            itemButtons[i].addActionListener(_ -> {
+            itemButtons[i].addActionListener(x -> {
                 if (game != null && game.getCurrentPlayer().getItems().size() > itemIndex) {
                     try {
                         game.useItem(game.getCurrentPlayer().getItems().get(itemIndex));
@@ -342,7 +342,7 @@ public class GameScreen extends JPanel {
                 BorderFactory.createEmptyBorder(5, 10, 5, 10)
             ));
             final int pokemonIndex = i;
-            switchButtons[i].addActionListener(_ -> {
+            switchButtons[i].addActionListener(x -> {
                 if (game != null) {
                     try {
                         game.switchPokemon(pokemonIndex);
@@ -895,7 +895,7 @@ public class GameScreen extends JPanel {
         contentPanel.add(resultLabel, BorderLayout.CENTER);
 
         JButton okButton = new JButton("OK");
-        okButton.addActionListener(_ -> {
+        okButton.addActionListener(x -> {
             resultDialog.dispose();
             gifDialog.dispose();  
         });
@@ -905,7 +905,7 @@ public class GameScreen extends JPanel {
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         resultDialog.add(contentPanel);
 
-        Timer timer = new Timer(10000, _ -> {
+        Timer timer = new Timer(10000, x -> {
             gifDialog.dispose();
             resultDialog.setVisible(true);
         });
@@ -952,7 +952,7 @@ public class GameScreen extends JPanel {
         menuButton.setForeground(Color.WHITE);
         menuButton.setFocusPainted(false);
         menuButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        menuButton.addActionListener(_ -> {
+        menuButton.addActionListener(x -> {
             dialog.dispose();
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
             if (window != null) {
