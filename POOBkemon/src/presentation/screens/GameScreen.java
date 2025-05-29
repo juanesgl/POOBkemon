@@ -981,7 +981,7 @@ public class GameScreen extends JPanel {
  */
 private JButton getJButton2() {
     JButton sacrificeButton = new JButton("Sacrifice");
-    sacrificeButton.setBounds(10, 600, 100, 30);
+    sacrificeButton.setBounds(455, 620, 100, 30);
     sacrificeButton.setBackground(Color.RED);
     sacrificeButton.setForeground(Color.WHITE);
     sacrificeButton.setFont(new Font("Arial", Font.BOLD, 14));
