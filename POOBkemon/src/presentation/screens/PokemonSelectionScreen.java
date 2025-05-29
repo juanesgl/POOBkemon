@@ -78,7 +78,7 @@ public class PokemonSelectionScreen extends JPanel {
         ImageIcon startIconNormal = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH)));
         JButton startGameButton = new AnimatedButton(startIconNormal); 
         startGameButton.setBounds(423, 600, 179, 71);
-        startGameButton.addActionListener(_ -> {
+        startGameButton.addActionListener(x -> {
 
             if (selectedPokemons.size() < 6) {
                 JOptionPane.showMessageDialog(this, POOBkemonException.INVALID_POKEMON_COUNT,
@@ -303,7 +303,7 @@ public class PokemonSelectionScreen extends JPanel {
             }
         });
 
-        selectBox.addActionListener(_ -> {
+        selectBox.addActionListener(x -> {
             if (selectBox.isSelected()) {
                 if (selectedPokemons.size() >= 6) {
                     selectBox.setSelected(false);

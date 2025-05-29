@@ -81,7 +81,7 @@ public class ItemSelectionScreen extends JPanel {
         ImageIcon startIconNormal = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.START_BUTTON_IMAGE_PATH)));
         JButton startGameButton = new AnimatedButton(startIconNormal); 
         startGameButton.setBounds(423, 600, 179, 71);
-        startGameButton.addActionListener(_ -> {
+        startGameButton.addActionListener(x -> {
             if (selectedItems.isEmpty()) {
                 JOptionPane.showMessageDialog(this, POOBkemonException.INVALID_ITEM_COUNT,
                         "Item Selection", JOptionPane.WARNING_MESSAGE);
@@ -292,7 +292,7 @@ public class ItemSelectionScreen extends JPanel {
             }
         });
 
-        selectBox.addActionListener(_ -> {
+        selectBox.addActionListener(x -> {
 
             if (selectBox.isSelected()) {
                 Item item = createItemFromSprite(itemName, spritePath, description);
