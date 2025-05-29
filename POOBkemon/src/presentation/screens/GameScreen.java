@@ -373,16 +373,24 @@ public class GameScreen extends JPanel {
         exitButton.setText("SCAPE");  // Ensure the text is set correctly
 
         exitButton.addActionListener(x -> {
+
             soundManager.playSoundEffect("scape");
+            
             soundManager.stopBackgroundMusic();
             
-            // Determine the winner (the player who didn't escape)
-            Player winner = game.getCurrentPlayer() == game.getPlayer1() ? game.getPlayer2() : game.getPlayer1();
-            
-            // Show the winner dialog
-            showWinnerDialog(winner);
-            
-            // The window will be disposed when the user clicks "Return to Menu" in the winner dialog
+            Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
+            if (window != null) {
+                window.dispose();
+            }
+
+            try {
+                Class<?> guiClass = Class.forName("POOBkemonGUI");
+                Object guiObject = guiClass.getDeclaredConstructor().newInstance();
+                guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
+                guiClass.getMethod("showCoverScreen").invoke(guiObject);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
         return exitButton;
     }
@@ -618,49 +626,24 @@ public class GameScreen extends JPanel {
      */
 
     private void updatePokemonSprite(JLabel label, Pokemon pokemon, boolean isPlayer1) {
-        if (pokemon == null) {
-            label.setIcon(null);
-            label.setVisible(false);
-            return;
-        }
-
         String spritePath = pokemon.getSpritePath();
-        if (spritePath == null) {
-            label.setIcon(null);
-            label.setVisible(false);
-            return;
+
+        if (isPlayer1) {
+            String pokemonName = spritePath.substring(spritePath.lastIndexOf("/") + 1, spritePath.lastIndexOf("-front.png"));
+            spritePath = presentation.utils.UIConstants.POKEMON_BACK_SPRITES_PATH + pokemonName + "-back.png";
         }
 
-        try {
-            if (isPlayer1) {
-                String pokemonName = spritePath.substring(spritePath.lastIndexOf("/") + 1, spritePath.lastIndexOf("-front.png"));
-                spritePath = presentation.utils.UIConstants.POKEMON_BACK_SPRITES_PATH + pokemonName + "-back.png";
-            }
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(spritePath)));
+        Image scaledImage = icon.getImage().getScaledInstance(POKEMON_WIDTH, POKEMON_HEIGHT, Image.SCALE_SMOOTH);
 
-            URL resourceUrl = getClass().getResource(spritePath);
-            if (resourceUrl == null) {
-                System.err.println("Could not find sprite resource: " + spritePath);
-                label.setIcon(null);
-                label.setVisible(false);
-                return;
-            }
-
-            ImageIcon icon = new ImageIcon(resourceUrl);
-            Image scaledImage = icon.getImage().getScaledInstance(POKEMON_WIDTH, POKEMON_HEIGHT, Image.SCALE_SMOOTH);
-
-            if (isPlayer1) {
-                player1Image = scaledImage;
-            } else {
-                player2Image = scaledImage;
-            }
-
-            label.setIcon(new ImageIcon(scaledImage));
-            label.setVisible(true);
-        } catch (Exception e) {
-            System.err.println("Error loading sprite: " + e.getMessage());
-            label.setIcon(null);
-            label.setVisible(false);
+        if (isPlayer1) {
+            player1Image = scaledImage;
+        } else {
+            player2Image = scaledImage;
         }
+
+        label.setIcon(new ImageIcon(scaledImage));
+        label.setVisible(true);
     }
 
     /*
@@ -932,9 +915,6 @@ public class GameScreen extends JPanel {
      */
 
     public void showWinnerDialog(Player winner) {
-        // Play victory sound
-        soundManager.playSoundEffect("victory");
-        
         JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(this));
         dialog.setTitle("Victory!");
         dialog.setSize(400, 200);
@@ -969,13 +949,10 @@ public class GameScreen extends JPanel {
         menuButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         menuButton.addActionListener(x -> {
             dialog.dispose();
-            // Stop the game loop
-            if (gameLoop != null) {
-                gameLoop.stop();
+            Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
+            if (window != null) {
+                window.dispose();
             }
-            // Stop all sounds
-            soundManager.stopAllSounds();
-            // Show the main menu
             gameController.showMainMenu();
         });
 
