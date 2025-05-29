@@ -1,5 +1,5 @@
 package domain.game;
-
+import javax.swing.JOptionPane;
 import domain.pokemons.Pokemon;
 import domain.entities.Item;
 import domain.player.AIPlayer;
@@ -573,4 +573,48 @@ public class Game implements Serializable{
             return loadedGame;
         }
     }
+    /*
+ * method used for sacrifice a pokemon
+ * @param Game game
+ */
+
+public static void sacrifice(Game game) {
+
+    Pokemon activePokemon = game.getCurrentPlayer().getActivePokemon();
+    Player currentPlayer = game.getCurrentPlayer();
+    int live = activePokemon.getHealth();
+    int maxLive = activePokemon.getMaxHealth();
+
+    if (maxLive / 2 < live) {
+        JOptionPane.showMessageDialog(
+            null,
+            "Tu Pokémon no puede ser sacrificado porque tiene más del 50% de vida.",
+            "Sacrificio no permitido",
+            JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    } else {
+        activePokemon.isFainted();
+        activePokemon.setHealth(0);
+        currentPlayer.switchToNextAvailablePokemon();
+        Pokemon activePokemon2 = game.getCurrentPlayer().getActivePokemon();
+
+        JOptionPane.showMessageDialog(
+            null,
+            "Jugador " + currentPlayer + "\n" +
+            "Murió " + activePokemon + "\n" +
+            "Ahora tengo a " + activePokemon2,
+            "Sacrificio realizado",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+
+        int live2 = activePokemon2.getHealth();
+        int newHealth = live2 + live;
+        activePokemon2.setHealth(newHealth);
+    }
+
+    game.endTurn();
+}
+
+
 }

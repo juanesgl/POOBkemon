@@ -970,4 +970,29 @@ public class GameScreen extends JPanel {
     private void handleGameAction(int actionIndex) {
         showActionPanel(actionIndex);
     }
+
+    /**
+ * Creates and returns the sacrifice button for the game screen.
+ *
+ * @return The sacrifice button
+ */
+private JButton getJButton2() {
+    JButton sacrificeButton = new JButton("Sacrifice");
+    sacrificeButton.setBounds(10, 600, 100, 30);
+    sacrificeButton.setBackground(Color.RED);
+    sacrificeButton.setForeground(Color.WHITE);
+    sacrificeButton.setFont(new Font("Arial", Font.BOLD, 14));
+    sacrificeButton.setFocusPainted(false);
+
+    sacrificeButton.addActionListener(x -> {
+        Game.sacrifice(game);
+        battlePanel.revalidate();
+        battlePanel.repaint();
+        revalidate();
+        repaint();
+    });
+
+    return sacrificeButton;
+}
+
 }
