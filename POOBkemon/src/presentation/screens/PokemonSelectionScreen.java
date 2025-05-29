@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.swing.SwingUtilities;
 import javax.swing.JDialog;
+import javax.swing.BoxLayout;
 
 /**
  * PokemonSelectionScreen is a JPanel that allows players to select their Pokémon team.
@@ -176,9 +177,55 @@ public class PokemonSelectionScreen extends JPanel {
 
         pokemonSelectionPanel.add(headerPanel, BorderLayout.NORTH);
 
-        JPanel selectionArea = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        selectionArea.setBackground(new Color(0, 0, 0, 0)); 
-        pokemonSelectionPanel.add(selectionArea, BorderLayout.CENTER);
+        // Create a panel that will contain all Pokémon
+        JPanel selectionArea = new JPanel();
+        selectionArea.setLayout(new BoxLayout(selectionArea, BoxLayout.Y_AXIS));
+        selectionArea.setBackground(new Color(0, 0, 0, 0));
+        
+        // Create a panel for each row of Pokémon
+        JPanel currentRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        currentRow.setBackground(new Color(0, 0, 0, 0));
+        selectionArea.add(currentRow);
+        
+        // Add scroll pane for selection area with custom scroll bar
+        JScrollPane selectionScrollPane = new JScrollPane(selectionArea);
+        selectionScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        selectionScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        selectionScrollPane.setBorder(null);
+        selectionScrollPane.setBackground(new Color(0, 0, 0, 0));
+        selectionScrollPane.getViewport().setBackground(new Color(0, 0, 0, 0));
+        
+        // Customize scroll bar
+        selectionScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
+        selectionScrollPane.getVerticalScrollBar().setBackground(new Color(30, 30, 30));
+        selectionScrollPane.getVerticalScrollBar().setForeground(new Color(100, 100, 100));
+        selectionScrollPane.getVerticalScrollBar().setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = new Color(100, 100, 100);
+                this.trackColor = new Color(30, 30, 30);
+            }
+            
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createZeroButton();
+            }
+            
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createZeroButton();
+            }
+            
+            private JButton createZeroButton() {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(0, 0));
+                button.setMinimumSize(new Dimension(0, 0));
+                button.setMaximumSize(new Dimension(0, 0));
+                return button;
+            }
+        });
+        
+        pokemonSelectionPanel.add(selectionScrollPane, BorderLayout.CENTER);
 
         descriptionTextArea = new JTextArea(8, 50);
         descriptionTextArea.setEditable(false);
@@ -229,13 +276,19 @@ public class PokemonSelectionScreen extends JPanel {
      */
 
     private void loadAvailablePokemon() {
-
-        JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
+        JScrollPane scrollPane = (JScrollPane) pokemonSelectionPanel.getComponent(1);
+        JPanel selectionArea = (JPanel) scrollPane.getViewport().getView();
         selectionArea.removeAll();
+
+        // Create a panel for each row of Pokémon
+        JPanel currentRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        currentRow.setBackground(new Color(0, 0, 0, 0));
+        selectionArea.add(currentRow);
 
         //3. Crear Pokemon
         String[] pokemonNames = {"charizard", "blastoise", "gengar", "raichu", "venusaur", "dragonite", "togetic", "tyranitar", "snorlax", "mewtwo","gardevoir", "metagross", "donphan", "machamp","delibird"};
 
+        int pokemonCount = 0;
         for (String name : pokemonNames) {
             String fileName = name + "-front.png";
             String resourcePath = UIConstants.POKEMON_FRONT_SPRITES_PATH + fileName;
@@ -244,10 +297,22 @@ public class PokemonSelectionScreen extends JPanel {
                 String pokemonName = name.substring(0, 1).toUpperCase() + name.substring(1);
 
                 JPanel pokemonPanel = createPokemonPanel(pokemonName, resourcePath);
-                selectionArea.add(pokemonPanel);
+                currentRow.add(pokemonPanel);
+                pokemonCount++;
+
+                // Create a new row after every 3 Pokémon
+                if (pokemonCount % 3 == 0 && pokemonCount < pokemonNames.length) {
+                    currentRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+                    currentRow.setBackground(new Color(0, 0, 0, 0));
+                    selectionArea.add(currentRow);
+                }
             }
         }
-
+        
+        selectionArea.revalidate();
+        selectionArea.repaint();
+        scrollPane.revalidate();
+        scrollPane.repaint();
     }
 
     /**
@@ -461,7 +526,8 @@ public class PokemonSelectionScreen extends JPanel {
         JLabel titleLabel = (JLabel) headerPanel.getComponent(0);
         titleLabel.setText("SELECT PLAYER 1 POKEMON TEAM");
 
-        JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
+        JScrollPane scrollPane = (JScrollPane) pokemonSelectionPanel.getComponent(1);
+        JPanel selectionArea = (JPanel) scrollPane.getViewport().getView();
         for (Component comp : selectionArea.getComponents()) {
             if (comp instanceof JPanel pokemonPanel) {
                 pokemonPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
@@ -484,23 +550,32 @@ public class PokemonSelectionScreen extends JPanel {
      */
 
     private void updateSelectionPanelForPlayer2() {
-
         JPanel headerPanel = (JPanel) pokemonSelectionPanel.getComponent(0);
         JLabel titleLabel = (JLabel) headerPanel.getComponent(0);
         titleLabel.setText("SELECT PLAYER 2 POKEMON TEAM");
 
-        JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
+        JScrollPane scrollPane = (JScrollPane) pokemonSelectionPanel.getComponent(1);
+        JPanel selectionArea = (JPanel) scrollPane.getViewport().getView();
+        
+        // Clear all selections and reset panels
         for (Component comp : selectionArea.getComponents()) {
-            if (comp instanceof JPanel pokemonPanel) {
-                pokemonPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-                pokemonPanel.setBackground(new Color(50, 50, 50));
-                for (Component panelComp : pokemonPanel.getComponents()) {
-                    if (panelComp instanceof JCheckBox) {
-                        ((JCheckBox) panelComp).setSelected(false);
+            if (comp instanceof JPanel rowPanel) {
+                for (Component pokemonComp : rowPanel.getComponents()) {
+                    if (pokemonComp instanceof JPanel pokemonPanel) {
+                        pokemonPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+                        pokemonPanel.setBackground(new Color(50, 50, 50));
+                        for (Component panelComp : pokemonPanel.getComponents()) {
+                            if (panelComp instanceof JCheckBox) {
+                                ((JCheckBox) panelComp).setSelected(false);
+                            }
+                        }
                     }
                 }
             }
         }
+
+        // Clear the selected Pokémon list
+        selectedPokemons.clear();
 
         descriptionTextArea.setText("Select a Pokemon to see its description");
 
