@@ -48,7 +48,21 @@ public enum PokemonData {
     //1.Crear Pokemon
     MEWTWO("Mewtwo", 426, 306, 251, 394, 328, 328,
             PokemonType.PSYCHIC, null,
-            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/mewtwo-front.png");
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/mewtwo-front.png"),
+            
+    GARDEVOIR("Gardevoir", 340,251,251,383,361,284,PokemonType.PSYCHIC,PokemonType.FAIRY,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/gardevoir-front.png"),        
+            
+    METAGROSS("Metagross", 364,405,394,317,306,262,PokemonType.STEEL,PokemonType.PSYCHIC,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/metagross-front.png"),
+            
+    DONPHAN("Donphan",384,372,372,240,240,218,PokemonType.GROUND,null,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/donphan-front.png"),
+
+    MACHAMP("Machamp",384,394,284,251,295,229,PokemonType.FIGHTING,null,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/machamp-front.png"),
+    DELIBIRD("Delibird",294,229,207,251,207,273,PokemonType.ICE,PokemonType.FLYING,
+            UIConstants.POKEMON_SPRITES_PATH + "/Pokemons/Front/delibird-front.png");
 
     private final String name;
     private final int health;

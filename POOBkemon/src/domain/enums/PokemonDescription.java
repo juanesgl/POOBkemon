@@ -116,7 +116,60 @@ public enum PokemonDescription {
                     STATS:
                     HP: 426 Attack: 306 Defense: 251 Speed: 328
                     Special Attack: 394 Special Defense: 328"""
-    );
+    ),
+    
+    GARDEVOIR(
+            """
+                    TYPE: PSYCHIC(primary) – FAIRY (secondary)
+                    Gardevoir belongs to the first generation of Pokémon, originally from Kanto, and is a genetically engineered \
+                    Pokémon created from the DNA of Mew. It is known for its incredible psychic powers and intelligence. Gardevoir is \
+                    often portrayed as a powerful and enigmatic figure, capable of manipulating time and space.
+                    STATS:
+                    HP: 340 Attack: 251 Defense: 251 Speed: 284
+                    Special Attack: 383 Special Defense: 361"""
+            ),
+    METAGROSS(
+            """
+                    TYPE: STEEL (primary) – PSYCHIC (secondary)
+                    Metagross belongs to the first generation of Pokémon, originally from Kanto, and is a genetically engineered \
+                    Pokémon created from the DNA of Mew. It is known for its incredible psychic powers and intelligence. Metagross is \
+                    often portrayed as a powerful and enigmatic figure, capable of manipulating time and space.
+                    STATS:
+                    HP: 364 Attack: 405 Defense: 394 Speed: 262
+                    Special Attack: 317 Special Defense: 306"""
+            ),
+    
+    DONPHAN( 
+            """
+                    TYPE: GROUND
+                    Donphan belongs to the first generation of Pokémon, originally from Kanto, and is a genetically engineered \
+                    Pokémon created from the DNA of Mew. It is known for its incredible psychic powers and intelligence. Donphan is \
+                    often portrayed as a powerful and enigmatic figure, capable of manipulating time and space.
+                    STATS:
+                    HP: 384 Attack: 372 Defense: 372 Speed: 218
+                    Special Attack: 240 Special Defense: 240"""
+            ),
+     MACHAMP(
+            """
+                    TYPE: FIGHTING
+                    Machamp belongs to the first generation of Pokémon, originally from Kanto, and is a genetically engineered \
+                    Pokémon created from the DNA of Mew. It is known for its incredible psychic powers and intelligence. Machamp is \
+                    often portrayed as a powerful and enigmatic figure, capable of manipulating time and space.
+                    STATS:
+                    HP: 384 Attack: 394 Defense: 284 Speed: 229
+                    Special Attack: 251 Special Defense: 295"""
+            ),
+     DELIBIRD(
+            """
+                    TYPE: ICE (primary) – FLYING (secondary)
+                    Delibird belongs to the first generation of Pokémon, originally from Kanto, and is a genetically engineered \
+                    Pokémon created from the DNA of Mew. It is known for its incredible psychic powers and intelligence. Delibird is \
+                    often portrayed as a powerful and enigmatic figure, capable of manipulating time and space.
+                    STATS:
+                    HP: 294 Attack: 229 Defense: 207 Speed: 273
+                    Special Attack: 251 Special Defense: 207"""
+        )
+    ;
 
 
 
