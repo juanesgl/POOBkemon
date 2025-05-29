@@ -107,8 +107,6 @@ public class GameScreen extends JPanel {
         timerLabel.setBounds(120, 10, 100, 20);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 12));
         timerLabel.setForeground(Color.YELLOW);
-        timerLabel.setOpaque(true);
-        timerLabel.setBackground(Color.BLACK);
         add(timerLabel);
 
         initializeBattleUI();
@@ -478,8 +476,28 @@ public class GameScreen extends JPanel {
             battlePanel.setIcon(background);
 
             boolean isSurvivalMode = game.getGameMode().getClass().getSimpleName().equals("SurvivalMode");
-            actionButtons[1].setVisible(!isSurvivalMode); 
-            itemsPanel.setVisible(!isSurvivalMode);
+            if (isSurvivalMode) {
+                actionButtons[1].setVisible(false);
+                itemsPanel.setVisible(false);
+                // Adjust action menu panel for survival mode
+                actionMenuPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 100, UIConstants.WINDOW_HEIGHT - 250, 200, 40);
+                actionMenuPanel.setLayout(new GridLayout(1, 2, 5, 5));
+                // Remove the empty space by removing and re-adding the buttons
+                actionMenuPanel.removeAll();
+                actionMenuPanel.add(actionButtons[0]); // Move button
+                actionMenuPanel.add(actionButtons[2]); // Switch button
+            } else {
+                actionButtons[1].setVisible(true);
+                itemsPanel.setVisible(true);
+                // Reset action menu panel for normal mode
+                actionMenuPanel.setBounds(UIConstants.WINDOW_WIDTH / 2 - 180, UIConstants.WINDOW_HEIGHT - 250, 360, 40);
+                actionMenuPanel.setLayout(new GridLayout(1, 3, 10, 10));
+                // Reset the panel with all buttons
+                actionMenuPanel.removeAll();
+                for (JButton button : actionButtons) {
+                    actionMenuPanel.add(button);
+                }
+            }
 
             if (gameLoop != null) {
                 gameLoop.stop();

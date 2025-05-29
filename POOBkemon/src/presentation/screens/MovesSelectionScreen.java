@@ -73,8 +73,7 @@ public class MovesSelectionScreen extends JPanel {
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(new Color(240, 240, 240));
-        pokemonInfoLabel = new JLabel(pokemon.getName() + " - " + pokemon.getPrimaryType() + 
-            (pokemon.getSecondaryType() != null ? "/" + pokemon.getSecondaryType() : ""));
+        pokemonInfoLabel = new JLabel("Select 4 moves for your team");
         pokemonInfoLabel.setFont(new Font("Arial", Font.BOLD, 16));
         topPanel.add(pokemonInfoLabel, BorderLayout.CENTER);
         
@@ -125,8 +124,9 @@ public class MovesSelectionScreen extends JPanel {
         scrollPane.setBorder(null);
         panel.add(scrollPane, BorderLayout.CENTER);
         
-        List<Move> availableMoves = getAvailableMoves();
-        for (Move move : availableMoves) {
+        // Get all moves and filter by category only
+        List<Move> allMoves = MoveRegistry.getMoves();
+        for (Move move : allMoves) {
             if (move.getCategory() == category) {
                 JButton moveButton = createMoveButton(move);
                 movesGridPanel.add(moveButton);
@@ -188,22 +188,13 @@ public class MovesSelectionScreen extends JPanel {
     }
 
     /**
-     * Gets the available moves for the Pokémon based on its types.
+     * Gets all available moves from the MoveRegistry.
      *
-     * @return A list of available moves.
+     * @return A list of all available moves.
      */
     
     private List<Move> getAvailableMoves() {
-
-        List<Move> availableMoves = new ArrayList<>(MoveRegistry.getMovesByType(pokemon.getPrimaryType()));
-
-        if (pokemon.getSecondaryType() != null) {
-            availableMoves.addAll(MoveRegistry.getMovesByType(pokemon.getSecondaryType()));
-        }
-
-        availableMoves.addAll(MoveRegistry.getMovesByType(PokemonType.NORMAL));
-        
-        return availableMoves;
+        return MoveRegistry.getMoves();
     }
 
     /* * Confirms the selection of moves and closes the screen.
@@ -218,7 +209,6 @@ public class MovesSelectionScreen extends JPanel {
                 JOptionPane.WARNING_MESSAGE);
             return;
         }
-        pokemon.setMoves(selectedMoves);
         Window window = SwingUtilities.getWindowAncestor(this);
         if (window != null) {
             window.dispose();
@@ -242,5 +232,13 @@ public class MovesSelectionScreen extends JPanel {
         if (window != null) {
             window.dispose();
         }
+    }
+
+    /**
+     * Gets the list of selected moves.
+     * @return The list of selected moves.
+     */
+    public List<Move> getSelectedMoves() {
+        return new ArrayList<>(selectedMoves);
     }
 } 

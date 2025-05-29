@@ -7,6 +7,7 @@ import domain.pokemons.Pokemon;
 import domain.enums.GameMode;
 import domain.enums.GameModality;
 import domain.exceptions.POOBkemonException;
+import domain.moves.Move;
 import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
@@ -90,21 +91,25 @@ public class PokemonSelectionScreen extends JPanel {
             if (isPlayer1Selection) {
                 player1Pokemons.addAll(selectedPokemons);
 
-             
+                // Show single movement selection screen for all Pokémon
+                JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+                moveDialog.setTitle("Choose movements for Player 1's team");
+                moveDialog.setModal(true);
+                moveDialog.setLocationRelativeTo(this);
+                moveDialog.setSize(800, 600);
+                moveDialog.setLocation(
+                    (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
+                    (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
+                );
+                
+                MovesSelectionScreen movesScreen = new MovesSelectionScreen(null, moveDialog);
+                moveDialog.add(movesScreen);
+                moveDialog.setVisible(true);
+
+                // Apply selected moves to all Pokémon in the team
+                List<Move> selectedMoves = movesScreen.getSelectedMoves();
                 for (Pokemon pokemon : player1Pokemons) {
-                    JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
-                    moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 1");
-                    moveDialog.setModal(true);
-                    moveDialog.setLocationRelativeTo(this);
-                    moveDialog.setSize(800, 600);
-                    moveDialog.setLocation(
-                        (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
-                        (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
-                    );
-                    
-                    MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon, moveDialog);
-                    moveDialog.add(movesScreen);
-                    moveDialog.setVisible(true);
+                    pokemon.setMoves(new ArrayList<>(selectedMoves));
                 }
 
                 if (selectedMode == GameMode.NORMAL && selectedModality != GameModality.PLAYER_VS_AI) {
@@ -125,20 +130,25 @@ public class PokemonSelectionScreen extends JPanel {
             } else {
                 player2Pokemons = new ArrayList<>(selectedPokemons);
                 
-                for (Pokemon pokemon : selectedPokemons) {
-                    JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
-                    moveDialog.setTitle("Choose movements for " + pokemon.getName() + " - Player 2");
-                    moveDialog.setModal(true);
-                    moveDialog.setLocationRelativeTo(this);
-                    moveDialog.setSize(800, 600);
-                    moveDialog.setLocation(
-                        (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
-                        (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
-                    );
-                    
-                    MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon, moveDialog);
-                    moveDialog.add(movesScreen);
-                    moveDialog.setVisible(true);
+                // Show single movement selection screen for all Pokémon
+                JDialog moveDialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+                moveDialog.setTitle("Choose movements for Player 2's team");
+                moveDialog.setModal(true);
+                moveDialog.setLocationRelativeTo(this);
+                moveDialog.setSize(800, 600);
+                moveDialog.setLocation(
+                    (int)(getLocationOnScreen().getX() + (double) (getWidth() - 800) / 2),
+                    (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
+                );
+                
+                MovesSelectionScreen movesScreen = new MovesSelectionScreen(null, moveDialog);
+                moveDialog.add(movesScreen);
+                moveDialog.setVisible(true);
+
+                // Apply selected moves to all Pokémon in the team
+                List<Move> selectedMoves = movesScreen.getSelectedMoves();
+                for (Pokemon pokemon : player2Pokemons) {
+                    pokemon.setMoves(new ArrayList<>(selectedMoves));
                 }
 
                 controller.showItemSelectionScreen(selectedModality, selectedMode, player1Pokemons, player2Pokemons);

@@ -206,7 +206,7 @@ public class ItemSelectionScreen extends JPanel {
         JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         selectionArea.removeAll();
         // 2. Crear Item
-        String[] itemNames = {"potion", "super-potion", "Hiperpoción", "revive", "prueba"};
+        String[] itemNames = {"potion", "super-potion", "Hiperpoción", "revive"};
         String[] itemDescriptions = {
             ItemDescription.POTION.getDescription(),
             ItemDescription.SUPER_POTION.getDescription(), 
@@ -230,9 +230,7 @@ public class ItemSelectionScreen extends JPanel {
                 } else if (name.equals("Hiperpoción")) {
                     itemName = "Hyper Potion";
                     // 4. Crear Item
-                } else if (name.equals("prueba")) {
-                    itemName = "Prueba";
-                }
+                } 
 
                 JPanel itemPanel = createItemPanel(itemName, resourcePath, description);
                 selectionArea.add(itemPanel);
@@ -382,8 +380,6 @@ public class ItemSelectionScreen extends JPanel {
             effect = new HealingEffect(200);
         } else if (itemName.equalsIgnoreCase("Revive")) {
             effect = new ReviveEffect(0.5f);
-        } else if (itemName.equalsIgnoreCase("Prueba")) {
-            effect = new HealingEffect(10);
         }else{
             effect = new HealingEffect(0);
         }
