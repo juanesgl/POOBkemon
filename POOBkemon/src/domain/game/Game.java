@@ -588,8 +588,8 @@ public static void sacrifice(Game game) {
     if (maxLive / 2 < live) {
         JOptionPane.showMessageDialog(
             null,
-            "Tu Pokémon no puede ser sacrificado porque tiene más del 50% de vida.",
-            "Sacrificio no permitido",
+            "Your pokemon cannot be sacrificed, because it has more than half of its health",
+            "Sacrifice failed",
             JOptionPane.WARNING_MESSAGE
         );
         return;
@@ -601,10 +601,10 @@ public static void sacrifice(Game game) {
 
         JOptionPane.showMessageDialog(
             null,
-            "Jugador " + currentPlayer + "\n" +
-            "Murió " + activePokemon + "\n" +
-            "Ahora tengo a " + activePokemon2,
-            "Sacrificio realizado",
+            "Player " + currentPlayer + "\n" +
+            "Dead " + activePokemon + "\n" +
+            "Now you have " + activePokemon2,
+            "Realization of sacrifice",
             JOptionPane.INFORMATION_MESSAGE
         );
 
