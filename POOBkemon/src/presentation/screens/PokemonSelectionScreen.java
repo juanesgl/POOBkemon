@@ -234,7 +234,7 @@ public class PokemonSelectionScreen extends JPanel {
         selectionArea.removeAll();
 
         //3. Crear Pokemon
-        String[] pokemonNames = {"charizard", "blastoise", "gengar", "raichu", "venusaur", "dragonite", "togetic", "tyranitar", "snorlax", "mewtwo"};
+        String[] pokemonNames = {"charizard", "blastoise", "gengar", "raichu", "venusaur", "dragonite", "togetic", "tyranitar", "snorlax", "mewtwo","gardevoir", "metagross", "donphan", "machamp","delibird"};
 
         for (String name : pokemonNames) {
             String fileName = name + "-front.png";
@@ -426,6 +426,11 @@ public class PokemonSelectionScreen extends JPanel {
             case "snorlax" -> PokemonType.NORMAL;
             //4. Crear Pokemon
             case "mewtwo" -> PokemonType.PSYCHIC;
+            case "gardevoir" -> PokemonType.PSYCHIC;
+            case "metagross" -> PokemonType.STEEL;
+            case "donphan" -> PokemonType.GROUND;
+            case "machamp" -> PokemonType.FIGHTING;
+            case "delibird" -> PokemonType.ICE;
             default -> PokemonType.NORMAL;
         };
     }
