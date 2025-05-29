@@ -6,19 +6,23 @@ package domain.enums;
  */
 
 public enum MoveCategory {
+
     /**
      * Physical moves use the Attack stat of the attacker and the Defense stat of the defender.
      */
+
     PHYSICAL,
 
     /**
      * Special moves use the Special Attack stat of the attacker and the Special Defense stat of the defender.
      */
+
     SPECIAL,
 
     /**
      * Status moves don't deal damage but apply various effects to Pokemon.
      */
-    STATUS;
+
+    STATUS
 
 }

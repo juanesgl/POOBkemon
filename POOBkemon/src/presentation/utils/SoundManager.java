@@ -24,20 +24,28 @@ public class SoundManager {
     /*
      * Constructor initializes the sound effects map.
      */
+
     public SoundManager() {
         soundEffects = new HashMap<>();
         loadSoundEffects();
     }
 
+    /*
+     * Loads predefined sound effects into the soundEffects map.
+     * Each sound effect is loaded from a specific resource path.
+     */
+
     private void loadSoundEffects() {
-        // Solo cargamos los efectos de sonido que realmente necesitamos
-        loadSoundEffect("attack", "/resources/sounds/attack.wav");
-        loadSoundEffect("switch", "/resources/sounds/switch.wav");
         loadSoundEffect("scape", "/sounds-music/music-cover/scape.wav");
         loadSoundEffect("save", "/sounds-music/music-cover/saveGame.wav");
         loadSoundEffect("victory", "/sounds-music/music-cover/victorySound.wav");
-        loadSoundEffect("item", "/sounds-music/music-cover/itemUse.wav");
+        loadSoundEffect("item", "/sounds-music/music-cover/itemSelection.wav");
     }
+
+    /*
+     * Loads a sound effect from the specified resource path.
+     * The sound effect is stored in the soundEffects map with the given name.
+     */
 
     private void loadSoundEffect(String name, String path) {
         try {
@@ -46,8 +54,6 @@ public class SoundManager {
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioIn);
-                
-                // Set volume for sound effects
                 FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                 float dB = (float) (Math.log(effectsVolume) / Math.log(10.0) * 20.0);
                 gainControl.setValue(dB);
@@ -145,8 +151,6 @@ public class SoundManager {
 
     public void setMusicVolume(float volume) {
         this.musicVolume = Math.max(0.0f, Math.min(1.0f, volume));
-        
-        // Update background music volume
         if (backgroundMusic != null) {
             FloatControl gainControl = (FloatControl) backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
             float dB = (float) (Math.log(musicVolume) / Math.log(10.0) * 20.0);
@@ -157,7 +161,6 @@ public class SoundManager {
     public void setEffectsVolume(float volume) {
         this.effectsVolume = Math.max(0.0f, Math.min(1.0f, volume));
         
-        // Update all sound effects volume
         for (Clip clip : soundEffects.values()) {
             if (clip != null) {
                 FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
@@ -167,14 +170,10 @@ public class SoundManager {
         }
     }
 
-    public float getMusicVolume() {
-        return musicVolume;
-    }
 
-    public float getEffectsVolume() {
-        return effectsVolume;
-    }
 
+
+    // TODO
     public void toggleMute() {
         isMuted = !isMuted;
         if (isMuted) {

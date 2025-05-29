@@ -38,7 +38,7 @@ class PlayerTest {
     }
 
     static class DummyPokemon extends Pokemon {
-        private boolean fainted;
+        private final boolean fainted;
         DummyPokemon(int hp, boolean fainted) {
             super("Dummy", hp, 0, 0, 0, 0, 0, PokemonType.NORMAL, null, "");
             this.fainted = fainted;

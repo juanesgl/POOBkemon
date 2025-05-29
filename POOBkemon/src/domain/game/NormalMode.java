@@ -2,12 +2,16 @@ package domain.game;
 
 import domain.player.Player;
 
+import java.io.Serial;
+
 /**
  * Implementation of the GameMode interface for the Normal game mode.
  * In Normal mode, players battle until all Pokemon of one player have fainted.
  * When a Pokemon faints, the player must switch to another Pokemon if available.
  */
+
 public class NormalMode implements GameMode{
+     @Serial
      private static final long serialVersionUID = 1L;
     /**
      * Handles what happens when a player's active Pokemon faints in Normal mode.
@@ -15,6 +19,7 @@ public class NormalMode implements GameMode{
      * 
      * @param player The player whose active Pokemon has fainted
      */
+
     @Override
     public void handleFaintedPokemon(Player player) {
         player.switchToNextAvailablePokemon();
@@ -28,6 +33,7 @@ public class NormalMode implements GameMode{
      * @param player2 The second player
      * @return true if all Pokemon of either player have fainted, false otherwise
      */
+
     @Override
     public boolean isGameOver(Player player1, Player player2) {
         return player1.allPokemonFainted() || player2.allPokemonFainted();
@@ -41,6 +47,7 @@ public class NormalMode implements GameMode{
      * @param player2 The second player
      * @return The player who still has Pokemon available, or null if the game is not over
      */
+    
     @Override
     public Player determineWinner(Player player1, Player player2) {
         if (player1.allPokemonFainted()) {

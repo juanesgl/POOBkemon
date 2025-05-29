@@ -1,12 +1,12 @@
 package domain.entities;
 import domain.pokemons.Pokemon;
-
 import java.io.Serial;
 
 /**
  * Represents an item that can be used on Pokemon in the game.
  * Items have effects that can be applied to Pokemon, such as healing or stat boosts.
  */
+
 public class Item implements java.io.Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -24,6 +24,7 @@ public class Item implements java.io.Serializable {
      * @param imagePath The file path to the item's image
      * @param effect The effect that occurs when the item is used
      */
+
     public Item(String name, String description, String imagePath, ItemEffect effect) {
         this.imagePath = imagePath;
         this.name = name;
@@ -36,6 +37,7 @@ public class Item implements java.io.Serializable {
      * 
      * @param target The Pokemon to use the item on
      */
+
     public void use(Pokemon target) {
         effect.apply(target);
     }
@@ -44,18 +46,21 @@ public class Item implements java.io.Serializable {
      * Gets the name of the item.
      * @return The item's name
      */
+
     public String getName() { return name; }
 
     /**
      * Gets the description of the item.
      * @return The item's description
      */
+
     public String getDescription() { return description; }
 
     /**
      * Gets the effect of the item.
      * @return The item's effect
      */
+
     public String getImagePath() { return imagePath; }
 
 }

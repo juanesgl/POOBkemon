@@ -26,7 +26,6 @@ import java.util.List;
 
 /**
  * MovesSelectionScreen.java
- *
  * This class represents the screen where the user can select moves for a Pokémon.
  * It displays the Pokémon's information and allows the user to select up to 4 moves
  * from different categories (Physical, Special, Status).
@@ -188,6 +187,10 @@ public class MovesSelectionScreen extends JPanel {
         
         return availableMoves;
     }
+
+    /* * Confirms the selection of moves and closes the screen.
+     * If no moves are selected, it does nothing.
+     */
     
     private void confirmSelection() {
         if (!selectedMoves.isEmpty()) {
@@ -198,6 +201,11 @@ public class MovesSelectionScreen extends JPanel {
             }
         }
     }
+
+    /**
+     * Closes the current screen and returns to the previous one.
+     * This method is called when the "Back" button is clicked.
+     */
     
     private void goBack() {
         Window window = SwingUtilities.getWindowAncestor(this);

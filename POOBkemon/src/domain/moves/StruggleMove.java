@@ -7,6 +7,7 @@ import domain.enums.PokemonType;
  * Represents the Struggle move that a Pokemon uses when it has no PP left in any of its moves.
  * This move causes the Pokemon to take half of the damage it deals to the opponent.
  */
+
 public class StruggleMove extends Move {
     public StruggleMove() {
         super("Struggle", 50, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 1, 0);
@@ -27,6 +28,7 @@ public class StruggleMove extends Move {
      * This method overrides the isOffensive method in the Move class to indicate
      * that the move is offensive.
      */
+
     @Override
     public boolean isOffensive() {
         return true;

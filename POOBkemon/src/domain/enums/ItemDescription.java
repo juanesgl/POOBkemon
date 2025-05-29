@@ -1,8 +1,10 @@
 package domain.enums;
-/*      
- * Class ItemDescription
- * 
+
+/**
+ * Enum representing the descriptions of various items in the game.
+ * Each item has a detailed description explaining its use and effects.
  */
+
 public enum ItemDescription {
     POTION(
             "Potions restore 20 HP (Health Points) of a Pokémon. They can only be used in battle. " +
@@ -38,11 +40,13 @@ public enum ItemDescription {
     ItemDescription(String description) {
         this.description = description;
     }
+
     /*
      * Method getDescription
      * 
      * @return The detailed description of the item
      */
+
     public String getDescription() {
         return description;
     }

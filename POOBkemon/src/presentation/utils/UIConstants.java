@@ -98,6 +98,9 @@ public class UIConstants {
      */
     public static final String X_ATTACK_IMAGE_PATH = ITEMS_SPRITES_PATH + "x-attack.png";
 
+    /**
+     * Path to the CSV file containing effectiveness data for Pokemon types.
+     */
 
     public static final String CSV_RELATIVE_PATH = "resources/csv/effectiveness.csv";
 

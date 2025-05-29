@@ -4,6 +4,7 @@ package domain.enums;
  * Enum containing descriptions for each Pokemon.
  * Each entry includes the Pokemon's type, origin, physical characteristics, and stats.
  */
+
 public enum PokemonDescription {
 
     CHARIZARD(
@@ -180,6 +181,7 @@ public enum PokemonDescription {
      * 
      * @param description The detailed description of the Pokemon
      */
+
     PokemonDescription(String description) {
         this.description = description;
     }
@@ -189,6 +191,7 @@ public enum PokemonDescription {
      * 
      * @return The detailed description of the Pokemon
      */
+
     public String getDescription() {
         return description;
     }
@@ -199,6 +202,7 @@ public enum PokemonDescription {
      * @param pokemonName The name of the Pokemon
      * @return The corresponding PokemonDescription enum value, or null if not found
      */
+
     public static PokemonDescription fromPokemonName(String pokemonName) {
         try {
             return valueOf(pokemonName.toUpperCase());

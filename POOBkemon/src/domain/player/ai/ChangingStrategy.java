@@ -10,11 +10,12 @@ import domain.moves.Move;
  * ChangingStrategy class implements the AIStrategy interface.
  * It provides a strategy for selecting moves and switches based on the effectiveness of the Pokemon's types.
  */
+
 public class ChangingStrategy implements AIStrategy {
 
     @Override
     public int selectMove(Pokemon activePokemon) {
-        // Select a random move with available PP
+
         List<Move> moves = activePokemon.getMoves();
         List<Integer> validMoves = new java.util.ArrayList<>();
 
@@ -25,10 +26,9 @@ public class ChangingStrategy implements AIStrategy {
         }
 
         if (validMoves.isEmpty()) {
-            return 0; // Default to first move if no valid moves (will use Struggle)
+            return 0;
         }
 
-        // Select a random valid move
         return validMoves.get(new java.util.Random().nextInt(validMoves.size()));
     }
 
@@ -112,6 +112,6 @@ public class ChangingStrategy implements AIStrategy {
                 return i;
             }
         }
-        return -1; // Return -1 if no available Pokemon is found
+        return -1;
     }
 }

@@ -4,6 +4,7 @@ import domain.pokemons.Pokemon;
 /**
  * An item effect that revives a fainted Pokémon with a percentage of its maximum health.
  */
+
 public class ReviveEffect implements ItemEffect {
     private final float healthPercentage;
 
@@ -12,6 +13,7 @@ public class ReviveEffect implements ItemEffect {
      *
      * @param healthPercentage The percentage of maximum health to restore (0.0 to 1.0)
      */
+
     public ReviveEffect(float healthPercentage) {
         this.healthPercentage = healthPercentage;
     }
@@ -22,6 +24,7 @@ public class ReviveEffect implements ItemEffect {
      *
      * @param target The Pokémon to revive
      */
+
     @Override
     public void apply(Pokemon target) {
         if (target.isFainted()) {

@@ -41,13 +41,13 @@ public class PokemonSelectionScreen extends JPanel {
 
     private JLabel backgroundLabel;
     private JPanel pokemonSelectionPanel;
-    private List<Pokemon> selectedPokemons = new ArrayList<>();
+    private final List<Pokemon> selectedPokemons = new ArrayList<>();
     private List<Pokemon> player1Pokemons = new ArrayList<>();
     private List<Pokemon> player2Pokemons = new ArrayList<>();
     private boolean isPlayer1Selection = true;
     private GameModality selectedModality;
     private GameMode selectedMode;
-    private GameController controller;
+    private final GameController controller;
     private JTextArea descriptionTextArea;
 
     /**
@@ -392,7 +392,7 @@ public class PokemonSelectionScreen extends JPanel {
                 if (i > 0) names.append(", ");
                 names.append(selectedPokemons.get(i).getName());
             }
-            statusLabel.setText("Team complete! Selected: " + names.toString());
+            statusLabel.setText("Team complete! Selected: " + names);
             statusLabel.setForeground(Color.GREEN);
         }
     }
@@ -463,8 +463,7 @@ public class PokemonSelectionScreen extends JPanel {
 
         JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
         for (Component comp : selectionArea.getComponents()) {
-            if (comp instanceof JPanel) {
-                JPanel pokemonPanel = (JPanel) comp;
+            if (comp instanceof JPanel pokemonPanel) {
                 pokemonPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                 pokemonPanel.setBackground(new Color(50, 50, 50));
                 for (Component panelComp : pokemonPanel.getComponents()) {
@@ -492,8 +491,7 @@ public class PokemonSelectionScreen extends JPanel {
 
         JPanel selectionArea = (JPanel) pokemonSelectionPanel.getComponent(1);
         for (Component comp : selectionArea.getComponents()) {
-            if (comp instanceof JPanel) {
-                JPanel pokemonPanel = (JPanel) comp;
+            if (comp instanceof JPanel pokemonPanel) {
                 pokemonPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                 pokemonPanel.setBackground(new Color(50, 50, 50));
                 for (Component panelComp : pokemonPanel.getComponents()) {

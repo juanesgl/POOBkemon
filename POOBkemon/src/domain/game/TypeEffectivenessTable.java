@@ -15,6 +15,7 @@ import presentation.utils.UIConstants;
  * The class also provides a method to get the effectiveness of a move based on the attacking and defending types.
  * 
  */
+
 public final class TypeEffectivenessTable {
     
     private static final Map<PokemonType, Map<PokemonType, Double>> effectivenessMap = new HashMap<>();
@@ -22,9 +23,11 @@ public final class TypeEffectivenessTable {
     static {
         loadEffectivenessTable();
     }
+
     /*  
      * Method that loads the effectiveness table from a CSV file.
      */
+
     private static void loadEffectivenessTable() {
         try (
             InputStream is = TypeEffectivenessTable.class.getClassLoader().getResourceAsStream(UIConstants.CSV_RELATIVE_PATH)
@@ -51,11 +54,13 @@ public final class TypeEffectivenessTable {
             throw new RuntimeException("Effectiveness table could not be loaded: " + e.getMessage(), e);
         }
     }
+
     /*  
      * Method that parses the defending types from the CSV file.
      *      
      * @return An array of defending types
      */
+
     private static PokemonType[] parseDefendingTypes(String[] values) {
         PokemonType[] types = new PokemonType[values.length - 1]; 
         for (int i = 1; i < values.length; i++) {
@@ -63,6 +68,7 @@ public final class TypeEffectivenessTable {
         }
         return types;
     }
+
     /*
      * Method that parses the attacking types and their effectiveness against the defending types from the CSV file.
      *       
@@ -70,6 +76,7 @@ public final class TypeEffectivenessTable {
      * @param defendingTypes An array of defending types
      * 
      */
+
     private static void parseAttackingType(String[] values, PokemonType[] defendingTypes) {
         PokemonType attackingType = PokemonType.valueOf(values[0].trim().toUpperCase());
         Map<PokemonType, Double> effectivenessRow = new HashMap<>();
@@ -85,11 +92,13 @@ public final class TypeEffectivenessTable {
 
         effectivenessMap.put(attackingType, effectivenessRow);
     }
+
     /*  
      * Method that gets the effectiveness of a move based on the attacking and defending types.
      *      
      * @return The effectiveness of the move
      */
+
     public static double getEffectiveness(PokemonType attackingType, PokemonType defendingType) {
         return effectivenessMap.getOrDefault(attackingType, new HashMap<>())
                 .getOrDefault(defendingType, 1.0);

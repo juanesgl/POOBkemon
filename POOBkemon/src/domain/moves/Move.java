@@ -62,48 +62,56 @@ public abstract class Move implements Serializable {
      * Gets the name of the move.
      * @return The move's name
      */
+
     public String getName() { return name; }
 
     /**
      * Gets the base power of the move.
      * @return The move's power
      */
+
     public int getPower() { return power; }
 
     /**
      * Gets the category of the move.
      * @return The move's category (PHYSICAL, SPECIAL, STATUS)
      */
+
     public MoveCategory getCategory() { return category; }
 
     /**
      * Gets the elemental type of the move.
      * @return The move's type
      */
+
     public PokemonType getType() { return type; }
 
     /**
      * Gets the accuracy of the move.
      * @return The move's accuracy (0-100)
      */
+
     public int getAccuracy() { return accuracy; }
 
     /**
      * Gets the power points (PP) of the move.
      * @return The number of times the move can be used
      */
+
     public int getPowerPoints() { return powerPoints; }
 
     /**
      * Gets the maximum power points (PP) of the move.
      * @return The maximum number of times the move can be used
      */
+
     public int getMaxPowerPoints() { return maxPowerPoints; }
 
     /**
      * Sets the power points (PP) of the move.
      * @param powerPoints The new number of times the move can be used
      */
+
     public void setPowerPoints(int powerPoints) { this.powerPoints = powerPoints; }
 
     /**
@@ -112,6 +120,7 @@ public abstract class Move implements Serializable {
      *
      * @param amount The amount to reduce PP by
      */
+
     public void reducePP(int amount) {
         powerPoints = Math.max(0, powerPoints - amount);
     }
@@ -119,6 +128,7 @@ public abstract class Move implements Serializable {
     /**
      * Restores the power points (PP) of the move to the maximum.
      */
+
     public void restorePP() {
         powerPoints = maxPowerPoints;
     }
@@ -129,17 +139,21 @@ public abstract class Move implements Serializable {
      *
      * @return The move's priority
      */
+
     public int getPriority() { return priority; }
+
     /**
      * Checks if the move is a status move.
      * @return true if the move is a status move, false otherwise
      */
 
     public boolean isDefensive(){ return false; }
+
     /**
      * Checks if the move is an offensive move.
      * @return true if the move is an offensive move, false otherwise
      */
+
     public boolean isOffensive(){ return false; }
 
     /**

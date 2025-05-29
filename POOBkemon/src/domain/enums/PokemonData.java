@@ -4,7 +4,6 @@ import presentation.utils.UIConstants;
 
 /*
  * Class PokemonData
- *
  * This enum represents the data of various Pokémon, including their stats, types, and sprite paths.
  * It provides methods to retrieve Pokémon data based on their names.
  */
@@ -75,6 +74,21 @@ public enum PokemonData {
     private final PokemonType secondaryType;
     private final String spritePath;
 
+    /**
+     * Constructor for the PokemonData enum.
+     *
+     * @param name            The name of the Pokémon.
+     * @param health          The health points of the Pokémon.
+     * @param attack          The attack stat of the Pokémon.
+     * @param defense         The defense stat of the Pokémon.
+     * @param specialAttack   The special attack stat of the Pokémon.
+     * @param specialDefense  The special defense stat of the Pokémon.
+     * @param speed           The speed stat of the Pokémon.
+     * @param primaryType     The primary type of the Pokémon.
+     * @param secondaryType   The secondary type of the Pokémon (can be null).
+     * @param spritePath      The file path to the sprite image of the Pokémon.
+     */
+
     PokemonData(String name, int health, int attack, int defense,
                int specialAttack, int specialDefense, int speed,
                PokemonType primaryType, PokemonType secondaryType, String spritePath) {
@@ -100,6 +114,14 @@ public enum PokemonData {
     public PokemonType getPrimaryType() { return primaryType; }
     public PokemonType getSecondaryType() { return secondaryType; }
     public String getSpritePath() { return spritePath; }
+
+    /**
+     * Retrieves the PokemonData enum constant based on the given name.
+     *
+     * @param name The name of the Pokémon to retrieve.
+     * @return The corresponding PokemonData enum constant.
+     * @throws IllegalArgumentException if the name does not match any Pokémon.
+     */
 
     public static PokemonData fromName(String name) {
         for (PokemonData pokemon : values()) {

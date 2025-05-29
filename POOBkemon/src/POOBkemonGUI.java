@@ -29,13 +29,13 @@ import javax.swing.JSlider;
  * It implements the GameView interface to communicate with the GameController.
  */
 public class POOBkemonGUI extends JFrame implements GameView {
-    private PokemonSelectionScreen pokemonSelectionScreen;
-    private ItemSelectionScreen itemSelectionScreen;
-    private CoverScreen coverScreen;
-    private GameSetupScreen setupScreen;
+    private final PokemonSelectionScreen pokemonSelectionScreen;
+    private final ItemSelectionScreen itemSelectionScreen;
+    private final CoverScreen coverScreen;
+    private final GameSetupScreen setupScreen;
     private GameScreen gameScreen;
-    private SoundManager soundManager;
-    private GameController gameController;
+    private final SoundManager soundManager;
+    private final GameController gameController;
     private GameMode selectedMode;
     private GameModality selectedModality;
 

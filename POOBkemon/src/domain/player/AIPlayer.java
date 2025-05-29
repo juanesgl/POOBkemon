@@ -16,8 +16,7 @@ import java.util.Random;
 
 public class AIPlayer extends Player {
     private AIStrategy strategy;
-    private final Random random;
-    
+
     public AIPlayer(String name, MachineType machineType, List<Pokemon> team, List<Item> items) {
         /*  
          * Constructor for the AIPlayer class.
@@ -28,7 +27,7 @@ public class AIPlayer extends Player {
          */
         super(name, machineType, team, items);
         this.strategy = AIStrategyFactory.createStrategy(machineType);
-        this.random = new Random();
+        Random random = new Random();
     }
 
     /*
@@ -101,6 +100,12 @@ public class AIPlayer extends Player {
             game.executeMove(moveIndex);
         }
     }
+
+    /*
+     * executeMove method is not supported for AIPlayer and throws an exception.
+     * @param moveIndex The index of the move to be executed.
+     * @throws POOBkemonException if the method is called.
+     */
 
     @Override
     public void executeMove(int moveIndex) throws POOBkemonException {

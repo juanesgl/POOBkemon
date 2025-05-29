@@ -103,6 +103,7 @@ public abstract class Pokemon implements Serializable{
      * 
      * @return The Struggle move
      */
+
     private Move getStruggleMove() {
         return new StruggleMove();
     }
@@ -117,6 +118,7 @@ public abstract class Pokemon implements Serializable{
      * @param move The move to use for the attack
      * @return The amount of damage dealt
      */
+
     public int attack(Pokemon target, Move move) {
         if (allMovesOutOfPP()) {
             move = getStruggleMove();
@@ -137,6 +139,14 @@ public abstract class Pokemon implements Serializable{
         return damage;
     }
 
+    /**
+     * Calculates the damage dealt by a move to a target Pokemon.
+     *
+     * @param move The move being used
+     * @param target The target Pokemon
+     * @return The calculated damage amount
+     */
+
     public int calculateDamage(Move move, Pokemon target) {
         double typeEffectiveness = calculateTypeEffectiveness(move, target);
         double stab = (move.getType() == primaryType || move.getType() == secondaryType) ? 1.5 : 1.0;
@@ -146,6 +156,14 @@ public abstract class Pokemon implements Serializable{
 
         return (int)(((double) (move.getPower() * attackStat) / defenseStat * 0.5 * typeEffectiveness * stab) + 1);
     }
+
+    /**
+     * Calculates the type effectiveness of a move against a target Pokemon.
+     *
+     * @param move The move being used
+     * @param target The target Pokemon
+     * @return The effectiveness multiplier (1.0 for normal, 2.0 for super effective, 0.5 for not very effective, etc.)
+     */
 
     protected double calculateTypeEffectiveness(Move move, Pokemon target) {
         PokemonType moveType = move.getType();
@@ -171,6 +189,7 @@ public abstract class Pokemon implements Serializable{
      *
      * @param damage The amount of damage to take
      */
+
     public void takeDamage(int damage) {
         health = Math.max(0, health - damage);
     }
@@ -180,6 +199,7 @@ public abstract class Pokemon implements Serializable{
      *
      * @return true if the Pokemon has fainted, false otherwise
      */
+
     public boolean isFainted() {
         return health <= 0;
     }
@@ -189,65 +209,76 @@ public abstract class Pokemon implements Serializable{
      * Gets the name of the Pokemon.
      * @return The Pokemon's name
      */
+
     public String getName() { return name; }
 
     /**
      * Gets the current health of the Pokemon.
      * @return The current health points
      */
+
     public int getHealth() { return health; }
 
     /**
      * Sets the current health of the Pokemon.
      * @param health The new health value
      */
+
     public void setHealth(int health) { this.health = health; }
 
     /**
      * Gets the maximum health of the Pokemon.
      * @return The maximum health points
      */
+
     public int getMaxHealth() { return maxHealth; }
 
     /**
      * Gets the attack stat of the Pokemon.
      * @return The attack stat
      */
+
     public int getAttack() { return attack; }
 
     /**
      * Sets the attack stat of the Pokemon.
      * @param attack The new attack value
      */
+
     public void setAttack(int attack) { this.attack = attack; }
 
     /**
      * Gets the defense stat of the Pokemon.
      * @return The defense stat
      */
+
     public int getDefense() { return defense; }
 
      /**
      * Gets the special defense stat of the Pokemon.
      * @return The special defense stat
      */
+
     public int getSpecialDefense() { return specialDefense; }
 
     /**
      * Gets the speed stat of the Pokemon.
      * @return The speed stat
      */
+
     public int getSpeed() { return speed; }
 
     /**
      * Gets the special attack stat of the Pokemon.
      * @return The special attack stat
      */
+
     public int getSpecialAttack() { return specialAttack; }
 
     /**
      * Heals the Pokemon to its maximum health.
      */
+
     public void heal() {
         this.health = this.maxHealth;
     }
@@ -256,18 +287,21 @@ public abstract class Pokemon implements Serializable{
      * Gets the list of moves the Pokemon knows.
      * @return The list of moves
      */
+
     public List<Move> getMoves() { return moves; }
 
     /**
      * Gets the file path to the Pokemon's sprite image.
      * @return The sprite path
      */
+
     public String getSpritePath() { return spritePath; }
 
     /**
      * Gets the primary type of the Pokemon.
      * @return The primary type
      */
+
     public PokemonType getPrimaryType() {
         return primaryType;
     }
@@ -276,6 +310,7 @@ public abstract class Pokemon implements Serializable{
      * Gets the secondary type of the Pokemon.
      * @return The secondary type (can be null)
      */
+
     public PokemonType getSecondaryType() {
         return secondaryType;
     }
@@ -286,6 +321,7 @@ public abstract class Pokemon implements Serializable{
      * 
      * @param level The new level of the Pokemon
      */
+
     public void setLevel(int level) {
        
         double scaleFactor = 1.0 + ((double) level - 50) / 100.0; 
@@ -313,6 +349,7 @@ public abstract class Pokemon implements Serializable{
      * Assigns random moves to the Pokémon from the available moves in the MoveRegistry.
      * The moves are selected based on the Pokémon's types and are limited to 4 moves.
      */
+
     public void assignRandomMoves() {
         this.moves.clear();
         List<Move> availableMoves = new ArrayList<>();

@@ -14,6 +14,6 @@ public enum MachineType {
 
     changingTrainer,
 
-    expertTrainer;
+    expertTrainer
 
 }

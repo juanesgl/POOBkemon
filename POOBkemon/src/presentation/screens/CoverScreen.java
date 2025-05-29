@@ -3,7 +3,6 @@ package presentation.screens;
 import presentation.components.AnimatedButton;
 import presentation.controllers.GameController;
 import presentation.utils.UIConstants;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,6 +12,7 @@ import java.util.Objects;
  * CoverScreen is the initial screen of the game. It displays the main menu and the start button.
  * 
  */
+
 public class CoverScreen extends JPanel {
     private final GameController controller;
 
@@ -21,6 +21,7 @@ public class CoverScreen extends JPanel {
      *
      * @param controller The GameController instance that handles the game logic.
      */
+
     public CoverScreen(GameController controller) {
         this.controller = controller;
         setLayout(null);
@@ -28,10 +29,12 @@ public class CoverScreen extends JPanel {
 
         initializeComponents();
     }
+
     /*
      * Initialize the components of the cover screen.
      * 
      */
+
     private void initializeComponents() {
 
         ImageIcon cover = new ImageIcon(Objects.requireNonNull(getClass().getResource(UIConstants.COVER_IMAGE_PATH)));

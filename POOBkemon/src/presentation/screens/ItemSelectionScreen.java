@@ -42,12 +42,12 @@ import domain.entities.ReviveEffect;
 public class ItemSelectionScreen extends JPanel {
     private JLabel backgroundLabel;
     private JPanel itemSelectionPanel;
-    private List<Item> selectedItems = new ArrayList<>();
-    private GameController controller;
+    private final List<Item> selectedItems = new ArrayList<>();
+    private final GameController controller;
     private GameModality selectedModality;
     private GameMode selectedMode;
     private boolean isPlayer1Selection = true;
-    private List<Item> player1Items = new ArrayList<>();
+    private final List<Item> player1Items = new ArrayList<>();
     private JTextArea descriptionTextArea;
     private List<Pokemon> player1Pokemons;
     private List<Pokemon> player2Pokemons;
@@ -357,7 +357,7 @@ public class ItemSelectionScreen extends JPanel {
                 if (i > 0) names.append(", ");
                 names.append(selectedItems.get(i).getName());
             }
-            statusLabel.setText(selectedItems.size() + " items selected: " + names.toString());
+            statusLabel.setText(selectedItems.size() + " items selected: " + names);
             statusLabel.setForeground(Color.GREEN);
         }
     }
@@ -416,8 +416,7 @@ public class ItemSelectionScreen extends JPanel {
 
         JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         for (Component comp : selectionArea.getComponents()) {
-            if (comp instanceof JPanel) {
-                JPanel itemPanel = (JPanel) comp;
+            if (comp instanceof JPanel itemPanel) {
                 itemPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                 itemPanel.setBackground(new Color(50, 50, 50));
                 for (Component panelComp : itemPanel.getComponents()) {
@@ -444,8 +443,7 @@ public class ItemSelectionScreen extends JPanel {
 
         JPanel selectionArea = (JPanel) itemSelectionPanel.getComponent(1);
         for (Component comp : selectionArea.getComponents()) {
-            if (comp instanceof JPanel) {
-                JPanel itemPanel = (JPanel) comp;
+            if (comp instanceof JPanel itemPanel) {
                 itemPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                 itemPanel.setBackground(new Color(50, 50, 50));
                 for (Component panelComp : itemPanel.getComponents()) {

@@ -10,6 +10,7 @@ import domain.moves.Move;
  * for the AI player
  * 
  */
+
 public class DefensiveStrategy implements AIStrategy {
     @Override
     public int selectMove(Pokemon activePokemon) {
@@ -21,13 +22,14 @@ public class DefensiveStrategy implements AIStrategy {
         }
         return new Random().nextInt(moves.size());
     }
+
     /*  
      * selectSwitch method returns the index of the Pokemon to switch to.
      * @return The index of the Pokemon to switch to.
      */
+
     @Override
     public int selectSwitch(Pokemon activePokemon, List<Pokemon> team, Pokemon opponentPokemon) {
-        // Switch to a Pokemon with higher defense if current Pokemon's health is low
         if (activePokemon.getHealth() < activePokemon.getMaxHealth() * 0.3) {
             int bestIndex = -1;
             int highestDefense = -1;
@@ -46,8 +48,6 @@ public class DefensiveStrategy implements AIStrategy {
             return bestIndex;
         }
 
-        return -1; // Don't switch if health is not low
+        return -1;
     }
-
-
 }
