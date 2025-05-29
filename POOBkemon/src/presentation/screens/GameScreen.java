@@ -115,16 +115,19 @@ public class GameScreen extends JPanel {
 
         JButton pauseButton = getPauseButton();
         JButton exitButton = getJButton();
+        JButton sacrificeButton = getJButton2();
 
         add(battlePanel);
         add(pauseButton);
         add(exitButton);
+        add(sacrificeButton);
         
         setComponentZOrder(fpsLabel, 0);
         setComponentZOrder(timerLabel, 1);
         setComponentZOrder(pauseButton, 2);
         setComponentZOrder(exitButton, 3);
-        setComponentZOrder(battlePanel, 4);
+        setComponentZOrder(sacrificeButton, 4);
+        setComponentZOrder(battlePanel, 5);
 
         addComponentListener(new ComponentAdapter() {
             @Override
