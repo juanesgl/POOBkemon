@@ -8,6 +8,7 @@ import domain.enums.PokemonType;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -39,19 +40,36 @@ public class MovesSelectionScreen extends JPanel {
     private final JButton backButton;
     private final JLabel pokemonInfoLabel;
     private final JLabel selectedMovesLabel;
+    private final JDialog parentDialog;
 
     /**
      * Constructor for MovesSelectionScreen.
      *
      * @param pokemon The Pokémon for which moves are being selected.
+     * @param parentDialog The parent dialog for this screen.
      */
 
-    public MovesSelectionScreen(Pokemon pokemon) {
+    public MovesSelectionScreen(Pokemon pokemon, JDialog parentDialog) {
         this.pokemon = pokemon;
         this.selectedMoves = new ArrayList<>();
+        this.parentDialog = parentDialog;
         
         setLayout(new BorderLayout());
         setBackground(new Color(240, 240, 240));
+
+        // Configure dialog behavior
+        parentDialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        parentDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                if (selectedMoves.size() != 4) {
+                    JOptionPane.showMessageDialog(MovesSelectionScreen.this,
+                        "You must select exactly 4 moves before continuing!",
+                        "Move Selection Required",
+                        JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(new Color(240, 240, 240));
@@ -166,7 +184,7 @@ public class MovesSelectionScreen extends JPanel {
         }
         
         selectedMovesLabel.setText("Selected Moves: " + selectedMoves.size() + "/4");
-        confirmButton.setEnabled(!selectedMoves.isEmpty());
+        confirmButton.setEnabled(selectedMoves.size() == 4);
     }
 
     /**
@@ -193,12 +211,17 @@ public class MovesSelectionScreen extends JPanel {
      */
     
     private void confirmSelection() {
-        if (!selectedMoves.isEmpty()) {
-            pokemon.setMoves(selectedMoves);
-            Window window = SwingUtilities.getWindowAncestor(this);
-            if (window != null) {
-                window.dispose();
-            }
+        if (selectedMoves.size() != 4) {
+            JOptionPane.showMessageDialog(this,
+                "You must select exactly 4 moves before continuing!",
+                "Move Selection Required",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        pokemon.setMoves(selectedMoves);
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (window != null) {
+            window.dispose();
         }
     }
 
@@ -208,6 +231,13 @@ public class MovesSelectionScreen extends JPanel {
      */
     
     private void goBack() {
+        if (selectedMoves.size() != 4) {
+            JOptionPane.showMessageDialog(this,
+                "You must select exactly 4 moves before continuing!",
+                "Move Selection Required",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         Window window = SwingUtilities.getWindowAncestor(this);
         if (window != null) {
             window.dispose();

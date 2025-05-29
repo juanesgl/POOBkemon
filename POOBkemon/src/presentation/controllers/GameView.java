@@ -79,4 +79,12 @@ public interface GameView {
 
     void setSelectedModality(GameModality modality);
 
+    /**
+     * Shows a message dialog with the given title and message.
+     * @param message The message to display
+     * @param title The title of the dialog
+     * @param messageType The type of message (e.g., ERROR_MESSAGE, INFORMATION_MESSAGE)
+     */
+    void showMessage(String message, String title, int messageType);
+
 }

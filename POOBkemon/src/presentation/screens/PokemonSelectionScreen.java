@@ -101,7 +101,7 @@ public class PokemonSelectionScreen extends JPanel {
                         (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
                     );
                     
-                    MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
+                    MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon, moveDialog);
                     moveDialog.add(movesScreen);
                     moveDialog.setVisible(true);
                 }
@@ -135,7 +135,7 @@ public class PokemonSelectionScreen extends JPanel {
                         (int)(getLocationOnScreen().getY() + (double) (getHeight() - 600) / 2)
                     );
                     
-                    MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon);
+                    MovesSelectionScreen movesScreen = new MovesSelectionScreen(pokemon, moveDialog);
                     moveDialog.add(movesScreen);
                     moveDialog.setVisible(true);
                 }

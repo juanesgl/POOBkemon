@@ -52,6 +52,7 @@ public class GameController {
     private final GameView view;
     private Game game;
     private final SoundManager soundManager;
+    private boolean isPlayer1Selection = true;
 
     /**
      * Constructor for GameController.
@@ -299,16 +300,19 @@ public class GameController {
 
         switch (modality) {
             case PLAYER_VS_PLAYER:
+                isPlayer1Selection = true;
                 playerName = askName();
                 playerColor = askColor();
                 player1 = new HumanPlayer(playerName, playerColor, player1Team, player1Items);
 
+                isPlayer1Selection = false;
                 playerName = askName();
                 playerColor = askColor();
                 player2 = new HumanPlayer(playerName, playerColor, player2Team, player2Items);
                 break;
 
             case PLAYER_VS_AI:
+                isPlayer1Selection = true;
                 playerName = askName();
                 playerColor = askColor();
                 player1 = new HumanPlayer(playerName, playerColor, player1Team, player1Items);
@@ -333,9 +337,11 @@ public class GameController {
                 break;
 
             default:
+                isPlayer1Selection = true;
                 playerName = askName();
                 playerColor = askColor();
                 player1 = new HumanPlayer(playerName, playerColor, player1Team, player1Items);
+                isPlayer1Selection = false;
                 playerName = askName();
                 playerColor = askColor();
                 player2 = new HumanPlayer(playerName, playerColor, player2Team, player2Items);
@@ -430,9 +436,10 @@ public class GameController {
 
     private String askName() {
         String playerName = JOptionPane.showInputDialog(null, "Insert Player Name:");
-        if (playerName != null && !playerName.trim().isEmpty()) {
-            showInfoMessage("Welcome", playerName);
+        if (playerName == null || playerName.trim().isEmpty()) {
+            playerName = isPlayer1Selection ? "Player 1" : "Player 2";
         }
+        showInfoMessage("Welcome", playerName);
         return playerName;
     }
 
