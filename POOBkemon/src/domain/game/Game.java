@@ -601,9 +601,8 @@ public static void sacrifice(Game game) {
 
         JOptionPane.showMessageDialog(
             null,
-            "Player " + currentPlayer + "\n" +
-            "Dead " + activePokemon + "\n" +
-            "Now you have " + activePokemon2,
+            "Dead: " + activePokemon + "\n" +
+            "Now you have: " + activePokemon2,
             "Realization of sacrifice",
             JOptionPane.INFORMATION_MESSAGE
         );
