@@ -1,11 +1,15 @@
 package presentation.utils;
 
 import javax.sound.sampled.*;
+
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
+import presentation.utils.UIConstants;
 /*
  * SoundManager.java
  * This class manages background music and sound effects for the game.
@@ -36,10 +40,10 @@ public class SoundManager {
      */
 
     private void loadSoundEffects() {
-        loadSoundEffect("scape", "/sounds-music/music-cover/scape.wav");
-        loadSoundEffect("save", "/sounds-music/music-cover/saveGame.wav");
-        loadSoundEffect("victory", "/sounds-music/music-cover/victorySound.wav");
-        loadSoundEffect("item", "/sounds-music/music-cover/itemSelection.wav");
+        //loadSoundEffect("scape", UIConstants.SCAPE_SOUND_PATH);
+        //loadSoundEffect("save", UIConstants.SAVE_SOUND_PATH);
+        //loadSoundEffect("victory", UIConstants.VICTORY_SOUND_PATH);
+        //loadSoundEffect("item", UIConstants.ITEM_SOUND_PATH);
     }
 
     /*
@@ -49,23 +53,25 @@ public class SoundManager {
 
     private void loadSoundEffect(String name, String path) {
         try {
-            URL url = getClass().getResource(path);
-            if (url != null) {
-                AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioIn);
-                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                float dB = (float) (Math.log(effectsVolume) / Math.log(10.0) * 20.0);
-                gainControl.setValue(dB);
-                
-                soundEffects.put(name, clip);
-            } else {
-                System.err.println("Could not find sound effect: " + path);
-            }
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            System.err.println("Error loading sound effect: " + name);
-            e.printStackTrace();
+           InputStream audioSrc = getClass().getResourceAsStream(path);
+        if (audioSrc != null) {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(audioSrc));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            float dB = (float) (Math.log(effectsVolume) / Math.log(10.0) * 20.0);
+            gainControl.setValue(dB);
+            
+            soundEffects.put(name, clip);
+        } else {
+            System.err.println("Could not find sound effect: " + path);
+            // Imprime la ruta absoluta para debug
+            System.err.println("Full attempted path: " + new File("").getAbsolutePath() + "/" + path);
         }
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        System.err.println("Error loading sound effect: " + name);
+        e.printStackTrace();
+    }
     }
 
     /*

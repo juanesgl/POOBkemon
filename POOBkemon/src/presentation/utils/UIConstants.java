@@ -109,6 +109,22 @@ public class UIConstants {
      */
     public static final String INSTRUCTIONS = RESOURCES_PATH + "SelectionScreen/InstructionsPoster.png";
 
+    /**
+     * Path to the sound effect played on the cover screen.
+     */
+
+    public static final String SOUNDEFFECT = RESOURCES_PATH + "/sounds-music/music-cover";
+     
+    /**
+     * Path to the sound effect played on the cover screen.
+     */
+    public static final String SCAPE_SOUND_PATH = "/sounds-music/music-cover/scape.wav";
+
+    public static final String VICTORY_SOUND_PATH = "/sounds-music/music-cover/victorySound.wav";
+
+    public static final String ITEM_SOUND_PATH = "/sounds-music/music-cover/itemSelection.wav";
+
+    public static final String SAVE_SOUND_PATH = "/sounds-music/music-cover/saveGame.wav";
 
     /**
      * List of game modality display names for dropdown menus.
