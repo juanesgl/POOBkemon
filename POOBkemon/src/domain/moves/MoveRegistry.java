@@ -28,6 +28,12 @@ public class MoveRegistry {
         registerMove(new BasicMove("Earthquake", 100, MoveCategory.PHYSICAL, PokemonType.GROUND, 100, 10));
         registerMove(new BasicMove("Crunch", 80, MoveCategory.PHYSICAL, PokemonType.DARK, 100, 15));
         registerMove(new BasicMove("Shadow Claw", 70, MoveCategory.PHYSICAL, PokemonType.GHOST, 100, 15));
+        registerMove(new BasicMove("Brick Break", 75, MoveCategory.PHYSICAL, PokemonType.FIGHTING, 100, 15));
+        registerMove(new BasicMove("Aerial Ace", 60, MoveCategory.PHYSICAL, PokemonType.FLYING, 100, 20));
+        registerMove(new BasicMove("Rock Tomb", 60, MoveCategory.PHYSICAL, PokemonType.ROCK, 95, 15));
+        registerMove(new BasicMove("Facade", 70, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 20));
+        registerMove(new BasicMove("Secret Power", 70, MoveCategory.PHYSICAL, PokemonType.NORMAL, 100, 20));
+        registerMove(new BasicMove("Bulk Up", 0, MoveCategory.PHYSICAL, PokemonType.FIGHTING, 100, 20));
 
         //Crear movimiento
         registerMove(new BasicMove("Thunderbolt", 90, MoveCategory.SPECIAL, PokemonType.ELECTRIC, 100, 15));
@@ -38,7 +44,14 @@ public class MoveRegistry {
         registerMove(new BasicMove("Shadow Ball", 80, MoveCategory.SPECIAL, PokemonType.GHOST, 100, 15));
         registerMove(new BasicMove("Dragon Claw", 80, MoveCategory.SPECIAL, PokemonType.DRAGON, 100, 15));
         registerMove(new BasicMove("Dark Pulse", 80, MoveCategory.SPECIAL, PokemonType.DARK, 100, 15));
-        
+        registerMove(new BasicMove("Energy Ball", 80, MoveCategory.SPECIAL, PokemonType.GRASS, 100, 10));
+        registerMove(new BasicMove("Sludge Bomb", 90, MoveCategory.SPECIAL, PokemonType.POISON, 100, 10));
+        registerMove(new BasicMove("Focus Blast", 120, MoveCategory.SPECIAL, PokemonType.FIGHTING, 70, 5));
+        registerMove(new BasicMove("Dragon Pulse", 85, MoveCategory.SPECIAL, PokemonType.DRAGON, 100, 10));
+        registerMove(new BasicMove("Air Slash", 75, MoveCategory.SPECIAL, PokemonType.FLYING, 95, 15));
+        registerMove(new BasicMove("Earth Power", 90, MoveCategory.SPECIAL, PokemonType.GROUND, 100, 10));
+        registerMove(new BasicMove("Flash Cannon", 80, MoveCategory.SPECIAL, PokemonType.STEEL, 100, 10));
+        registerMove(new BasicMove("Aura Sphere", 80, MoveCategory.SPECIAL, PokemonType.FIGHTING, 100, 20));
 
         registerMove(new StatusMove("Growl", 0, PokemonType.NORMAL, 100, 40));
         registerMove(new StatusMove("Tail Whip", 0, PokemonType.NORMAL, 100, 30));
@@ -46,7 +59,6 @@ public class MoveRegistry {
         registerMove(new StatusMove("Screech", 0, PokemonType.NORMAL, 85, 40));
         registerMove(new StatusMove("Swords Dance", 0, PokemonType.NORMAL, 100, 20));
         registerMove(new StatusMove("Calm Mind", 0, PokemonType.PSYCHIC, 100, 20));
-        registerMove(new StatusMove("Bulk Up", 0, PokemonType.FIGHTING, 100, 20));
         registerMove(new StatusMove("Agility", 0, PokemonType.PSYCHIC, 100, 30));
     }
 

@@ -140,6 +140,20 @@ public class SoundManager {
     public void playSoundEffect(String name) {
         if (isMuted) return;
         
+        // Stop any currently playing sound effects
+        for (Clip clip : soundEffects.values()) {
+            if (clip.isRunning()) {
+                clip.stop();
+                clip.setFramePosition(0);
+            }
+        }
+        
+        // Stop background music if playing
+        if (backgroundMusic != null && backgroundMusic.isRunning()) {
+            backgroundMusic.stop();
+            backgroundMusic.setFramePosition(0);
+        }
+        
         Clip clip = soundEffects.get(name);
         if (clip != null) {
             clip.setFramePosition(0);

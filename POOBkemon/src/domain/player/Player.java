@@ -63,8 +63,8 @@ public abstract class Player implements Serializable {
      */
 
     private void validateTeam(List<Pokemon> team) {
-        if (team.size() < 6) {
-            throw new IllegalArgumentException("Team must have exactly 6 Pokemon");
+        if (team.isEmpty()) {
+            throw new IllegalArgumentException("Team must have at least 1 Pokemon");
         }
     }
 

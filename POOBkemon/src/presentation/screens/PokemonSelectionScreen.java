@@ -82,7 +82,7 @@ public class PokemonSelectionScreen extends JPanel {
         startGameButton.setBounds(423, 600, 179, 71);
         startGameButton.addActionListener(x -> {
 
-            if (selectedPokemons.size() < 6) {
+            if (selectedPokemons.isEmpty()) {
                 JOptionPane.showMessageDialog(this, POOBkemonException.INVALID_POKEMON_COUNT,
                         "Team Selection", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -178,7 +178,7 @@ public class PokemonSelectionScreen extends JPanel {
         titleLabel.setFont(new Font("Georgia", Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
 
-        JLabel instructionsLabel = new JLabel("Select exactly 6 Pokémon for your team", JLabel.CENTER);
+        JLabel instructionsLabel = new JLabel("Select your Pokémon for your team", JLabel.CENTER);
         instructionsLabel.setFont(new Font("Arial", Font.ITALIC, 14));
         instructionsLabel.setForeground(Color.YELLOW);
 
@@ -380,13 +380,6 @@ public class PokemonSelectionScreen extends JPanel {
 
         selectBox.addActionListener(x -> {
             if (selectBox.isSelected()) {
-                if (selectedPokemons.size() >= 6) {
-                    selectBox.setSelected(false);
-                    JOptionPane.showMessageDialog(this, "You can only select 6 Pokémon for your team!",
-                            "Team Selection", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
                 Pokemon pokemon = createPokemonByName(pokemonName);
                 selectedPokemons.add(pokemon);
 
@@ -456,10 +449,7 @@ public class PokemonSelectionScreen extends JPanel {
         JLabel statusLabel = (JLabel) statusPanel.getComponent(0);
 
         if (selectedPokemons.isEmpty()) {
-            statusLabel.setText("Select 6 Pokémon for your team");
-            statusLabel.setForeground(Color.YELLOW);
-        } else if (selectedPokemons.size() < 6) {
-            statusLabel.setText(selectedPokemons.size() + " Pokémon selected. Need " + (6 - selectedPokemons.size()) + " more.");
+            statusLabel.setText("Select Pokémon for your team");
             statusLabel.setForeground(Color.YELLOW);
         } else {
             StringBuilder names = new StringBuilder();
@@ -467,7 +457,7 @@ public class PokemonSelectionScreen extends JPanel {
                 if (i > 0) names.append(", ");
                 names.append(selectedPokemons.get(i).getName());
             }
-            statusLabel.setText("Team complete! Selected: " + names);
+            statusLabel.setText("Team selected: " + names);
             statusLabel.setForeground(Color.GREEN);
         }
     }

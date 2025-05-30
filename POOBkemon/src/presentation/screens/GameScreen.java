@@ -970,11 +970,20 @@ public class GameScreen extends JPanel {
         menuButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         menuButton.addActionListener(x -> {
             dialog.dispose();
+            soundManager.stopBackgroundMusic();
             Window window = SwingUtilities.getWindowAncestor(GameScreen.this);
             if (window != null) {
                 window.dispose();
             }
-            gameController.showMainMenu();
+
+            try {
+                Class<?> guiClass = Class.forName("POOBkemonGUI");
+                Object guiObject = guiClass.getDeclaredConstructor().newInstance();
+                guiClass.getMethod("setVisible", boolean.class).invoke(guiObject, true);
+                guiClass.getMethod("showCoverScreen").invoke(guiObject);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
         mainPanel.add(menuButton);

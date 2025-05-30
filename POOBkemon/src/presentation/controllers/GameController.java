@@ -148,9 +148,9 @@ public class GameController {
     }
 
     /**
-     * Generates a random Pokémon team of 6 Pokémon.
+     * Generates a random Pokémon team of 1 to 6 Pokémon.
      * Each Pokémon is assigned random moves.
-     * @return A list of 6 randomly generated Pokémon.
+     * @return A list of 1 to 6 randomly generated Pokémon.
      */
 
     public List<Pokemon> generateRandomTeam() {
@@ -158,7 +158,10 @@ public class GameController {
         PokemonData[] allPokemon = PokemonData.values();
         Random random = new Random();
 
-        while (team.size() < 6) {
+        // Generate a random number of Pokemon between 1 and 6
+        int teamSize = random.nextInt(6) + 1;
+
+        while (team.size() < teamSize) {
             int randomIndex = random.nextInt(allPokemon.length);
             Pokemon pokemon = new ConcretePokemon(allPokemon[randomIndex]);
             pokemon.assignRandomMoves();
@@ -281,13 +284,6 @@ public class GameController {
             player1Team = generateRandomTeam();
         }
         if (player2Team == null || player2Team.isEmpty()) {
-            player2Team = generateRandomTeam();
-        }
-
-        if (player1Team.size() < 6) {
-            player1Team = generateRandomTeam();
-        }
-        if (player2Team.size() < 6) {
             player2Team = generateRandomTeam();
         }
 
@@ -421,6 +417,7 @@ public class GameController {
      */
 
     public void endGame(Player winner) {
+        soundManager.stopBackgroundMusic();
         if (winner != null) {
             soundManager.playSoundEffect("victory");
         } else {
