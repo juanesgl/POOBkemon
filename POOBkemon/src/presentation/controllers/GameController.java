@@ -20,8 +20,11 @@ import presentation.screens.PokemonSelectionScreen;
 import presentation.screens.ItemSelectionScreen;
 import presentation.screens.GameScreen;
 import presentation.utils.SoundManager;
+import presentation.utils.UIConstants;
+
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
@@ -35,13 +38,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+import java.awt.image.BufferedImage;
+
 
 /**
  * GameController is responsible for managing the game flow and user interactions.
@@ -632,4 +640,32 @@ public class GameController {
             JOptionPane.INFORMATION_MESSAGE
         );
     }
+    /*  
+     * Displays the game instructions in a separate window.
+     * 
+     */
+    public void showInstructionsImage() {
+    try {
+         
+        ImageIcon instructionsIcon = new ImageIcon(Objects.requireNonNull(
+            getClass().getResource(UIConstants.INSTRUCTIONS)));
+        
+        
+        JLabel label = new JLabel(instructionsIcon);
+        
+        
+        JFrame frame = new JFrame("Game Instructions");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
+        frame.getContentPane().add(label);
+        frame.pack();
+        frame.setLocationRelativeTo(null); 
+        frame.setVisible(true);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+        JOptionPane.showMessageDialog(null, 
+            "Error loading instructions image: " + ex.getMessage(), 
+            "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
 }

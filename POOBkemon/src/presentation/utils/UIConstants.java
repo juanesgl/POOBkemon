@@ -104,6 +104,11 @@ public class UIConstants {
 
     public static final String CSV_RELATIVE_PATH = "resources/csv/effectiveness.csv";
 
+    /**
+     * Path to the instructions poster image.
+     */
+    public static final String INSTRUCTIONS = RESOURCES_PATH + "SelectionScreen/InstructionsPoster.png";
+
 
     /**
      * List of game modality display names for dropdown menus.

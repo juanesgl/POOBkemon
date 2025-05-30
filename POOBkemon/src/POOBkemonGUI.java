@@ -162,6 +162,10 @@ public class POOBkemonGUI extends JFrame implements GameView {
         });
     }
 
+    /*
+     * Menu
+     */
+
     private void menu(){
         menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
@@ -172,7 +176,7 @@ public class POOBkemonGUI extends JFrame implements GameView {
         fileMenu.add(Load);
         menuBar.add(fileMenu);
 
-        // Add volume control
+        
         JMenu volumeMenu = new JMenu("Volume");
         JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 30);
         volumeSlider.setPreferredSize(new Dimension(150, 20));
@@ -184,11 +188,15 @@ public class POOBkemonGUI extends JFrame implements GameView {
         });
         volumeMenu.add(volumeSlider);
         menuBar.add(volumeMenu);
-
+        JMenu instructionsMenu = new JMenu("Instructions");
+        JMenuItem showInstructions = new JMenuItem("Show Instructions");
+        instructionsMenu.add(showInstructions);
+        menuBar.add(instructionsMenu);
         setJMenuBar(menuBar);
 
         Save.addActionListener(x -> gameController.saveGame());
         Load.addActionListener(x -> gameController.loadGame());
+        showInstructions.addActionListener(e -> gameController.showInstructionsImage());
     }
 
     /**
@@ -282,4 +290,5 @@ public class POOBkemonGUI extends JFrame implements GameView {
     public SoundManager getSoundManager() {
         return soundManager;
     }
+    
 }
